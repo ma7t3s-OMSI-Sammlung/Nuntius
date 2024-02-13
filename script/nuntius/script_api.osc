@@ -1,0 +1,32 @@
+'Dies Macro wird in jedem Frame ausgeführt, es teilt dem System mit, ob es gerade mit Strom versorgt ist, oder nicht, im Prinzip also einfach der "Stromanschluss".
+'Dazu muss am Ende des Macros im Stack eine 1 für "aktiv" oder eine 0 für "nicht aktiv" stehen.
+{macro:nuntius_api_power}
+    (L.L.elec_busbar_main)
+{end}
+
+'Dies Macro wird in jedem Frame ausgeführt, es teilt dem System mit, ob gerade mindestens eine Tür geöffnet ist.
+'Dazu muss am Ende des Macros im Stack eine 1 für "mindestens eine Tür auf" oder eine 0 für "alle Türen zu" stehen.
+'Hinweis: Der Standardcode über die PAX-Variablen sollte eigentlich bei jedem Bus funktionieren.
+{macro:nuntius_api_doorsOpen}
+    (L.L.PAX_Entry0_Open)
+	(L.L.PAX_Entry1_Open) ||
+	(L.L.PAX_Entry2_Open) ||
+	(L.L.PAX_Entry3_Open) ||
+	(L.L.PAX_Entry4_Open) ||
+	(L.L.PAX_Entry5_Open) ||
+	(L.L.PAX_Entry6_Open) ||
+	(L.L.PAX_Entry7_Open) ||
+	(L.L.PAX_Exit0_Open) ||
+	(L.L.PAX_Exit1_Open) ||
+	(L.L.PAX_Exit2_Open) ||
+	(L.L.PAX_Exit3_Open) ||
+	(L.L.PAX_Exit4_Open) ||
+	(L.L.PAX_Exit5_Open) ||
+	(L.L.PAX_Exit6_Open) ||
+	(L.L.PAX_Exit7_Open) ||
+{end}
+
+'Dies ist ein allgemeines Macro, welches in jedem Frame ausgeführt wird und z.B. genutzt werden kann, um Variablen auszulesen und an andere Script weiterzugeben
+{macro:nuntius_api_frame}
+    
+{end}

@@ -1,0 +1,2255 @@
+'Todo-List: Was fehlt noch?
+
+' - Progressbar richtig einscripten
+' - Verbesserung der Schnittstelle für FIS/Matrix
+' - Neue Schnittstelle für Kassierertisch -> Sperren, wenn nicht eingeloggt
+' - Ziel soll sich im Fahrplanmodus automatisch aktualisieren, wenn es sich ändert (Funktioniert bereits?)
+' - Haupt/Einstellungsmenü
+' - Dark Mode
+' - automatisch "Fahrtende" am ende einer Route schildern
+' - Linienanzeige in der Kopfzeile ist im Fahrplanmodus nicht korrekt (nur Ziel richtig, alles andere 00)
+' - wenn die Auto-Weiterschaltung gestoppt ist, können die Haltestellen nicht manuell vor- und zurück gesprungen werden!
+' - Daten werden beim Herunterfahren nicht vollständig gelöscht und sind nach einem neuen Boot noch teilweise vorhanden
+
+'################################
+'Trigger section
+'################################
+
+'triggers the debug reset button
+{trigger:nuntius_printer_reset}
+	0 (S.L.nuntius_printer_bootStatus)
+	(M.L.nuntius_printer_init)
+{end}
+
+' triggers if the driverCard was put on the device
+{trigger:nuntius_driverCard_get}
+	1 (S.L.nuntius_driverCard)
+
+'if we are at the welcome page, go to the login page
+	(L.L.nuntius_printer_page) 0 =
+	{if}
+		1 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'if we are at the break page, go to login from break
+	(L.L.nuntius_printer_page) 7 =
+	{if}
+		71 (M.L.nuntius_printer_goToPage)
+	{endif}
+{end}
+
+'triggers if the dricverCard was removed from the device
+{trigger:nuntius_driverCard_put}
+	0 (S.L.nuntius_driverCard)
+
+'if we are at the login page, go back to the welcome page
+	(L.L.nuntius_printer_page) 1 =
+	{if}
+		(M.L.nuntius_printer_resetInputFields)
+		0 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'if we are at the login from break page, go back to the break page
+	(L.L.nuntius_printer_page) 71 =
+	{if}
+		(M.L.nuntius_printer_resetInputFields)
+		7 (M.L.nuntius_printer_goToPage)
+	{endif}
+{end}
+
+'triggers if the printed ticket was clicked to remove it e.g.
+{trigger:nuntius_ticket}
+	0 (S.L.nuntius_ticket) (S.L.nuntius_ticketAnim) (S.L.nuntius_ticketPrinting) (S.L.nuntius_ticketPrintingTimer)
+	-1 (S.L.GivenTicket) (S.L.nuntius_printer_givenTicket)
+{end}
+
+'triggers if the apply-button was clicked
+{trigger:nuntius_printer_apply}
+	(M.L.nuntius_printer_apply)
+{end}
+
+'triggers if the reset-button was clicked
+{trigger:nuntius_printer_reset}
+	(M.L.nuntius_printer_reset)
+{end}
+
+'triggers if the auto-button was clicked
+{trigger:nuntius_printer_auto}
+	(M.L.nuntius_printer_auto)
+{end}
+
+'triggers if the menu-button was clicked
+{trigger:nuntius_printer_menu}
+{end}
+
+'triggers if the switch-main-busston-menu-button was clicked
+{trigger:nuntius_printer_busstopMenu}
+'if we are at the home page, go to busstop
+	(L.L.nuntius_printer_page) 2 =
+	{if}
+		3 (M.L.nuntius_printer_goToPage)
+'play sound
+		(M.L.nuntius_printer_playSoundNormal)
+	{else}
+'if we are at the busstop page, go to home page
+		(L.L.nuntius_printer_page) 3 =
+		{if}
+			2 (M.L.nuntius_printer_goToPage)
+'play sound
+			(M.L.nuntius_printer_playSoundNormal)
+		{endif}
+	{endif}
+
+'Announcements page
+	(L.L.nuntius_printer_page) 6 =
+	{if}
+		3 (M.L.nuntius_printer_goToPage)
+		(M.L.nuntius_printer_playSoundNormal)
+	{endif}
+{end}
+
+{trigger:nuntius_printer_busstopDown}
+	-1 (M.L.nuntius_printer_busstopJump)
+{end}
+
+{trigger:cp_microphone}
+	1 (M.L.nuntius_printer_busstopJump)
+{end}
+
+{trigger:nuntius_printer_jumpToBusstop2}
+	2 (M.L.nuntius_printer_busstopJump)
+{end}
+
+{trigger:nuntius_printer_jumpToBusstop3}
+	3 (M.L.nuntius_printer_busstopJump)
+{end}
+
+{trigger:nuntius_printer_jumpToBusstop4}
+	4 (M.L.nuntius_printer_busstopJump)
+{end}
+
+'Route-menu
+{trigger:IBIS_setmode_linie_kurs}
+	(L.L.nuntius_printer_page) 2 = 
+	{if}
+		4 (M.L.nuntius_printer_goToPage)
+		(M.L.nuntius_printer_playSoundNormal)
+	{endif}
+{end}
+
+'Terminus-Menu
+{trigger:IBIS_setmode_ziel}
+	(L.L.nuntius_printer_page) 2 = 
+	{if}
+		5 (M.L.nuntius_printer_goToPage)
+		(M.L.nuntius_printer_playSoundNormal)
+	{endif}
+{end}
+
+'AutoHFS-toggle
+{trigger:nuntius_printer_homeButton2}
+	(L.L.nuntius_printer_page) 2 = 
+	{if}
+		(M.L.nuntius_printer_toggleAutoHFS)
+	{endif}
+{end}
+
+'Announcements menu
+{trigger:nuntius_printer_homeButton3}
+	6 (M.L.nuntius_printer_goToPage)
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
+'Break Menu
+{trigger:nuntius_printer_homeButton4}
+	(L.L.nuntius_printer_page) 2 = (L.L.nuntius_printer_page) 3 = ||
+	{if}
+		7 (M.L.nuntius_printer_goToPage)
+		(M.L.nuntius_printer_playSoundNormal)
+	{endif}
+{end}
+
+'"Funk" Menu
+{trigger:nuntius_printer_homeButton5}
+{end}
+
+'Driver switch menu
+{trigger:nuntius_printer_homeButton6}
+	(L.L.nuntius_printer_page) 2 = 
+	{if}
+		9 (M.L.nuntius_printer_goToPage)
+		(M.L.nuntius_printer_playSoundNormal)
+	{endif}
+{end}
+
+'Shift end menu
+{trigger:nuntius_printer_homeButton7}
+	(L.L.nuntius_printer_page) 2 = 
+	{if}
+		10 (M.L.nuntius_printer_goToPage)
+		(M.L.nuntius_printer_playSoundNormal)
+	{endif}
+{end}
+
+{trigger:nuntius_printer_busstopPause}
+	(L.L.nuntius_printer_page) 2 = (L.L.nuntius_printer_page) 3 = ||
+	{if}
+		7 (M.L.nuntius_printer_goToPage)
+		(M.L.nuntius_printer_playSoundNormal)
+	{endif}
+{end}
+
+{trigger:nuntius_printer_ticket0}
+	0 (M.L.nuntius_printer_selectTicket)
+{end}
+
+{trigger:nuntius_printer_ticket1}
+	1 (M.L.nuntius_printer_selectTicket)
+{end}
+
+{trigger:nuntius_printer_ticket2}
+	2 (M.L.nuntius_printer_selectTicket)
+{end}
+
+{trigger:nuntius_printer_ticket3}
+	3 (M.L.nuntius_printer_selectTicket)
+{end}
+
+{trigger:nuntius_printer_ticket4}
+	4 (M.L.nuntius_printer_selectTicket)
+{end}
+
+{trigger:nuntius_printer_ticket5}
+	5 (M.L.nuntius_printer_selectTicket)
+{end}
+
+{trigger:nuntius_printer_ticket6}
+	6 (M.L.nuntius_printer_selectTicket)
+{end}
+
+{trigger:nuntius_printer_ticket7}
+	7 (M.L.nuntius_printer_selectTicket)
+{end}
+
+{trigger:nuntius_printer_bar}
+	(M.L.nuntius_printer_barTicket)
+{end}
+
+{trigger:nuntius_printer_cTicket}
+	3 (M.L.nuntius_printer_goToPage)
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
+{trigger:nuntius_printer_storno}
+	(M.L.nuntius_printer_cancelTicket)
+{end}
+
+{trigger:nuntius_printer_back}
+	(M.L.nuntius_printer_back)
+{end}
+
+{trigger:IBIS_0}
+	0 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_1}
+	1 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_2}
+	2 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_3}
+	3 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_4}
+	4 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_5}
+	5 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_6}
+	6 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_7}
+	7 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_8}
+	8 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_9}
+	9 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_loeschen}
+	10 (M.L.nuntius_printer_numpadButton)
+{end}
+
+{trigger:IBIS_eingabe}
+	(M.L.nuntius_printer_numpadEnter)
+{end}
+
+{trigger:nuntius_printer_input0}
+	0 (M.L.nuntius_printer_focusInputField)
+{end}
+
+{trigger:nuntius_printer_input1}
+	1 (M.L.nuntius_printer_focusInputField)
+{end}
+
+{trigger:nuntius_printer_input2}
+	2 (M.L.nuntius_printer_focusInputField)
+{end}
+
+{trigger:nuntius_printer_announcement0}
+	0 (M.L.nuntius_printer_playSpecialAnnouncement)
+{end}
+
+{trigger:nuntius_printer_announcement1}
+	1 (M.L.nuntius_printer_playSpecialAnnouncement)
+{end}
+
+{trigger:nuntius_printer_announcement2}
+	2 (M.L.nuntius_printer_playSpecialAnnouncement)
+{end}
+
+{trigger:nuntius_printer_announcement3}
+	3 (M.L.nuntius_printer_playSpecialAnnouncement)
+{end}
+
+
+'################################
+'Init and frame
+'################################
+
+{macro:nuntius_printer_init}
+	"nuntius\printer\Black.dds" (S.$.nuntius_printer_ui_texture)
+	"0/00@00/000" (S.$.nuntius_printer_ui_line)
+	"@" (S.$.nuntius_printer_ui_terminus)
+	0 (S.L.nuntius_printer_bootStatus)
+	0 (S.L.nuntius_printer_page)
+	0 (S.L.nuntius_printer_autoBusstopPageSwitch)
+	0 (S.L.nuntius_printer_currentInputField)
+	-1 (S.L.nuntius_printer_selectedTicket)
+	0 (S.L.nuntius_printer_showDeparturePage)
+
+	1 (S.L.nuntius_printer_screenSoundIsActive)
+	(S.L.nuntius_printer_AnnouncementsAreActive)
+
+	(M.L.nuntius_printer_loadTickets)
+{end}
+
+{macro:nuntius_printer_frame}
+'API calls
+	(M.L.nuntius_api_power) (S.L.nuntius_api_power)
+	(M.L.nuntius_api_doorsOpen) (S.L.nuntius_api_doorsOpen)
+
+	(M.L.nuntius_printer_refreshTime)
+	(M.L.nuntius_printer_refreshDelay)
+	(M.L.nuntius_printer_bootHandler)
+	(M.L.nuntius_printer_updateCurrentBusstopIndex)
+	(M.L.nuntius_printer_refreshBusstopList)
+	(M.L.nuntius_printer_refreshBusstopTimeList)
+	(M.L.nuntius_printer_autoRefreshTerminus)
+	(M.L.nuntius_printer_autoOpenBusstopPage)
+	(M.L.nuntius_printer_autoOpenDeparturePage)
+	(M.L.nuntius_updateTicket)
+	(M.L.nuntius_ticketPrintHandler)
+	
+	(M.L.nuntius_api_frame) 
+
+	(L.L.nuntius_printer_progressbarAnim) (L.S.Timegap) - (S.L.nuntius_printer_progressbarAnim)
+
+'	"debug:@" (L.L.nuntius_printer_showDeparturePage) $IntToStr $+ (S.$.nuntius_printer_ui_line)
+'	(L.$.nuntius_printer_ui_line) (L.L.nuntius_printer_showDeparturePage) $IntToStr $+ (S.$.nuntius_printer_ui_line)
+{end}
+
+'makes the printed ticket invisible and resets the animation, after the passenger took it
+{macro:nuntius_updateTicket}
+'if the given ticket is -1 (passanger, took the ticket),
+'but the nuntius given ticket is still != -1 (there is still a ticket set)
+'and we are not printing currently
+	(L.L.GivenTicket) -1 =
+	(L.L.nuntius_printer_givenTicket) -1 = ! &&
+	(L.L.nuntius_ticketPrinting) ! &&
+	{if}
+		0 (S.L.nuntius_ticket) (S.L.nuntius_ticketAnim) (S.L.nuntius_ticketPrinting) (S.L.nuntius_ticketPrintingTimer)
+		-1 (S.L.nuntius_printer_givenTicket)
+	{endif}
+{end}
+
+
+'################################
+'general functions and power
+'################################
+
+'handles the boot (will be executed every frame)
+{macro:nuntius_printer_bootHandler}
+'Boot Status:
+'0 = Off (no electric)
+'1 = booting
+'2 = booted (running)
+'3 = battery mode
+'4 = sleep mode
+
+'if bus electric is on, boot device/hold it on, else shut it down
+	(L.L.nuntius_api_power)
+	{if}
+'if it's booting currently, continue
+		(L.L.nuntius_printer_bootStatus) 1 <=
+		{if}
+			(M.L.nuntius_printer_boot)
+		{endif}
+'if the electric is on (s.o.), but the boot status is still 4, turn the screen back on
+		(L.L.nuntius_printer_bootStatus) 4 =
+		{if}
+			(M.L.nuntius_printer_turnScreenOn)
+		{endif}
+'else if electric is not on...
+	{else}
+'...and the printer is active (!=0), turn energysaver on
+		(L.L.nuntius_printer_bootStatus)
+		{if}
+			(M.L.nuntius_printer_runEnergySaver)
+		{endif}
+	{endif}
+{end}
+
+'Executes the printers boot
+{macro:nuntius_printer_boot}
+
+	(L.L.nuntius_printer_bootStatus) 0 =
+	{if}
+		1 (S.L.nuntius_printer_screenIsOn)
+		1 (S.L.nuntius_printer_bootStatus)
+		0 (S.L.nuntius_printer_bootTimer)
+		(M.L.nuntius_printer_hideAllUiElements)
+		"nuntius\printer\Boot_1.dds" (S.$.nuntius_printer_ui_texture)
+	{endif}
+					
+'increase timer
+	(L.L.nuntius_printer_bootTimer) (L.S.Timegap) + (S.L.nuntius_printer_bootTimer)
+
+	"nuntius\printer\Boot_"
+	(L.L.nuntius_printer_bootTimer) (C.L.nuntius_printer_bootSpeed) * (F.L.boot) $IntToStr $+
+	".dds" $+
+	(S.$.nuntius_printer_ui_texture)
+
+	(L.L.nuntius_printer_bootTimer) (C.L.nuntius_printer_bootSpeed) * 30 >=
+	{if}
+		2 (S.L.nuntius_printer_bootStatus)
+		0 (S.L.nuntius_printer_bootTimer)
+		0 (M.L.nuntius_printer_goToPage)
+	{endif}
+{end}
+
+'manages the energy saver mode
+{macro:nuntius_printer_runEnergySaver}
+'if printer is running
+	(L.L.nuntius_printer_bootStatus) 2 = 
+	{if}
+'set energy saving mode and setup printer
+		3 (S.L.nuntius_printer_bootStatus)
+		0 (S.L.nuntius_printer_batteryTimer)
+	{else}
+'else if is already off (0) or currently on boot (1), directly turn it of
+		(L.L.nuntius_printer_bootStatus) 1 <= 
+		{if}
+			(M.L.nuntius_printer_shutDown)
+		{else}
+'else manage energy saving
+'increase timer
+			(L.L.nuntius_printer_batteryTimer) (L.S.Timegap) + (S.L.nuntius_printer_batteryTimer)
+'if battery timer is smaller than maximum
+			(L.L.nuntius_printer_batteryTimer) (C.L.nuntius_printer_batteryTime) <
+			{if}
+'if it's bigger than screen time, turn screen of
+				(L.L.nuntius_printer_batteryTimer) (C.L.nuntius_printer_batteryTimeActiveScreen) >
+				{if}
+					(M.L.nuntius_printer_turnScreenOff)
+				{endif}
+			{else}
+'if timer is bigger, shut down
+				(M.L.nuntius_printer_shutDown)
+			{endif}
+		{endif}
+	{endif}
+{end}
+
+'shuts down the printer
+{macro:nuntius_printer_shutDown}
+	(M.L.nuntius_printer_turnScreenOff)
+	0
+	(S.L.nuntius_printer_bootStatus)
+	(S.L.nuntius_printer_RouteMode)
+	(S.L.nuntius_printer_Line)
+	(S.L.nuntius_printer_Route)
+	(S.L.nuntius_printer_RouteIndex)
+	(S.L.nuntius_printer_Suffix)
+	(S.L.nuntius_printer_Terminus)
+	(S.L.nuntius_printer_TerminusIndex)
+	(S.L.nuntius_printer_specialTerminus)
+{end}
+
+'turns the printers screen off
+{macro:nuntius_printer_turnScreenOff}
+	4 (S.L.nuntius_printer_bootStatus)
+	0 (S.L.nuntius_printer_screenIsOn)
+	"nuntius\printer\Black.dds" (S.$.nuntius_printer_ui_texture)
+	(M.L.nuntius_printer_hideAllUiElements)
+{end}
+
+'turns the printers screen on
+{macro:nuntius_printer_turnScreenOn}
+	2 (S.L.nuntius_printer_bootStatus)
+	1 (S.L.nuntius_printer_screenIsOn)
+	(L.L.nuntius_printer_page) (M.L.nuntius_printer_goToPage)
+{end}
+
+{macro:nuntius_printer_autoOpenBusstopPage}
+'if any of all the entrys or exits is open...
+	(L.L.nuntius_api_doorsOpen)
+	{if}
+'and:
+'the current printer page is 2 (home)
+'the velocity is nearly zero
+'the autoBusstopPageSwitch is 0 (which means the user hasn't switched the page manually)
+		(L.L.nuntius_printer_page) 2 = (L.L.Velocity) 5 < && (L.L.Velocity) -5 > && (L.L.nuntius_printer_autoBusstopPageSwitch) 0 = &&
+		{if}
+'go to page and set the autoBusstopPageSwitch to 1
+			3 (M.L.nuntius_printer_goToPage)
+			1 (S.L.nuntius_printer_autoBusstopPageSwitch)
+		{endif}
+	{else}
+'else if:
+'the current printer page is 3 (busstop menu)
+'the vehicle is moving (velocity more than 5 km/h)
+'the autoBusstopPageSwitch is 1 (which means the user hasn't switched the page manually)
+		(L.L.nuntius_printer_page) 3 = (L.L.Velocity) 5 > (L.L.Velocity) -5 < || && (L.L.nuntius_printer_autoBusstopPageSwitch) 1 = &&
+		{if}
+'go to page and set the autoBusstopPageSwitch to 0
+			2 (M.L.nuntius_printer_goToPage)
+			0 (S.L.nuntius_printer_autoBusstopPageSwitch)
+		{endif}
+	{endif}
+{end}
+
+'Das hier funktioniert nicht, aber warum?
+{macro:nuntius_printer_autoOpenDeparturePage}
+
+'only do something if schedule is active
+	(L.L.schedule_active)
+	{if}
+'if the delay is more than negative 60 (= one minute early)
+		(M.V.GetTTDelay) -60 <
+		{if}
+'remember to show page
+			1 (S.L.nuntius_printer_showDeparturePage)
+		{endif}
+'if delay turns 0 and showDeparturePage is remembered
+		(M.V.GetTTDelay) 0 >= (L.L.nuntius_printer_showDeparturePage) 1 = &&
+		{if}
+'show page
+			0 (S.L.nuntius_printer_showDeparturePage)
+			11 (M.L.nuntius_printer_goToPage)
+			(M.L.nuntius_printer_playSoundNormal)
+		{endif}
+	{else}
+		0 (S.L.nuntius_printer_showDeparturePage)
+	{endif}
+{end}
+
+'Refreshs date and time box
+{macro:nuntius_printer_refreshTime}
+'Register Values:
+'0 = year
+'1 = month
+'2 = day
+'3 = hour
+'4 = minute
+'5 = second
+
+	(L.S.Year) s0
+	(L.S.Day) s2
+	(L.S.Month) s1
+
+	l2 "02" $IntToStrEnh "." $+
+	l1 "02" $IntToStrEnh $+ "." $+
+	l0 "04" $IntToStrEnh $+
+
+	(L.S.Time) 3600 / trunc s3
+	(L.S.Time) 3600 % 60 / trunc s4
+	(L.S.Time) 60 % s5
+
+'add to string
+	"@" $+
+	l3 "02" $IntToStrEnh $+ ":" $+
+	l4 "02" $IntToStrEnh $+ ":" $+
+	l5 "02" $IntToStrEnh $+
+	(S.$.nuntius_printer_ui_time)
+
+'Print FIS String
+	l3 "02" $IntToStrEnh ":" $+ l4 "02" $IntToStrEnh $+
+	(S.$.nuntius_api_timeStr)
+{end}
+
+'Refreshs delay box
+{macro:nuntius_printer_refreshDelay}
+'Register Values:
+'0 = delay in seconds
+'1 = full minutes
+'2 = rest seconds (rounded to 10th)
+'3 = sign (+/0/-)
+
+'only, if shedule is active
+	(L.L.schedule_active)
+	{if}
+'get full minutes (absolute value of delay seconds divided by 60)
+		(M.V.GetTTDelay) s0 60 / abs s1
+'get the sign
+		l0 sgn s3
+'get rest seconds (rounded to 10th):
+'get rest seconds (all seconds "%" by 60, divide 10, trunc and multiply with 10 again and get absolute (positive) value)
+		l0 60 % 10 / trunc 10 * abs s2
+
+'Print String
+'decide for the correct sign
+		l3 0 <
+		{if}
+			"-"
+		{else}
+			l3 0 >
+			{if}
+				"+"
+			{else}
+				""
+			{endif}
+		{endif}
+'add minutes to string
+		l1 $IntToStr $+
+		
+'only add seconds if the minutes are only one character long
+		l1 10 < l1 -10 > &&
+		{if}
+			":" $+ l2 "02" $IntToStrEnh $+	
+		{endif}
+		(S.$.nuntius_printer_ui_delay)
+		
+'choose the correct background color
+		l0 -60 <=
+		{if}
+			"nuntius\red.dds" (S.$.nuntius_printer_ui_delayColor)
+		{endif}
+		
+		l0 -60 > l0 300 < &&
+		{if}
+			"nuntius\green.dds" (S.$.nuntius_printer_ui_delayColor)
+		{endif}
+		
+		l0 300 >=
+		{if}
+			"nuntius\orange.dds" (S.$.nuntius_printer_ui_delayColor)
+		{endif}
+
+	{else}
+'else print "--:--" placeholder and set color to blue
+		"--:--" (S.$.nuntius_printer_ui_delay)
+		"nuntius\blue.dds" (S.$.nuntius_printer_ui_delayColor)
+	{endif}
+{end}
+
+
+'################################
+'input functions (numpad, apply, ...)
+'################################
+
+'executes a specified numpad button
+'Arguments:
+'0 = pressed button (0-9 normal, 10 = C)
+{macro:nuntius_printer_numpadButton}
+'Register:
+'0 = pressed button (0-9 normal, 10 = Backspace/C)
+'1 = field index (0-2)
+'2 = is it active in general? (if selected field is not visible, do nothing)
+
+'save the pressed button (0-9 normal, 10 = Backspace/C)
+s0
+
+'if fields are not enabled, do nothing in general!
+
+	(L.L.nuntius_printer_inputFieldsEnabled)
+	{if}
+'init state
+		0 s2
+
+'play sound
+		(M.L.nuntius_printer_playSoundNormal)
+
+'save field index
+		(L.L.nuntius_printer_currentInputField) s1
+
+'check if field is enabled and load data
+		l1 0 = (L.L.nuntius_printer_visInput0) 1 = &&
+		{if}
+			(L.$.nuntius_printer_ui_input0)
+			1 s2
+		{endif}
+
+		l1 1 = (L.L.nuntius_printer_visInput1) 1 = &&
+		{if}
+			(L.$.nuntius_printer_ui_input1)
+			1 s2
+		{endif}
+
+		l1 2 = (L.L.nuntius_printer_visInput2) 1 = &&
+		{if}
+			(L.$.nuntius_printer_ui_input2)
+			1 s2
+		{endif}
+
+'if field is enabled
+		l2
+		{if}
+'add character to string
+			l0 9 <=
+			{if}
+				l0 $IntToStr $+
+			{endif}
+			
+'or delete one...
+			l0 10 =
+			{if}
+				1 $cutEnd 
+			{endif}
+
+'save it to the current input field
+			l1 0 =
+			{if}
+				(S.$.nuntius_printer_ui_input0)
+			{endif}
+			
+			l1 1 =
+			{if}
+				(S.$.nuntius_printer_ui_input1)
+			{endif}
+			
+			l1 2 =
+			{if}
+				(S.$.nuntius_printer_ui_input2)
+			{endif}
+		{endif}
+	{endif}
+{end}
+
+'executes the numpads enter command
+{macro:nuntius_printer_numpadEnter}
+'if the next input field's index is still smaller than the count...
+	(L.L.nuntius_printer_currentInputField) 1 + (L.L.nuntius_printer_InputFieldCount) <
+	{if}
+'jump to next input field
+		(L.L.nuntius_printer_currentInputField) 1 + (M.L.nuntius_printer_focusInputField)
+'play sound
+		(M.L.nuntius_printer_playSoundNormal)
+	{else}
+'else run apply command
+		(M.L.nuntius_printer_apply)
+	{endif}
+{end}
+
+'executes the apply command
+{macro:nuntius_printer_apply}
+
+'Login page
+	(L.L.nuntius_printer_page) 1 =
+	{if}
+		(M.L.nuntius_printer_checkLogin)
+	{endif}
+
+'Login from break page
+	(L.L.nuntius_printer_page) 71 =
+	{if}
+		(M.L.nuntius_printer_checkLoginAfterBreak)
+	{endif}
+
+'LKR page
+	(L.L.nuntius_printer_page) 4 =
+	{if}
+		(M.L.nuntius_printer_loadHofTrip)
+	{endif}
+
+'Terminus page
+	(L.L.nuntius_printer_page) 5 =
+	{if}
+		(M.L.nuntius_printer_specialTerminus)
+	{endif}
+
+'Driver switch page
+	(L.L.nuntius_printer_page) 9 =
+	{if}
+		(M.L.nuntius_printer_driverSwitch)
+	{endif}
+
+'Shift end page
+	(L.L.nuntius_printer_page) 10 =
+	{if}
+		(M.L.nuntius_printer_shiftEnd)
+	{endif}
+
+'Departure page
+	(L.L.nuntius_printer_page) 11 =
+	{if}
+		2 (M.L.nuntius_printer_goToPage)
+	{endif}
+{end}
+
+'executes the reset command
+{macro:nuntius_printer_reset}
+'LKR page
+	(L.L.nuntius_printer_page) 4 =
+	{if}
+		(M.L.nuntius_printer_removeTrip)
+	{endif}
+
+'Terminus page
+	(L.L.nuntius_printer_page) 5 =
+	{if}
+		(M.L.nuntius_printer_resetTerminus)
+{endif}
+
+'play sound
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
+'executes the auto command
+{macro:nuntius_printer_auto}
+'LKR page
+	(L.L.nuntius_printer_page) 4 =
+	{if}
+		(M.L.nuntius_printer_loadTTTrip)
+	{endif}
+'play sound
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
+'executes the back command
+{macro:nuntius_printer_back}
+'Login page
+	(L.L.nuntius_printer_page) 1 =
+	{if}
+		(M.L.nuntius_printer_resetInputFields)
+		0 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'busstop page
+	(L.L.nuntius_printer_page) 3 =
+	{if}
+		(M.L.nuntius_printer_resetInputFields)
+		2 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'LRK page
+	(L.L.nuntius_printer_page) 4 =
+	{if}
+		(M.L.nuntius_printer_resetInputFields)
+		2 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'Terminus page
+	(L.L.nuntius_printer_page) 5 =
+	{if}
+		(M.L.nuntius_printer_resetInputFields)
+		2 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'Announcements page
+	(L.L.nuntius_printer_page) 6 =
+	{if}
+		2 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'Driver switch page
+	(L.L.nuntius_printer_page) 9 =
+	{if}
+		(M.L.nuntius_printer_resetInputFields)
+		2 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'Shift End page
+	(L.L.nuntius_printer_page) 10 =
+	{if}
+		(M.L.nuntius_printer_resetInputFields)
+		2 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'Departure page
+	(L.L.nuntius_printer_page) 11 =
+	{if}
+		2 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'play sound
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
+'changes, which input field should be focused
+'Arguments:
+'0 = target input field (0-2)
+{macro:nuntius_printer_focusInputField}
+	s0
+'Register
+'0 = target field index
+
+	1 + (L.L.nuntius_printer_InputFieldCount) <=
+	{if}
+
+'login page
+		(L.L.nuntius_printer_page) 1 = 
+		{if}
+			l0 (S.L.nuntius_printer_currentInputField)
+			
+			l0 0 =
+			{if}
+				"nuntius\printer\Login_withID_ID.dds" (S.$.nuntius_printer_ui_texture)
+			{endif}
+			
+			l0 1 =
+			{if}
+				"nuntius\printer\Login_withID_PIN.dds" (S.$.nuntius_printer_ui_texture)
+			{endif}
+		{endif}
+		
+'LKR page
+		(L.L.nuntius_printer_page) 4 = 
+		{if}
+			l0 (S.L.nuntius_printer_currentInputField)
+			
+			l0 0 =
+			{if}
+				"nuntius\printer\LKR_man_Line.dds" (S.$.nuntius_printer_ui_texture)
+			{endif}
+			
+			l0 1 =
+			{if}
+				"nuntius\printer\LKR_man_Route.dds" (S.$.nuntius_printer_ui_texture)
+			{endif}
+			
+			l0 2 =
+			{if}
+				"nuntius\printer\LKR_man_Terminus.dds" (S.$.nuntius_printer_ui_texture)
+			{endif}
+		{endif}
+
+'play sound
+		(M.L.nuntius_printer_playSoundNormal)
+	{endif}
+{end}
+
+
+'################################
+'checks and validations
+'################################
+
+'checks if the login is valid
+{macro:nuntius_printer_checkLogin}
+'compare values
+	(L.$.nuntius_printer_ui_input0) $StrToFloat (C.L.nuntius_printer_driverID) = s0
+	(L.$.nuntius_printer_ui_input1) $StrToFloat (C.L.nuntius_printer_driverPIN) = s1
+
+'if both is correct...
+	l0 l1 &&
+	{if}
+'go to home page
+		(M.L.nuntius_printer_resetInputFields)
+		2 (M.L.nuntius_printer_goToPage)
+'print test
+		1 (S.L.nuntius_ticketPrinting)
+'play sound
+		(M.L.nuntius_printer_playSoundNormal)
+	{else}
+'play sound
+		(M.L.nuntius_printer_playSoundError)
+	{endif}
+{end}
+
+
+{macro:nuntius_printer_checkLoginAfterBreak}
+	(L.$.nuntius_printer_ui_input0) $StrToFloat (C.L.nuntius_printer_driverPIN) =
+	{if}
+'go to home page
+		(M.L.nuntius_printer_resetInputFields)
+		2 (M.L.nuntius_printer_goToPage)
+'play sound
+		(M.L.nuntius_printer_playSoundNormal)
+	{else}
+'play sound
+		(M.L.nuntius_printer_playSoundError)
+	{endif}
+{end}
+
+
+'################################
+'shift functions
+'################################
+
+'Ends the shift
+{macro:nuntius_printer_shiftEnd}
+'Remove route data
+	(M.L.nuntius_printer_removeTrip)
+	(M.L.nuntius_printer_resetTerminus)
+	1 (S.L.nuntius_ticketPrinting)
+	
+'logout driver
+	(M.L.nuntius_printer_driverSwitch)
+{end}
+
+'switches the driver
+{macro:nuntius_printer_driverSwitch}
+'Reset statistics
+	0
+	(S.L.nuntius_printer_soldTicketsCount)
+	(S.L.nuntius_printer_totalRevenue)
+	(S.L.nuntius_printer_cancellationCount)
+
+	1 (S.L.nuntius_ticketPrinting)
+	0 (M.L.nuntius_printer_goToPage)
+{end}
+
+
+'################################
+'route and trip functions
+'################################
+
+{macro:nuntius_printer_autoRefreshTerminus}
+'if we are currently in schedule mode
+	(L.L.nuntius_printer_RouteMode) 1 =
+'if the expected and actual terminus are not the same..
+	{if}
+		(M.V.GetTTTerminusIndex) s0 (L.L.nuntius_printer_TerminusIndex) = !
+		{if}
+'refresh
+			l0 (M.L.nuntius_printer_setTerminusIndex)
+		{endif}
+	{endif}
+{end}
+
+'Loads the Timetables trip
+{macro:nuntius_printer_loadTTTrip}
+	(L.L.schedule_active)
+	{if}
+'Get Terminus and line and save it to all needed sources
+		(M.V.GetTTLineString) (S.$.IBIS_Complex_Line) (S.$.Matrix_Nr) (S.$.nuntius_api_lineStr)
+		(M.V.GetTTTerminusIndex) (S.L.nuntius_api_terminusIndex) (M.L.nuntius_printer_setTerminusIndex)
+		(M.L.nuntius_printer_refreshLineUI)
+		
+'Save Mode
+		1 (S.L.nuntius_printer_RouteMode)
+
+'Go back to Main Page
+		2 (M.L.nuntius_printer_goToPage)
+	{else}
+'play sound
+		(M.L.nuntius_printer_playSoundError)
+	{endif}
+{end}
+
+'Loads a trip from the hof file
+{macro:nuntius_printer_loadHofTrip}
+'Register:
+'0 = Line
+'1 = Route
+'2 = Suffix
+'3 = Route index
+
+	0 (S.L.nuntius_printer_currentBusstopIndex)
+
+	(L.$.nuntius_printer_ui_input0) $StrToFloat s0
+	(L.$.nuntius_printer_ui_input1) $StrToFloat s1
+	(L.$.nuntius_printer_ui_input2) $StrToFloat s2
+
+'Get Route Index
+	l0 100 * l1 + (M.V.GetRouteIndex) s3
+
+'if route exists
+	-1 = !
+	{if}	
+'Save IBIS Line (for Matrix needed)
+	l0 100 * l2 + (S.L.IBIS_Linie_Complex)
+	l2 (S.L.IBIS_Linie_Suffix)
+
+'Save all data
+		l0 (S.L.nuntius_printer_Line) $IntToStr (S.$.nuntius_api_lineStr)
+		l1 (S.L.nuntius_printer_Route)
+		l2 (S.L.nuntius_printer_Suffix) (S.L.nuntius_api_lineSuffix)
+		l3 (S.L.nuntius_printer_RouteIndex)
+
+'Get Terminus
+		(M.V.GetRouteTerminusIndex) (S.L.nuntius_api_terminusIndex) (M.L.nuntius_printer_setTerminusIndex)
+		
+'Save Mode
+		2 (S.L.nuntius_printer_RouteMode)
+
+		(M.L.nuntius_printer_refreshLineUI)
+		
+'Go back to Main Page
+		2 (M.L.nuntius_printer_goToPage)
+'play sound
+		(M.L.nuntius_printer_playSoundNormal)
+	{else}
+'play sound
+		(M.L.nuntius_printer_playSoundError)
+	{endif}
+{end}
+
+'removes the trip from printer
+{macro:nuntius_printer_removeTrip}
+'Set everything to 0
+	""
+	0
+	(S.L.nuntius_printer_RouteMode)
+	(S.L.nuntius_printer_Line)
+	(S.L.nuntius_printer_Route)
+	(S.L.nuntius_printer_Suffix)
+	(S.L.nuntius_printer_Terminus)
+	(S.L.nuntius_printer_currentBusstopIndex)
+	(S.L.nuntius_printer_busstopOffset)
+	(S.L.IBIS_Linie_Complex)
+	(S.L.IBIS_Linie_Suffix)
+	(S.L.target_index_int)
+	(S.$.nuntius_api_lineStr)
+	(S.$.nuntius_api_terminusStr)
+
+	"0/00@00/000" (S.$.nuntius_printer_ui_line)
+	"@" (S.$.nuntius_printer_ui_terminus)
+
+'Go back to Main Page
+	2 (M.L.nuntius_printer_goToPage)
+
+'play sound
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
+'sets a special terminus
+{macro:nuntius_printer_specialTerminus}
+'Register:
+'0 = Terminus Code
+'1 = Terminus Index
+
+	(L.$.nuntius_printer_ui_input0) $StrToFloat s0
+	(M.V.GetTerminusIndex) s1
+
+	-1 = !
+	{if}
+		l0 (M.L.nuntius_printer_setTerminus)
+		(M.L.nuntius_printer_refreshLineUI)
+		l1 (S.L.target_index_int) (S.L.IBIS_TerminusIndex) (S.L.nuntius_printer_TerminusIndex)
+		l0 (S.L.nuntius_printer_Terminus)
+		(M.L.nuntius_printer_playSoundNormal)
+'set mode
+		1 (S.L.nuntius_printer_specialTerminus)
+'go to home page
+		2 (M.L.nuntius_printer_goToPage)
+	{else}
+		(M.L.nuntius_printer_playSoundError)
+	{endif}
+{end}
+
+'resets the terminus to the routes default
+{macro:nuntius_printer_resetTerminus}
+
+	(L.L.nuntius_printer_RouteMode) 0 =
+	{if}
+		0 (M.L.nuntius_printer_setTerminusIndex)
+	{else}
+		(L.L.nuntius_printer_RouteIndex) (M.V.GetRouteTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
+	{endif}
+	(M.L.nuntius_printer_refreshLineUI)
+
+'set mode
+	0 (S.L.nuntius_printer_specialTerminus)
+
+'go back to home page
+	2 (M.L.nuntius_printer_goToPage)
+{end}
+
+'sets a terminus by index
+'Arguments:
+'0 = the terminus index
+{macro:nuntius_printer_setTerminusIndex}
+	(M.V.GetTerminusCode) (M.L.nuntius_printer_setTerminus)
+{end}
+
+'sets the terminus to the given code
+'Arguments:
+'0 = the terminus code
+{macro:nuntius_printer_setTerminus}
+'Register:
+'0 = Code
+'1 = Index
+	s0
+	(M.V.GetTerminusIndex) s1
+'if the index is not -1
+	-1 = !
+	{if}
+'save data
+		l0 (S.L.nuntius_printer_Terminus)
+		l1 (S.L.nuntius_printer_TerminusIndex) (S.L.IBIS_TerminusIndex) (S.L.target_index_int)
+'set ui's terminus string
+		(L.L.nuntius_printer_TerminusIndex) 1 (M.V.GetTerminusString) $RemoveSpaces
+		"@" $+
+		(L.L.nuntius_printer_TerminusIndex) 2 (M.V.GetTerminusString) $RemoveSpaces $+
+		(S.$.nuntius_printer_ui_terminus) (S.$.nuntius_api_terminusStr)
+
+		(L.L.nuntius_printer_TerminusIndex) 5 (M.V.GetTerminusString) (S.$.nuntius_api_terminusStr)
+	{endif}
+{end}
+
+'refreshs the textbox that shows line, route, terminus code and co
+{macro:nuntius_printer_refreshLineUI}
+	"0/00@00/000"
+	(L.L.nuntius_printer_RouteMode) 1 =
+	{if}
+		(L.L.nuntius_printer_Line) $IntToStr "@" $+
+		(L.L.nuntius_printer_Terminus) "03" $IntToStrEnh $+
+	{else}
+		(L.L.nuntius_printer_Line) $IntToStr "/" $+ (L.L.nuntius_printer_Suffix) "02" $IntToStrEnh $+ "@" $+
+		(L.L.nuntius_printer_Route) "02" $IntToStrEnh $+ "/" $+ (L.L.nuntius_printer_Terminus) "03" $IntToStrEnh $+
+	{endif}
+	(S.$.nuntius_printer_ui_line)
+{end}
+
+'refreshs the terminus selections preview (currently not in use!)
+{macro:nuntius_printer_refreshTerminusPreview}
+	(L.L.nuntius_printer_page) 5 =
+	{if}
+		(L.$.nuntius_printer_ui_input0) $StrToFloat
+		(M.V.GetTerminusIndex) s0
+
+		l0 1 (M.V.GetTerminusString) "@" $+
+		l0 2 (M.V.GetTerminusString) $+
+		(S.$.nuntius_printer_ui_terminusPreview)
+	{endif}
+{end}
+
+'Updates the current Busstop index (if schedule is active and the current busstop changes)
+{macro:nuntius_printer_updateCurrentBusstopIndex}
+	(L.L.schedule_active) (L.L.nuntius_printer_AutoHFSDisabled) ! &&
+	{if}
+		(M.V.GetTTBusstopIndex) s0 (L.L.nuntius_printer_currentBusstopIndex) = !
+		{if}
+			l0
+			(S.L.nuntius_printer_currentBusstopIndex)
+			(M.L.nuntius_printer_playBusstopAnnouncement)
+			(M.L.nuntius_printer_refreshBusstopList)
+		{endif}
+	{else}
+		0 (S.L.nuntius_printer_busstopOffset)
+	{endif}
+{end}
+
+'Jumps to a certain busstop
+'Arguments:
+'0 = where we do want to jump (+2 = 2 up, -1 = 1 down)
+{macro:nuntius_printer_busstopJump}
+
+'Register:
+'0 = how much busstops to jump (+2 = 2 up, -1 = 1 down)
+'1 = target busstop offset (if schedule is used) or target busstop index (if no schedule is set)
+'2 = the routes busstop count
+
+	s0
+
+	(L.L.schedule_active)
+	{if}
+		(L.L.nuntius_printer_busstopOffset) l0 + s1
+	{else}
+		(L.L.nuntius_printer_currentBusstopIndex) l0 + s1
+	{endif}
+
+	(L.L.nuntius_printer_RouteMode) 1 =
+	{if}
+		(M.V.GetTTBusstopCount) s2
+	{else}
+		(L.L.nuntius_printer_RouteMode) 2 =
+		{if}
+			(L.L.nuntius_printer_RouteIndex) (M.V.GetBusstopCount) s2
+		{else}
+			0 s2
+		{endif}
+	{endif}
+
+	(L.L.schedule_active)
+	{if}
+		l1 (L.L.nuntius_printer_currentBusstopIndex) + l2 < l1 (L.L.nuntius_printer_currentBusstopIndex) + 0 >= &&
+		{if}
+			l1 (S.L.nuntius_printer_busstopOffset)
+'play sound
+			(M.L.nuntius_printer_playSoundNormal)
+		{endif}
+	{else}
+		l1 l2 < l1 0 >= &&
+		{if}
+			l1 (S.L.nuntius_printer_currentBusstopIndex)
+'play sound
+			(M.L.nuntius_printer_playSoundNormal)
+		{endif}
+	{endif}
+	(M.L.nuntius_printer_playBusstopAnnouncement)
+	(M.L.nuntius_printer_refreshBusstopList)
+{end}
+
+
+'Plays a special announcement
+'Arguments:
+'0 = announcement index
+{macro:nuntius_printer_playSpecialAnnouncement}
+	s0
+	l0 0 =
+	{if}
+		"nuntius\Ansage_Tueren_freihalten.wav"
+	{endif}
+
+	l0 1 =
+	{if}
+		"nuntius\Ansage_Nach_hinten_durchgehen.wav"
+	{endif}
+
+	l0 2 =
+	{if}
+		"nuntius\Ansage_Umleitung.wav"
+	{endif}
+
+	l0 3 =
+	{if}
+		"nuntius\Ansage_Fahrtende.wav"
+	{endif}
+
+	(T.F.nuntius_busstop_announcement)
+	(M.L.nuntius_printer_playSoundNormal)
+
+	2 (M.L.nuntius_printer_goToPage)
+{end}
+
+'Play the current busstop's announcement
+{macro:nuntius_printer_playBusstopAnnouncement}
+'only, if announcements are active
+	(L.L.nuntius_printer_AnnouncementsAreActive)
+	{if}
+'build path
+		"..\..\Announcements\" 0 (M.V.GetDepotStringGlobal) $+ "\" $+
+
+		(L.L.nuntius_printer_RouteMode) 1 =
+		{if}
+			(L.L.nuntius_printer_currentBusstopIndex) (L.L.nuntius_printer_busstopOffset) +
+			(M.V.GetTTBusstopName)
+		{endif}
+
+		(L.L.nuntius_printer_RouteMode) 2 =
+		{if}
+			(L.L.nuntius_printer_RouteIndex)
+			(L.L.nuntius_printer_currentBusstopIndex) (L.L.nuntius_printer_busstopOffset) +
+			(M.V.GetRouteBusstopIdent)
+		{endif}
+		$+
+
+'if it's the last busstop, add "_#terminus" suffix
+		(L.L.nuntius_printer_RouteIndex) (M.V.GetBusstopCount) 1 - (L.L.nuntius_printer_currentBusstopIndex) <=
+		{if}
+			"_#terminus" $+
+		{endif}
+
+'add file extention
+		".wav" $+
+
+'play sound
+		(T.F.nuntius_busstop_announcement)
+	{endif}
+{end}
+
+'Refreshs the printers busstop list
+{macro:nuntius_printer_refreshBusstopList}
+	(L.L.nuntius_printer_RouteMode) 0 =
+	{if}
+		""
+		(S.$.nuntius_printer_ui_busstop0)
+		(S.$.nuntius_printer_ui_busstop1)
+		(S.$.nuntius_printer_ui_busstop2)
+		(S.$.nuntius_printer_ui_busstop3)
+		(S.$.nuntius_printer_ui_busstop4)
+		(S.$.nuntius_printer_ui_busstop_end)
+		(S.$.nuntius_api_busstop0)
+		(S.$.nuntius_api_busstop1)
+		(S.$.nuntius_api_busstop2)
+		(S.$.nuntius_api_busstop3)
+		(S.$.nuntius_api_busstop4)
+	{endif}
+
+	(L.L.nuntius_printer_RouteMode) 1 = (L.L.nuntius_printer_RouteMode) 2 = ||
+	{if}
+		0 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_printer_ui_busstop0) (S.$.nuntius_api_busstop0)
+		1 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_printer_ui_busstop1) (S.$.nuntius_api_busstop1)
+		2 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_printer_ui_busstop2) (S.$.nuntius_api_busstop2)
+		3 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_printer_ui_busstop3) (S.$.nuntius_api_busstop3)
+		4 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_printer_ui_busstop4) (S.$.nuntius_api_busstop4)
+		(M.L.nuntius_printer_getLastBusstopListEntry) (S.$.nuntius_printer_ui_busstop_end)
+		5 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop5)
+		6 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop6)
+		7 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop7)
+	{endif}
+{end}
+
+
+'returns the name of a busstop from the printers busstop list
+'Arguments:
+'0 = Field index (0-4, 0 = current, 4 = "most future")
+'Returns String: The busstops name
+{macro:nuntius_printer_getBusstopListEntry}
+'Register:
+'0 = Field index (0-4, 0 = current, 4 = "most future")
+'1 = target busstop route index
+'2 = The Routes index
+
+	s0
+
+'if the route mode is 2 (route from hof file)
+	(L.L.nuntius_printer_RouteMode) 2 =
+	{if}
+'load all values for register
+		(L.L.nuntius_printer_currentBusstopIndex) l0 + (L.L.nuntius_printer_busstopOffset) + s1
+		(L.L.nuntius_printer_RouteIndex) s2
+		
+'if the busstop count is bigger than the target index (which means the busstop will exist)
+		(M.V.GetBusstopCount) l1 >
+		{if}
+'get the busstops IBIS 2 string
+			l2
+			l1
+			(M.V.GetRouteBusstopIdent)
+			(M.V.GetBusstopIndex)
+			3
+			(M.V.GetBusstopString)
+		{else}
+'else return nullstring
+			""
+		{endif}
+	{endif}
+
+	(L.L.nuntius_printer_RouteMode) 1 =
+	{if}
+'load all values for register
+		(L.L.nuntius_printer_currentBusstopIndex) l0 + (L.L.nuntius_printer_busstopOffset) + s1
+		
+'if the busstop count is bigger than the target index (which means the busstop will exist)
+		(M.V.GetTTBusstopCount) l1 >
+		{if}
+'get the busstops name
+			l1
+			(M.V.GetTTBusstopName)
+		{else}
+'else return nullstring
+			""
+		{endif}
+	{endif}
+{end}
+
+{macro:nuntius_printer_getLastBusstopListEntry}
+	(L.L.nuntius_printer_RouteMode) 0 = !
+	{if}
+		(L.L.nuntius_printer_RouteMode) 1 =
+		{if}
+			(M.V.GetTTBusstopCount) 1 - (M.V.GetTTBusstopName)
+		{else}
+'				(L.L.nuntius_printer_RouteIndex) 0 (M.V.GetRouteBusstopIdent) (M.V.GetBusstopIndex)
+				(L.L.nuntius_printer_RouteIndex) s0 (M.V.GetBusstopCount) 1 - s1 l0 l1 (M.V.GetRouteBusstopIdent) (M.V.GetBusstopIndex)
+				3 (M.V.GetBusstopString)
+		{endif}
+	{else}
+		""
+	{endif}
+{end}
+
+
+'Refreshs the printers busstop times list
+{macro:nuntius_printer_refreshBusstopTimeList}
+	(L.L.nuntius_printer_RouteMode) 0 = 
+	{if}
+		""
+		(S.$.nuntius_printer_ui_busstopTime0)
+		(S.$.nuntius_printer_ui_busstopTime1)
+		(S.$.nuntius_printer_ui_busstopTime2)
+		(S.$.nuntius_printer_ui_busstopTime3)
+		(S.$.nuntius_printer_ui_busstopTime4)
+		(S.$.nuntius_printer_ui_busstopTime_end)
+	{endif}
+
+	(L.L.nuntius_printer_RouteMode) 1 = (L.L.nuntius_printer_RouteMode) 2 = ||
+	{if}
+		0 (M.L.nuntius_printer_getBusstopTimeListEntry) (S.$.nuntius_printer_ui_busstopTime0)
+		1 (M.L.nuntius_printer_getBusstopTimeListEntry) (S.$.nuntius_printer_ui_busstopTime1)
+		2 (M.L.nuntius_printer_getBusstopTimeListEntry) (S.$.nuntius_printer_ui_busstopTime2)
+		3 (M.L.nuntius_printer_getBusstopTimeListEntry) (S.$.nuntius_printer_ui_busstopTime3)
+		4 (M.L.nuntius_printer_getBusstopTimeListEntry) (S.$.nuntius_printer_ui_busstopTime4)
+		(M.L.nuntius_printer_getLastBusstopTimeListEntry) (S.$.nuntius_printer_ui_busstopTime_end)
+	{endif}
+{end}
+
+'returns the time of a busstop from the printers busstop list
+'Arguments:
+'0 = Field index (0-4, 0 = current, 4 = "most future")
+'Returns String: The busstops time
+{macro:nuntius_printer_getBusstopTimeListEntry}
+'Register:
+'0 = Field index (0-4, 0 = current, 4 = "most future")
+'1 = target busstop route index
+'2 = The Routes index
+'3 = arr time
+'4 = dep time
+
+	s0
+
+'if the route mode is 1 (route from hof file) or 2 (route from timetable)
+	(L.L.nuntius_printer_RouteMode) 1 = (L.L.nuntius_printer_RouteMode) 2 = ||
+	{if}
+'load all values for register
+		(L.L.nuntius_printer_currentBusstopIndex) l0 + (L.L.nuntius_printer_busstopOffset) + s1
+		
+'if the busstop count is bigger than the target index (which means the busstop will exist)
+		(M.V.GetTTBusstopCount) l1 >
+		{if}
+'get the busstops time
+			l1 (M.V.GetTTBusstopArr) s3
+			l1 (M.V.GetTTBusstopDep) s4
+			""
+			
+'write tep time
+			l4 3600 / trunc "02" $IntToStrEnh ":" $+
+			l4 3600 % 60 / trunc "02" $IntToStrEnh $+
+
+'if arr time is different, write it also
+			l3 l4 = ! l3 -1 = ! &&
+			{if}
+				"@" $+
+				l3 3600 / trunc "02" $IntToStrEnh $+ ":" $+
+				l3 3600 % 60 / trunc "02" $IntToStrEnh $+ 
+			{endif}
+		{else}
+'else return nullstring
+			""
+		{endif}
+	{endif}
+{end}
+
+
+
+{macro:nuntius_printer_getLastBusstopTimeListEntry}
+	(L.L.nuntius_printer_RouteMode) 0 = ! (L.L.schedule_active) &&
+	{if}
+		(M.V.GetTTBusstopCount) 1 - (M.V.GetTTBusstopArr) s0
+		l0 3600 / trunc "02" $IntToStrEnh ":" $+
+		l0 3600 % 60 / trunc "02" $IntToStrEnh $+
+	{else}
+		""
+	{endif}
+{end}
+
+'################################
+'ticketprinter functions
+'################################
+
+'loads all tickets
+{macro:nuntius_printer_loadTickets}
+	0 (M.V.GetTicketName) "@" $+ 0 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket0)
+	1 (M.V.GetTicketName) "@" $+ 1 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket1)
+	2 (M.V.GetTicketName) "@" $+ 2 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket2)
+	3 (M.V.GetTicketName) "@" $+ 3 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket3)
+	4 (M.V.GetTicketName) "@" $+ 4 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket4)
+	5 (M.V.GetTicketName) "@" $+ 5 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket5)
+	6 (M.V.GetTicketName) "@" $+ 6 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket6)
+	7 (M.V.GetTicketName) "@" $+ 7 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket7)
+{end}
+
+'selects one ticket from menu
+'Arguments:
+'0 = index of the ticket, you want to select
+{macro:nuntius_printer_selectTicket}
+	s0
+
+	(M.V.GetTicketValue) 0 = !
+	{if}
+		l0 (M.V.GetTicketName) (S.$.nuntius_printer_ui_currentTicketName)
+		l0 (S.L.nuntius_printer_selectedTicket)
+		l0 (M.L.nuntius_printer_getTicketPrice)
+		(S.$.nuntius_printer_ui_currentTicketPrice)
+
+'show detail view
+		"nuntius\printer\Busstop_Ticket.dds" (S.$.nuntius_printer_ui_texture)
+
+'disable ticket list
+		0 (M.L.nuntius_printer_showUiElementsTicketList)
+		1 (M.L.nuntius_printer_showUiElementsTicketSelection)
+	{endif}
+
+'play sound
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
+'sells a ticket and prints it
+{macro:nuntius_printer_barTicket}
+	(L.L.nuntius_ticket) !
+	{if}
+'make Ticket visible
+		1 (S.L.nuntius_ticket) (S.L.nuntius_ticketPrinting)
+'		1 (S.L.nuntius_ticket) (S.L.nuntius_ticketAnim)
+'save to pre-defined variable
+		(L.L.nuntius_printer_selectedTicket) (S.L.nuntius_printer_givenTicket)
+'increase counters
+		(L.L.nuntius_printer_soldTicketsCount) 1 + (S.L.nuntius_printer_soldTicketsCount)
+		(L.L.nuntius_printer_selectedTicket) (M.V.GetTicketValue) s0
+		(L.L.nuntius_printer_totalRevenue) l0 + (S.L.nuntius_printer_totalRevenue)
+'go back to busstop page
+		3 (M.L.nuntius_printer_goToPage)
+'play sound
+		(M.L.nuntius_printer_playSoundNormal)
+	{else}
+'play sound
+		(M.L.nuntius_printer_playSoundError)
+	{endif}
+{end}
+
+'cancels a ticket and prints the "storno"
+{macro:nuntius_printer_cancelTicket}
+	(L.L.nuntius_ticket) !
+	{if}
+'make Ticket visible
+		1 (S.L.nuntius_ticket) (S.L.nuntius_ticketPrinting)
+'save to pre-defined variable
+		-1 (S.L.GivenTicket) (S.L.nuntius_printer_givenTicket)
+'de-/increase counters
+		(L.L.nuntius_printer_cancellationCount) 1 + (S.L.nuntius_printer_cancellationCount)
+		(L.L.nuntius_printer_selectedTicket) (M.V.GetTicketValue) s0
+		(L.L.nuntius_printer_totalRevenue) l0 - (S.L.nuntius_printer_totalRevenue)
+'go back to busstop page
+		3 (M.L.nuntius_printer_goToPage)
+'play sound
+		(M.L.nuntius_printer_playSoundNormal)
+	{else}
+'play sound
+		(M.L.nuntius_printer_playSoundError)
+	{endif}
+{end}
+
+'returns a ticket's price as a string
+'Arguments:
+'0 = the ticket index
+'Returns string = the ticket's price (e.g. "2,70")
+{macro:nuntius_printer_getTicketPrice}
+	s0
+
+	(M.V.GetTicketValue) 0 = !
+	{if}
+'get full ? as string (for example: 2.70 -> "2")
+		l0 (M.V.GetTicketValue) s0 $IntToStr "," $+
+
+'multiply price with 100 (2.70 -> 270), turn into string and cut of the last two characters
+		l0 100 * $IntToStr 2 $SetLengthR
+
+'add to string
+		$+
+	{else}
+		""
+	{endif}
+{end}
+
+'handles the ticket printing
+{macro:nuntius_ticketPrintHandler}
+'only if we are printing a ticket
+	(L.L.nuntius_ticketPrinting)
+	{if}
+'if the print is still finished
+		(L.L.nuntius_ticketAnim) 1 >=
+		{if}
+'say omsi, that the ticket finished printing
+			(L.L.nuntius_printer_givenTicket) (S.L.GivenTicket)
+			1 (S.L.nuntius_ticketAnim)
+'reset timer
+			0 (S.L.nuntius_ticketPrintingTimer) (S.L.nuntius_ticketPrinting)
+		{else}
+'first we need to make the ticket visible
+			1 (S.L.nuntius_ticket)
+'if we just startet printing, play sound
+			(L.L.nuntius_ticketPrintingTimer) 0 =
+			{if}
+				(T.L.nuntius_ticket_print)
+			{endif}
+'increase timer
+			(L.L.nuntius_ticketPrintingTimer) (L.S.Timegap) + (S.L.nuntius_ticketPrintingTimer)
+'refresh anim value (multiplied with 2, because it's "Kehrwert" is 0,5 which results in the fact,
+'that the whole printing proccess will be 0,5 seconds long)
+			2 * (S.L.nuntius_ticketAnim)
+		{endif}
+	{endif}
+{end}
+
+
+'################################
+'home functions
+'################################
+
+'turns the auto "Haltestellenfortschaltung" on or off
+{macro:nuntius_printer_toggleAutoHFS}
+	(L.L.nuntius_printer_page) 2 =
+	{if}
+		(L.L.nuntius_printer_AutoHFSDisabled) ! (S.L.nuntius_printer_AutoHFSDisabled)
+		{if}
+			"nuntius\printer\Home_noHFS.dds" (S.$.nuntius_printer_ui_texture)
+		{else}
+			"nuntius\printer\Home.dds" (S.$.nuntius_printer_ui_texture)
+		{endif}
+
+		(M.L.nuntius_printer_playSoundNormal)
+	{endif}
+{end}
+
+'Opens a specified page
+'Arguments:
+'0 = page id
+{macro:nuntius_printer_goToPage}
+'(X) = not implemented
+'0 = welcome page
+'1 = login page
+'2 = home page
+'3 = busstop page
+'4 = LKR
+'5 = special terminus
+'6 = announcements (X)
+'7 = pause
+'71 = login after pause
+'8 = Funk (X)
+'9 = DriverSwitch
+'10 = Shift end
+'11 = departure
+'91/101 = logout pin after shift end or driver switch
+'20 = Menu (X)
+
+	s0
+
+'only do if printer is active
+	(L.L.nuntius_printer_bootStatus) 2 = (L.L.nuntius_printer_bootStatus) 3 = ||
+	{if}
+		l0 (S.L.nuntius_printer_page)
+'0: Welcome Page
+		l0 0 =
+		{if}
+			"nuntius\printer\Welcome.dds" (S.$.nuntius_printer_ui_texture)
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			0 (M.L.nuntius_printer_showUiElementsDelay)
+			0 (M.L.nuntius_printer_showUiElementsLineInformation)
+			0 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			0 (M.L.nuntius_printer_showUiElementsButtonBack)
+			0 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			0 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			0 (M.L.nuntius_printer_showUiElementsInput0)
+			0 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			0 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+		{endif}
+		
+'1: Login Page
+		l0 1 =
+		{if}
+			"nuntius\printer\Login_withID_PIN.dds" (S.$.nuntius_printer_ui_texture)
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			0 (M.L.nuntius_printer_showUiElementsDelay)
+			0 (M.L.nuntius_printer_showUiElementsLineInformation)
+			0 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			1 (M.L.nuntius_printer_showUiElementsButtonBack)
+			1 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			0 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			1 (M.L.nuntius_printer_showUiElementsInput0)
+			1 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			1 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			
+			2 (S.L.nuntius_printer_InputFieldCount)
+			1 (S.L.nuntius_printer_currentInputField)
+			1 (S.L.nuntius_printer_inputFieldsEnabled)
+
+			(M.L.nuntius_printer_resetInputFields)
+			(C.L.nuntius_printer_driverID) $IntToStr (S.$.nuntius_printer_ui_input0)
+		{endif}
+		
+'2: Home Page
+		l0 2 =
+		{if}
+			(L.L.nuntius_printer_AutoHFSDisabled)
+			{if}
+				"nuntius\printer\Home_noHFS.dds" (S.$.nuntius_printer_ui_texture)
+			{else}
+				"nuntius\printer\Home.dds" (S.$.nuntius_printer_ui_texture)
+			{endif}
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			1 (M.L.nuntius_printer_showUiElementsBusstopList)
+			1 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			0 (M.L.nuntius_printer_showUiElementsButtonBack)
+			0 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			1 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			1 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			0 (M.L.nuntius_printer_showUiElementsInput0)
+			0 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			0 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+		{endif}
+
+'3: Busstop Page
+		l0 3 =
+		{if}
+			"nuntius\printer\Busstop.dds" (S.$.nuntius_printer_ui_texture)
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			1 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			1 (M.L.nuntius_printer_showUiElementsButtonBack)
+			0 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			1 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			1 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			1 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			1 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			0 (M.L.nuntius_printer_showUiElementsInput0)
+			0 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			0 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+		{endif}
+		
+'4: LKR Page
+		l0 4 =
+		{if}
+			"nuntius\printer\LKR_man_Line.dds" (S.$.nuntius_printer_ui_texture)
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			0 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			1 (M.L.nuntius_printer_showUiElementsButtonBack)
+			1 (M.L.nuntius_printer_showUiElementsButtonApply)
+			1 (M.L.nuntius_printer_showUiElementsButtonReset)
+			1 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			0 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			1 (M.L.nuntius_printer_showUiElementsInput0)
+			1 (M.L.nuntius_printer_showUiElementsInput1)
+			1 (M.L.nuntius_printer_showUiElementsInput2)
+			1 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			
+			3 (S.L.nuntius_printer_InputFieldCount)
+			0 (S.L.nuntius_printer_currentInputField)
+			1 (S.L.nuntius_printer_inputFieldsEnabled)
+			
+			(L.L.nuntius_printer_Line) $IntToStr (S.$.nuntius_printer_ui_input0)
+			(L.L.nuntius_printer_Route) $IntToStr (S.$.nuntius_printer_ui_input1)
+			(L.L.nuntius_printer_Suffix) $IntToStr (S.$.nuntius_printer_ui_input2)
+		{endif}
+		
+'5: Terminus Page
+		l0 5 =
+		{if}
+			"nuntius\printer\Terminus_Terminus.dds" (S.$.nuntius_printer_ui_texture)
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			0 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			1 (M.L.nuntius_printer_showUiElementsButtonBack)
+			1 (M.L.nuntius_printer_showUiElementsButtonApply)
+			1 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			0 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			1 (M.L.nuntius_printer_showUiElementsInput0)
+			0 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			1 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			
+			1 (S.L.nuntius_printer_InputFieldCount)
+			0 (S.L.nuntius_printer_currentInputField)
+			1 (S.L.nuntius_printer_inputFieldsEnabled)
+
+			(M.L.nuntius_printer_resetInputFields)
+		{endif}
+
+'6: Announcements
+		l0 6 =
+		{if}
+			(L.L.nuntius_printer_AnnouncementsAreActive)
+
+			{if}
+				"nuntius\printer\Announcements_BusstopAnnouncementsOn.dds" (S.$.nuntius_printer_ui_texture)
+			{else}
+				"nuntius\printer\Announcements_BusstopAnnouncementsOff.dds" (S.$.nuntius_printer_ui_texture)
+			{endif}
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			1 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			1 (M.L.nuntius_printer_showUiElementsButtonBack)
+			0 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			0 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			1 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			0 (M.L.nuntius_printer_showUiElementsInput0)
+			0 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			0 (M.L.nuntius_printer_showUiElementsNumpad)
+			1 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			
+			0 (S.L.nuntius_printer_InputFieldCount)
+			0 (S.L.nuntius_printer_currentInputField)
+			0 (S.L.nuntius_printer_inputFieldsEnabled)
+
+			(M.L.nuntius_printer_resetInputFields)
+		{endif}
+
+'7: Break Page
+		l0 7 =
+		{if}
+			"nuntius\printer\Break.dds" (S.$.nuntius_printer_ui_texture)
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			0 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			0 (M.L.nuntius_printer_showUiElementsButtonBack)
+			0 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			0 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			0 (M.L.nuntius_printer_showUiElementsInput0)
+			0 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			0 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+		{endif}
+
+'8: Login from break page Page
+		l0 71 =
+		{if}
+			"nuntius\printer\Login_withoutID_PIN.dds" (S.$.nuntius_printer_ui_texture)
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			0 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			1 (M.L.nuntius_printer_showUiElementsButtonBack)
+			1 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			0 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			1 (M.L.nuntius_printer_showUiElementsInput0)
+			0 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			1 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			
+			1 (S.L.nuntius_printer_InputFieldCount)
+			0 (S.L.nuntius_printer_currentInputField)
+			1 (S.L.nuntius_printer_inputFieldsEnabled)
+			(M.L.nuntius_printer_resetInputFields)
+		{endif}
+
+'9: Driver
+		l0 9 =
+		{if}
+			"nuntius\printer\DriverSwitch.dds" (S.$.nuntius_printer_ui_texture)
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			0 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			1 (M.L.nuntius_printer_showUiElementsButtonBack)
+			1 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			0 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			1 (M.L.nuntius_printer_showUiElementsInput0)
+			1 (M.L.nuntius_printer_showUiElementsInput1)
+			1 (M.L.nuntius_printer_showUiElementsInput2)
+			0 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			
+			3 (S.L.nuntius_printer_InputFieldCount)
+			0 (S.L.nuntius_printer_currentInputField)
+			0 (S.L.nuntius_printer_inputFieldsEnabled)
+			
+			(L.L.nuntius_printer_soldTicketsCount) $IntToStr (S.$.nuntius_printer_ui_input0)
+			(L.L.nuntius_printer_cancellationCount) $IntToStr (S.$.nuntius_printer_ui_input1)
+
+			(L.L.nuntius_printer_totalRevenue) $IntToStr "," $+
+
+			(L.L.nuntius_printer_totalRevenue) 100 * $IntToStr 2 $SetLengthR $+
+			(S.$.nuntius_printer_ui_input2)
+		{endif}
+
+'10: Shift End
+		l0 10 =
+		{if}
+			"nuntius\printer\ShiftEnd.dds" (S.$.nuntius_printer_ui_texture)
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			0 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			1 (M.L.nuntius_printer_showUiElementsButtonBack)
+			1 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			0 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			1 (M.L.nuntius_printer_showUiElementsInput0)
+			1 (M.L.nuntius_printer_showUiElementsInput1)
+			1 (M.L.nuntius_printer_showUiElementsInput2)
+			0 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			
+			3 (S.L.nuntius_printer_InputFieldCount)
+			0 (S.L.nuntius_printer_currentInputField)
+			0 (S.L.nuntius_printer_inputFieldsEnabled)
+			
+			(L.L.nuntius_printer_soldTicketsCount) $IntToStr (S.$.nuntius_printer_ui_input0)
+			(L.L.nuntius_printer_cancellationCount) $IntToStr (S.$.nuntius_printer_ui_input1)
+
+			(L.L.nuntius_printer_totalRevenue) $IntToStr "," $+
+
+			(L.L.nuntius_printer_totalRevenue) 100 * $IntToStr 2 $SetLengthR $+ " �" $+
+			(S.$.nuntius_printer_ui_input2)
+		{endif}
+
+'11: Departure
+		l0 11 =
+		{if}
+			"nuntius\printer\Departure.dds" (S.$.nuntius_printer_ui_texture)
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			1 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			0 (M.L.nuntius_printer_showUiElementsButtonBack)
+			1 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			1 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			0 (M.L.nuntius_printer_showUiElementsInput0)
+			0 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			0 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			
+			0 (S.L.nuntius_printer_InputFieldCount)
+			0 (S.L.nuntius_printer_currentInputField)
+			0 (S.L.nuntius_printer_inputFieldsEnabled)
+		{endif}
+	{endif}
+{end}
+
+'Resets all input fields
+{macro:nuntius_printer_resetInputFields}
+	""
+	(S.$.nuntius_printer_ui_input0)
+	(S.$.nuntius_printer_ui_input1)
+	(S.$.nuntius_printer_ui_input2)
+	(S.$.nuntius_printer_ui_currentTicketName)
+	(S.$.nuntius_printer_ui_currentTicketPrice)
+{end}
+
+{macro:nuntius_printer_hideAllUiElements}
+	0
+	(S.L.nuntius_printer_visTime)
+	(S.L.nuntius_printer_visDelay)
+	(S.L.nuntius_printer_visLineInformation)
+	(S.L.nuntius_printer_visBusstopList)
+	(S.L.nuntius_printer_visHomeButtons)
+	(S.L.nuntius_printer_visButtonApply)
+	(S.L.nuntius_printer_visButtonReset)
+	(S.L.nuntius_printer_visButtonAuto)
+	(S.L.nuntius_printer_visButtonBack)
+	(S.L.nuntius_printer_visButtonMenu)
+	(S.L.nuntius_printer_visButtonBusstopMenu)
+	(S.L.nuntius_printer_visInput0)
+	(S.L.nuntius_printer_visInput1)
+	(S.L.nuntius_printer_visInput2)
+	(S.L.nuntius_printer_visNumpad)
+	(S.L.nuntius_printer_visTicketList)
+	(S.L.nuntius_printer_visTicketSelection)
+	(S.L.nuntius_printer_visBusstopFooter)
+	(S.L.nuntius_printer_visAnnouncements)
+	(S.L.nuntius_printer_visPleaseWait)
+{end}
+
+{macro:nuntius_printer_showUiElementsTime}
+	(S.L.nuntius_printer_visTime)
+{end}
+
+{macro:nuntius_printer_showUiElementsDelay}
+	(S.L.nuntius_printer_visDelay)
+{end}
+
+{macro:nuntius_printer_showUiElementsLineInformation}
+	(S.L.nuntius_printer_visLineInformation)
+{end}
+
+{macro:nuntius_printer_showUiElementsBusstopList}
+	(S.L.nuntius_printer_visBusstopList)
+{end}
+
+{macro:nuntius_printer_showUiElementsHomeButtons}
+	(S.L.nuntius_printer_visHomeButtons)
+{end}
+
+{macro:nuntius_printer_showUiElementsInput0}
+	(S.L.nuntius_printer_visInput0)
+{end}
+
+{macro:nuntius_printer_showUiElementsInput1}
+	(S.L.nuntius_printer_visInput1)
+{end}
+
+{macro:nuntius_printer_showUiElementsInput2}
+	(S.L.nuntius_printer_visInput2)
+{end}
+
+{macro:nuntius_printer_showUiElementsNumpad}
+	(S.L.nuntius_printer_visNumpad)
+{end}
+
+{macro:nuntius_printer_showUiElementsTicketList}
+	(S.L.nuntius_printer_visTicketList)
+{end}
+
+{macro:nuntius_printer_showUiElementsTicketSelection}
+	(S.L.nuntius_printer_visTicketSelection)
+{end}
+
+{macro:nuntius_printer_showUiElementsBusstopFooter}
+	(S.L.nuntius_printer_visBusstopFooter)
+{end}
+
+{macro:nuntius_printer_showUiElementsButtonBack}
+	(S.L.nuntius_printer_visButtonBack)
+{end}
+
+{macro:nuntius_printer_showUiElementsButtonApply}
+	(S.L.nuntius_printer_visButtonApply)
+{end}
+
+{macro:nuntius_printer_showUiElementsButtonReset}
+	(S.L.nuntius_printer_visButtonReset)
+{end}
+
+{macro:nuntius_printer_showUiElementsButtonAuto}
+	(S.L.nuntius_printer_visButtonAuto)
+{end}
+
+{macro:nuntius_printer_showUiElementsButtonMenu}
+	(S.L.nuntius_printer_visButtonMenu)
+{end}
+
+{macro:nuntius_printer_showUiElementsButtonBusstopMenu}
+	(S.L.nuntius_printer_visButtonBusstopMenu)
+{end}
+
+{macro:nuntius_printer_showUiElementsAnnouncements}
+	(S.L.nuntius_printer_visAnnouncements)
+{end}
+
+{macro:nuntius_printer_showUiElementsPleaseWait}
+	(S.L.nuntius_printer_visPleaseWait)
+{end}
+
+{macro:nuntius_printer_playSoundNormal}
+	(L.L.nuntius_printer_screenSoundIsActive)
+	{if}
+		(T.L.nuntius_printer_normal)
+	{endif}
+{end}
+
+{macro:nuntius_printer_playSoundError}
+	(L.L.nuntius_printer_screenSoundIsActive)
+	{if}
+		(T.L.nuntius_printer_error)
+	{endif}
+{end}

@@ -1,0 +1,51 @@
+
+Legt die Fahrer-ID ("Benutzername") fest
+[const]
+nuntius_printer_driverID
+3042658
+
+Legt die Fahrerpin ("Passwort") fest
+[const]
+nuntius_printer_driverPIN
+1506
+
+Legt die Dauer (in Sekunden) fest, die der Bildschirm des Druckers nach dem Abschalten des Stromes noch aktiv bleibt
+[const]
+nuntius_printer_batteryTimeActiveScreen
+5
+
+Legt die Dauer (in Sekunden) fest, die der Bildschirm des Druckers nach dem Ausschalten des Bildschirmes noch sämtliche Daten speichert, danach "stürzt er ab".
+[const]
+nuntius_printer_batteryTime
+5
+
+Legt die Dauer des Boots fest (1 = Standard, 10 = zehnmal so schnelles booten, nützlich zu Testzwecken)
+[const]
+nuntius_printer_bootSpeed
+10
+
+Definiert den Bootverlauf:
+x => Zeitlicher Verlauf in Sekunden
+y => Fortschritt (eine Längeneinheit entspricht einer Textur) (wird jeweils auf die nächste Ganzzahl abgerundet)
+Hinweis: Der x-Wert wird jeweils noch mit bootSpeed multipliziert.
+[newcurve]
+boot
+[pnt]
+0
+1
+[pnt]
+4
+2
+[pnt]
+6
+3
+[pnt]
+8
+4
+[pnt]
+15
+5
+[pnt]
+20
+6
+
