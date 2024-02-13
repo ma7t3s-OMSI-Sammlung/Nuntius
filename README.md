@@ -81,6 +81,7 @@ Mit diesem Wissen solltet ihr das System bereits ohne Probleme in jeden Bus einb
 |`nuntius_printer_batteryTimeActiveScreen`|Der Drucker verfügt über einen integrierten Akku, der aufgeladen wird, sobald das Geärt mit Strom versorgt wird, das bedeutet, dass der Drucker auch eine gewisse Zeit lang ohne Bordstrom "überleben" kann. Dieser Wert legt fest, wie lange (in Sekunden) der Drucker nach dem Abschalten der Stromzufuhr noch normal bedienbar sein soll bevor sich der Bildschirm ausschaltet|
 |`nuntius_printer_batteryTime`|Ist die oben angegebene Zeit überschritten, schaltet der Drucker in "Standby", der Bildschrim geht dann aus und das Gerät lässt sich weder bedienen, noch "macht" aktiv etwas. Alle Daten bleiben aber gespeichert. Der Drucker ist sofort wieder betriebsbereit und im Vorherigen Zustand, sobald der Strom wieder eingeschaltet ist. Der batteryTime-Wert gibt an, wie lange dieser Standby-Zustand anhält. Wird auch dieser überschritten, schaltet sich der Drucker vollständig ab. Wird dann erst wieder der Strom eingeschaltet, muss er neu Booten und man muss sich neu einloggen usw.|
 |`nuntius_printer_bootSpeed`|Faktor für die Bootgeschwindigkeit. Normal ist 1, zu Testzwecken kann man den Wert beliebig höher setzen, um den Startvorgang zu beschleunigen|
+
 Zusätzlich ist noch die curve "Boot" vorhanden. Die am besten nicht anfassen, sie gibt den Verlauf des Bootvorgans an.
 Auch hier sind grundsätzlich noch weitere Konfigruationen geplant
 
