@@ -488,9 +488,6 @@
 	(M.L.nuntius_printer_turnScreenOff)
 	0
 	(S.L.nuntius_printer_bootStatus)
-	(S.L.nuntius_printer_screenSoundIsActive)
-	(S.L.nuntius_printer_AnnouncementsAreActive)
-	(S.L.nuntius_printer_AutoHFSDisabled)
 	(S.L.nuntius_printer_AutoHFSDisabled)
 	(S.L.nuntius_printer_RouteMode)
 	(S.L.nuntius_printer_Line)
