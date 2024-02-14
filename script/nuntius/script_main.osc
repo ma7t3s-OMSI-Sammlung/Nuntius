@@ -488,6 +488,10 @@
 	(M.L.nuntius_printer_turnScreenOff)
 	0
 	(S.L.nuntius_printer_bootStatus)
+	(S.L.nuntius_printer_screenSoundIsActive)
+	(S.L.nuntius_printer_AnnouncementsAreActive)
+	(S.L.nuntius_printer_AutoHFSDisabled)
+	(S.L.nuntius_printer_AutoHFSDisabled)
 	(S.L.nuntius_printer_RouteMode)
 	(S.L.nuntius_printer_Line)
 	(S.L.nuntius_printer_Route)
@@ -496,6 +500,16 @@
 	(S.L.nuntius_printer_Terminus)
 	(S.L.nuntius_printer_TerminusIndex)
 	(S.L.nuntius_printer_specialTerminus)
+	(S.L.nuntius_printer_currentBusstopIndex)
+	(S.L.nuntius_printer_busstopOffset)
+	(S.L.nuntius_printer_selectedTicket)
+	(S.L.nuntius_printer_givenTicket)
+	(S.L.nuntius_printer_showDeparturePage)
+
+	"@"
+	(S.$.nuntius_printer_ui_terminus)
+	"0/00@00/000"
+	(S.$.nuntius_printer_ui_line)
 {end}
 
 'turns the printers screen off
