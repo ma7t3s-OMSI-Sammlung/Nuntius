@@ -17,7 +17,7 @@ nuntius_printer_batteryTimeActiveScreen
 Legt die Dauer (in Sekunden) fest, die der Bildschirm des Druckers nach dem Ausschalten des Bildschirmes noch sämtliche Daten speichert, danach "stürzt er ab".
 [const]
 nuntius_printer_batteryTime
-5
+10
 
 Legt die Dauer des Boots fest (1 = Standard, 10 = zehnmal so schnelles booten, nützlich zu Testzwecken)
 [const]
