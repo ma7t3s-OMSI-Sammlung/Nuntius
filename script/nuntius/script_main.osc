@@ -1055,12 +1055,13 @@ s0
 	(L.L.schedule_active)
 	{if}
 'Get Terminus and line and save it to all needed sources
-		(M.V.GetTTLineString) (S.$.IBIS_Complex_Line) (S.$.Matrix_Nr) (S.$.nuntius_api_lineStr)
+		(M.V.GetTTLineString) (S.$.IBIS_Complex_Line) (S.$.Matrix_Nr) (S.$.nuntius_printer_lineStr) (S.$.nuntius_api_lineStr)
 		(M.V.GetTTTerminusIndex) (S.L.nuntius_api_terminusIndex) (M.L.nuntius_printer_setTerminusIndex)
-		(M.L.nuntius_printer_refreshLineUI)
 		
 'Save Mode
 		1 (S.L.nuntius_printer_RouteMode)
+
+		(M.L.nuntius_printer_refreshLineUI)
 
 'Go back to Main Page
 		2 (M.L.nuntius_printer_goToPage)
@@ -1226,7 +1227,7 @@ s0
 	"0/00@00/000"
 	(L.L.nuntius_printer_RouteMode) 1 =
 	{if}
-		(L.L.nuntius_printer_Line) $IntToStr "@" $+
+		(L.$.nuntius_printer_lineStr) "@" $+
 		(L.L.nuntius_printer_Terminus) "03" $IntToStrEnh $+
 	{else}
 		(L.L.nuntius_printer_Line) $IntToStr "/" $+ (L.L.nuntius_printer_Suffix) "02" $IntToStrEnh $+ "@" $+

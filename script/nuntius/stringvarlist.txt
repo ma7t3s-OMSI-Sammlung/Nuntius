@@ -10,6 +10,8 @@ nuntius_api_busstop7
 nuntius_api_lineStr
 nuntius_api_terminusStr
 
+nuntius_printer_lineStr
+
 nuntius_printer_ui_texture
 nuntius_printer_ui_time
 nuntius_printer_ui_delay
