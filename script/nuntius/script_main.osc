@@ -1259,8 +1259,6 @@ s0
 			(M.L.nuntius_printer_playBusstopAnnouncement)
 			(M.L.nuntius_printer_refreshBusstopList)
 		{endif}
-	{else}
-		0 (S.L.nuntius_printer_busstopOffset)
 	{endif}
 {end}
 
@@ -1276,6 +1274,7 @@ s0
 
 	s0
 
+'set target offset/index
 	(L.L.schedule_active)
 	{if}
 		(L.L.nuntius_printer_busstopOffset) l0 + s1
@@ -1283,6 +1282,7 @@ s0
 		(L.L.nuntius_printer_currentBusstopIndex) l0 + s1
 	{endif}
 
+'determine busstop count
 	(L.L.nuntius_printer_RouteMode) 1 =
 	{if}
 		(M.V.GetTTBusstopCount) s2
@@ -1297,6 +1297,7 @@ s0
 
 	(L.L.schedule_active)
 	{if}
+'if target busstop is in valid range
 		l1 (L.L.nuntius_printer_currentBusstopIndex) + l2 < l1 (L.L.nuntius_printer_currentBusstopIndex) + 0 >= &&
 		{if}
 			l1 (S.L.nuntius_printer_busstopOffset)
@@ -1304,6 +1305,7 @@ s0
 			(M.L.nuntius_printer_playSoundNormal)
 		{endif}
 	{else}
+'if target busstop is in valid range
 		l1 l2 < l1 0 >= &&
 		{if}
 			l1 (S.L.nuntius_printer_currentBusstopIndex)
