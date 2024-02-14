@@ -54,7 +54,7 @@ Somit können nun Daten an das System geschickt werden, mindestens genau so wich
 |---|---|
 |`nuntius_api_lineNo`|Enthält die aktulle "reine" Liniennummer, ohne Suffix etc; Funktioniert nur im Hofdatei-Modus (bzw. aktuell eh scheinbar noch garnicht :D)|
 |`nuntius_api_lineSuffix`|Funktionert ebenfalls nur im Hofdatei-Modus und enthält nur den Suffixcode (bswp. 10 für ein nachgestelltes "E", dürfte aktuell ebenfalls noch garnicht funktionieren|
-|`nuntius_api_lineSuffix`|Enthält den Hofdatei-Index des aktuellen Ziels|
+|`nuntius_api_terminusIndex`|Enthält den Hofdatei-Index des aktuellen Ziels|
 
 ### Stringvariablen:
 |Name|Beschreibung|
