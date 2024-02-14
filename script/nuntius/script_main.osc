@@ -1046,6 +1046,8 @@ s0
 		{if}
 'refresh
 			l0 (M.L.nuntius_printer_setTerminusIndex)
+
+			(M.L.nuntius_printer_refreshLineUI)
 		{endif}
 	{endif}
 {end}
