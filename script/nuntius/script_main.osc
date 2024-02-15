@@ -148,7 +148,7 @@
 
 'AutoHFS-toggle
 {trigger:nuntius_printer_homeButton2}
-	(L.L.nuntius_printer_page) 2 = 
+	(L.L.nuntius_printer_page) 2 = (L.L.nuntius_printer_RouteMode) &&
 	{if}
 		(M.L.nuntius_printer_toggleAutoHFS)
 	{endif}
@@ -362,6 +362,12 @@
 	(M.L.nuntius_printer_autoOpenDeparturePage)
 	(M.L.nuntius_updateTicket)
 	(M.L.nuntius_ticketPrintHandler)
+
+'refresh home page (necessary, to update autoHFS-Button appearance)
+	(L.L.nuntius_printer_page) 2 =
+	{if}
+		2 (M.L.nuntius_printer_goToPage)
+	{endif}
 	
 	(M.L.nuntius_api_frame) 
 
@@ -1719,7 +1725,7 @@ s0
 
 'turns the auto "Haltestellenfortschaltung" on or off
 {macro:nuntius_printer_toggleAutoHFS}
-	(L.L.nuntius_printer_page) 2 =
+	(L.L.nuntius_printer_page) 2 = (L.L.schedule_active) &&
 	{if}
 		(L.L.nuntius_printer_AutoHFSDisabled) ! (S.L.nuntius_printer_AutoHFSDisabled)
 		{if}
@@ -1820,11 +1826,16 @@ s0
 '2: Home Page
 		l0 2 =
 		{if}
-			(L.L.nuntius_printer_AutoHFSDisabled)
+			(L.L.schedule_active) ! (L.L.nuntius_printer_RouteMode) ! ||
 			{if}
-				"nuntius\printer\Home_noHFS.dds" (S.$.nuntius_printer_ui_texture)
+				"nuntius\printer\Home_disabledHFS.dds" (S.$.nuntius_printer_ui_texture)
 			{else}
-				"nuntius\printer\Home.dds" (S.$.nuntius_printer_ui_texture)
+				(L.L.nuntius_printer_AutoHFSDisabled)
+				{if}
+					"nuntius\printer\Home_noHFS.dds" (S.$.nuntius_printer_ui_texture)
+				{else}
+					"nuntius\printer\Home.dds" (S.$.nuntius_printer_ui_texture)
+				{endif}
 			{endif}
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
