@@ -357,9 +357,9 @@
 	(M.L.nuntius_printer_updateCurrentBusstopIndex)
 	(M.L.nuntius_printer_refreshBusstopList)
 	(M.L.nuntius_printer_refreshBusstopTimeList)
-	(M.L.nuntius_printer_autoRefreshTerminus)
 	(M.L.nuntius_printer_autoOpenBusstopPage)
 	(M.L.nuntius_printer_autoOpenDeparturePage)
+	(M.L.nuntius_printer_autoOpenConfirmNextTripPage)
 	(M.L.nuntius_updateTicket)
 	(M.L.nuntius_ticketPrintHandler)
 
@@ -558,7 +558,6 @@
 	{endif}
 {end}
 
-'Das hier funktioniert nicht, aber warum?
 {macro:nuntius_printer_autoOpenDeparturePage}
 
 'only do something if schedule is active
@@ -580,6 +579,56 @@
 		{endif}
 	{else}
 		0 (S.L.nuntius_printer_showDeparturePage)
+	{endif}
+{end}
+
+'Automatically opens the confirm-next-Trip-page if needed
+{macro:nuntius_printer_autoOpenConfirmNextTripPage}
+'if we are currently in schedule mode
+	(L.L.schedule_active) (L.L.nuntius_printer_RouteMode) 1 = && (L.L.nuntius_printer_page) 12 = ! &&
+'if the expected and actual terminus are not the same or we jumped more than 1 busstop back (which is not possible in the same tour)
+	{if}
+		(M.V.GetTTTerminusIndex) (L.L.nuntius_printer_TerminusIndex) = !
+		(M.V.GetTTBusstopIndex) (L.L.nuntius_printer_currentBusstopIndex) 1 - < ||
+		{if}
+			0 (S.L.nuntius_printer_RouteMode)
+
+			(M.V.GetTTLineString)
+			"@" $+
+			(M.V.GetTTTerminusIndex) 5 (M.V.GetTerminusString) $+
+			"@" $+
+			"in " $+
+			0 (M.V.GetTTBusstopDep) (L.S.Time) - 60 / trunc $IntToStr $+
+			" Min.@" $+
+
+
+			0 s0
+			(M.V.GetTTBusstopDep) s1
+
+			l0 (M.V.GetTTBusstopName) $+
+			
+			" (" $+
+			l1 3600 / trunc "02" $IntToStrEnh $+
+			":" $+
+			l1 3600 % 60 / trunc "02" $IntToStrEnh $+
+			")@" $+
+
+			(M.V.GetTTBusstopCount) 1 - s0
+			(M.V.GetTTBusstopArr) s1
+
+			l0 (M.V.GetTTBusstopName) $+
+
+			" (" $+
+			l1 3600 / trunc "02" $IntToStrEnh $+
+			":" $+
+			l1 3600 % 60 / trunc "02" $IntToStrEnh $+
+			")" $+
+
+			(S.$.nuntius_printer_ui_confirmNextTripText)
+
+'show page
+			12 (M.L.nuntius_printer_goToPage)
+		{endif}
 	{endif}
 {end}
 
@@ -824,6 +873,12 @@ s0
 	{if}
 		2 (M.L.nuntius_printer_goToPage)
 	{endif}
+
+'confirm next trip page
+	(L.L.nuntius_printer_page) 12 =
+	{if}
+		(M.L.nuntius_printer_acceptNextTrip)
+	{endif}
 {end}
 
 'executes the reset command
@@ -838,7 +893,13 @@ s0
 	(L.L.nuntius_printer_page) 5 =
 	{if}
 		(M.L.nuntius_printer_resetTerminus)
-{endif}
+	{endif}
+
+'confirm next trip page
+	(L.L.nuntius_printer_page) 12 =
+	{if}
+		(M.L.nuntius_printer_denyNextTrip)
+	{endif}
 
 'play sound
 	(M.L.nuntius_printer_playSoundNormal)
@@ -851,6 +912,13 @@ s0
 	{if}
 		(M.L.nuntius_printer_loadTTTrip)
 	{endif}
+
+'confirm next trip page
+	(L.L.nuntius_printer_page) 12 =
+	{if}
+		(M.L.nuntius_printer_acceptNextTripWithBreak)
+	{endif}
+
 'play sound
 	(M.L.nuntius_printer_playSoundNormal)
 {end}
@@ -1043,19 +1111,29 @@ s0
 'route and trip functions
 '################################
 
-{macro:nuntius_printer_autoRefreshTerminus}
-'if we are currently in schedule mode
-	(L.L.nuntius_printer_RouteMode) 1 =
-'if the expected and actual terminus are not the same..
-	{if}
-		(M.V.GetTTTerminusIndex) s0 (L.L.nuntius_printer_TerminusIndex) = !
-		{if}
+{macro:nuntius_printer_acceptNextTrip}
 'refresh
-			l0 (M.L.nuntius_printer_setTerminusIndex)
+	1 (S.L.nuntius_printer_RouteMode)
 
-			(M.L.nuntius_printer_refreshLineUI)
-		{endif}
-	{endif}
+	(M.V.GetTTTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
+	(M.L.nuntius_printer_refreshLineUI)
+
+	2 (M.L.nuntius_printer_goToPage)
+{end}
+
+{macro:nuntius_printer_denyNextTrip}
+	(M.L.nuntius_printer_removeTrip)
+	2 (M.L.nuntius_printer_goToPage)
+{end}
+
+{macro:nuntius_printer_acceptNextTripWithBreak}
+'refresh
+	1 (S.L.nuntius_printer_RouteMode)
+
+	(M.V.GetTTTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
+	(M.L.nuntius_printer_refreshLineUI)
+
+	7 (M.L.nuntius_printer_goToPage)
 {end}
 
 'Loads the Timetables trip
@@ -1139,6 +1217,7 @@ s0
 	(S.L.nuntius_printer_Terminus)
 	(S.L.nuntius_printer_currentBusstopIndex)
 	(S.L.nuntius_printer_busstopOffset)
+	(S.L.IBIS_TerminusIndex)
 	(S.L.IBIS_Linie_Complex)
 	(S.L.IBIS_Linie_Suffix)
 	(S.L.target_index_int)
@@ -1749,13 +1828,14 @@ s0
 '3 = busstop page
 '4 = LKR
 '5 = special terminus
-'6 = announcements (X)
+'6 = announcements
 '7 = pause
 '71 = login after pause
 '8 = Funk (X)
 '9 = DriverSwitch
 '10 = Shift end
 '11 = departure
+'12 = confirm next trip
 '91/101 = logout pin after shift end or driver switch
 '20 = Menu (X)
 
@@ -1788,6 +1868,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsInput2)
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 		{endif}
 		
 '1: Login Page
@@ -1814,6 +1895,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsInput2)
 			1 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			
 			2 (S.L.nuntius_printer_InputFieldCount)
 			1 (S.L.nuntius_printer_currentInputField)
@@ -1857,6 +1939,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsInput2)
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 		{endif}
 
 '3: Busstop Page
@@ -1883,6 +1966,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsInput2)
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 		{endif}
 		
 '4: LKR Page
@@ -1909,6 +1993,7 @@ s0
 			1 (M.L.nuntius_printer_showUiElementsInput2)
 			1 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -1943,6 +2028,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsInput2)
 			1 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			
 			1 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -1981,6 +2067,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsInput2)
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			1 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2012,6 +2099,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsInput2)
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 		{endif}
 
 '8: Login from break page Page
@@ -2038,6 +2126,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsInput2)
 			1 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			
 			1 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2069,6 +2158,7 @@ s0
 			1 (M.L.nuntius_printer_showUiElementsInput2)
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2107,6 +2197,7 @@ s0
 			1 (M.L.nuntius_printer_showUiElementsInput2)
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2145,6 +2236,38 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsInput2)
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			
+			0 (S.L.nuntius_printer_InputFieldCount)
+			0 (S.L.nuntius_printer_currentInputField)
+			0 (S.L.nuntius_printer_inputFieldsEnabled)
+		{endif}
+
+'12: Confirm next Trip
+		l0 12 =
+		{if}
+			"nuntius\printer\confirmNextTrip.dds" (S.$.nuntius_printer_ui_texture)
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			0 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			1 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			1 (M.L.nuntius_printer_showUiElementsButtonBack)
+			1 (M.L.nuntius_printer_showUiElementsButtonApply)
+			1 (M.L.nuntius_printer_showUiElementsButtonReset)
+			1 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			1 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			0 (M.L.nuntius_printer_showUiElementsInput0)
+			0 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			0 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			1 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2265,6 +2388,10 @@ s0
 
 {macro:nuntius_printer_showUiElementsPleaseWait}
 	(S.L.nuntius_printer_visPleaseWait)
+{end}
+
+{macro:nuntius_printer_showUiConfirmNextTrip}
+	(S.L.nuntius_printer_visConfirmNextTrip)
 {end}
 
 {macro:nuntius_printer_playSoundNormal}
