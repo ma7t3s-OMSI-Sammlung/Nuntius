@@ -1,16 +1,3 @@
-'Todo-List: Was fehlt noch?
-
-' - Progressbar richtig einscripten
-' - Verbesserung der Schnittstelle für FIS/Matrix
-' - Neue Schnittstelle für Kassierertisch -> Sperren, wenn nicht eingeloggt
-' - Ziel soll sich im Fahrplanmodus automatisch aktualisieren, wenn es sich ändert (Funktioniert bereits?)
-' - Haupt/Einstellungsmenü
-' - Dark Mode
-' - automatisch "Fahrtende" am ende einer Route schildern
-' - Linienanzeige in der Kopfzeile ist im Fahrplanmodus nicht korrekt (nur Ziel richtig, alles andere 00)
-' - wenn die Auto-Weiterschaltung gestoppt ist, können die Haltestellen nicht manuell vor- und zurück gesprungen werden!
-' - Daten werden beim Herunterfahren nicht vollständig gelöscht und sind nach einem neuen Boot noch teilweise vorhanden
-
 '################################
 'Trigger section
 '################################
