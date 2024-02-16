@@ -164,6 +164,11 @@
 {trigger:nuntius_printer_homeButton4}
 	(L.L.nuntius_printer_page) 2 = (L.L.nuntius_printer_page) 3 = ||
 	{if}
+		(L.L.nuntius_printer_hasHofFileOptions)
+		{if}
+			(L.L.nuntius_printer_TerminusIndex) (S.L.nuntius_printer_TerminusIndexBeforeBreak)
+			(L.L.nuntius_printer_option_terminusCodeBreak) (M.L.nuntius_printer_setTerminus)
+		{endif}
 		7 (M.L.nuntius_printer_goToPage)
 		(M.L.nuntius_printer_playSoundNormal)
 	{endif}
@@ -194,6 +199,11 @@
 {trigger:nuntius_printer_busstopPause}
 	(L.L.nuntius_printer_page) 2 = (L.L.nuntius_printer_page) 3 = ||
 	{if}
+		(L.L.nuntius_printer_hasHofFileOptions)
+		{if}
+			(L.L.nuntius_printer_TerminusIndex) (S.L.nuntius_printer_TerminusIndexBeforeBreak)
+			(L.L.nuntius_printer_option_terminusCodeBreak) (M.L.nuntius_printer_setTerminus)
+		{endif}
 		7 (M.L.nuntius_printer_goToPage)
 		(M.L.nuntius_printer_playSoundNormal)
 	{endif}
@@ -331,19 +341,6 @@
 
 {macro:nuntius_printer_init}
 	"nuntius\printer\Black.dds" (S.$.nuntius_printer_ui_texture)
-	"0/00@00/000" (S.$.nuntius_printer_ui_line)
-	"@" (S.$.nuntius_printer_ui_terminus)
-	0 (S.L.nuntius_printer_bootStatus)
-	0 (S.L.nuntius_printer_page)
-	0 (S.L.nuntius_printer_autoBusstopPageSwitch)
-	0 (S.L.nuntius_printer_currentInputField)
-	-1 (S.L.nuntius_printer_selectedTicket)
-	0 (S.L.nuntius_printer_showDeparturePage)
-
-	1 (S.L.nuntius_printer_screenSoundIsActive)
-	(S.L.nuntius_printer_AnnouncementsAreActive)
-
-	(M.L.nuntius_printer_loadTickets)
 {end}
 
 {macro:nuntius_printer_frame}
@@ -354,10 +351,11 @@
 	(M.L.nuntius_printer_refreshTime)
 	(M.L.nuntius_printer_refreshDelay)
 	(M.L.nuntius_printer_bootHandler)
-	(M.L.nuntius_printer_updateCurrentBusstopIndex)
 	(M.L.nuntius_printer_autoOpenBusstopPage)
 	(M.L.nuntius_printer_autoOpenDeparturePage)
 	(M.L.nuntius_printer_autoOpenConfirmNextTripPage)
+	(M.L.nuntius_printer_autoSetTripEndTerminus)
+	(M.L.nuntius_printer_updateCurrentBusstopIndex)
 	(M.L.nuntius_updateTicket)
 	(M.L.nuntius_ticketPrintHandler)
 
@@ -388,7 +386,6 @@
 		-1 (S.L.nuntius_printer_givenTicket)
 	{endif}
 {end}
-
 
 '################################
 'general functions and power
@@ -436,6 +433,15 @@
 		0 (S.L.nuntius_printer_bootTimer)
 		(M.L.nuntius_printer_hideAllUiElements)
 		"nuntius\printer\Boot_1.dds" (S.$.nuntius_printer_ui_texture)
+
+		"0/00@00/000" (S.$.nuntius_printer_ui_line)
+		"@" (S.$.nuntius_printer_ui_terminus)
+		-1 (S.L.nuntius_printer_selectedTicket)
+
+		1 (S.L.nuntius_printer_screenSoundIsActive)
+		(S.L.nuntius_printer_AnnouncementsAreActive)
+		(M.L.nuntius_printer_loadOptions)
+		(M.L.nuntius_printer_loadTickets)
 	{endif}
 					
 'increase timer
@@ -528,6 +534,21 @@
 	(L.L.nuntius_printer_page) (M.L.nuntius_printer_goToPage)
 {end}
 
+'Loads the options from the hof file
+{macro:nuntius_printer_loadOptions}
+'Register:
+'0 = the option terminus' index
+	
+		1234 (M.V.GetTerminusIndex) s0
+	
+		l0 0 (M.V.GetTerminusString) $RemoveSpaces "NUNTIUS_OPTIONS" $=
+		(S.L.nuntius_printer_hasHofFileOptions)
+		{if}
+			l0 1 (M.V.GetTerminusString) $StrToFloat (S.L.nuntius_printer_option_terminusCodeTripEnd)
+			l0 2 (M.V.GetTerminusString) $StrToFloat (S.L.nuntius_printer_option_terminusCodeBreak)
+		{endif}
+	{end}
+
 {macro:nuntius_printer_autoOpenBusstopPage}
 'if any of all the entrys or exits is open...
 	(L.L.nuntius_api_doorsOpen)
@@ -586,8 +607,7 @@
 	(L.L.schedule_active) (L.L.nuntius_printer_RouteMode) 1 = && (L.L.nuntius_printer_page) 12 = ! &&
 'if the expected and actual terminus are not the same or we jumped more than 1 busstop back (which is not possible in the same tour)
 	{if}
-		(M.V.GetTTTerminusIndex) (L.L.nuntius_printer_TerminusIndex) = !
-		(M.V.GetTTBusstopIndex) (L.L.nuntius_printer_currentBusstopIndex) 1 - < ||
+		(M.V.GetTTBusstopIndex) (L.L.nuntius_printer_currentBusstopIndex) 1 - <
 		{if}
 			(M.V.GetTTLineString)
 			"@" $+
@@ -624,6 +644,36 @@
 
 'show page
 			12 (M.L.nuntius_printer_goToPage)
+		{endif}
+	{endif}
+{end}
+
+'automatically sets the terminus to "Fahrtende" at last busstop of trip
+{macro:nuntius_printer_autoSetTripEndTerminus}
+'Register:
+'0 = last busstop?
+	(L.L.nuntius_printer_Terminus) (L.L.nuntius_printer_option_terminusCodeTripEnd) = !
+	(L.L.nuntius_printer_page) 7 = !
+	(L.L.nuntius_printer_page) 71 = ! || &&
+	(L.L.nuntius_printer_hasHofFileOptions) &&
+	(L.L.schedule_active) &&
+	{if}
+		(L.L.nuntius_printer_RouteMode) 1 =
+		{if}
+			(M.V.GetTTBusstopCount) (L.L.nuntius_printer_currentBusstopIndex) (L.L.nuntius_printer_busstopOffset) + 1 + = s0
+		{endif}
+
+		(L.L.nuntius_printer_RouteMode) 2 =
+		{if}
+			(L.L.nuntius_printer_RouteIndex) (M.V.GetBusstopCount) (L.L.nuntius_printer_currentBusstopIndex) (L.L.nuntius_printer_busstopOffset) + 1 +  = s0
+		{endif}
+
+		l0
+		(L.L.nuntius_printer_RouteMode) 1 =
+		(L.L.nuntius_printer_RouteMode) 2 = || &&
+		{if}
+			(L.L.nuntius_printer_option_terminusCodeTripEnd) (M.L.nuntius_printer_setTerminus)
+			(M.L.nuntius_printer_refreshLineUI)
 		{endif}
 	{endif}
 {end}
@@ -1075,6 +1125,11 @@ s0
 'go to home page
 		(M.L.nuntius_printer_resetInputFields)
 		2 (M.L.nuntius_printer_goToPage)
+		
+		(L.L.nuntius_printer_hasHofFileOptions)
+		{if}
+			(L.L.nuntius_printer_TerminusIndexBeforeBreak) (M.L.nuntius_printer_setTerminusIndex)
+		{endif}
 'play sound
 		(M.L.nuntius_printer_playSoundNormal)
 	{else}
@@ -1136,6 +1191,11 @@ s0
 	1 (S.L.nuntius_printer_RouteMode)
 
 	(M.V.GetTTTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
+	(L.L.nuntius_printer_hasHofFileOptions)
+	{if}
+		(L.L.nuntius_printer_TerminusIndex) (S.L.nuntius_printer_TerminusIndexBeforeBreak)
+		(L.L.nuntius_printer_option_terminusCodeBreak) (M.L.nuntius_printer_setTerminus)
+	{endif}
 	(M.L.nuntius_printer_refreshLineUI)
 
 	7 (M.L.nuntius_printer_goToPage)
@@ -1574,7 +1634,6 @@ s0
 		{if}
 			(M.V.GetTTBusstopCount) 1 - (M.V.GetTTBusstopName)
 		{else}
-'				(L.L.nuntius_printer_RouteIndex) 0 (M.V.GetRouteBusstopIdent) (M.V.GetBusstopIndex)
 				(L.L.nuntius_printer_RouteIndex) s0 (M.V.GetBusstopCount) 1 - s1 l0 l1 (M.V.GetRouteBusstopIdent) (M.V.GetBusstopIndex)
 				3 (M.V.GetBusstopString)
 		{endif}

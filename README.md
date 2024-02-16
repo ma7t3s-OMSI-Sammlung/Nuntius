@@ -87,5 +87,20 @@ Auch hier sind grundsätzlich noch weitere Konfigruationen geplant
 
 ---
 
+## Anpassen der Hofdatei
+**[NEU!]** Das Nuntius-System bietet absofort die Möglichkeit, automatisch "Fahrtende" oder "Pause" am Ende einer Fahrt zu schildern. Damit dies auch über Maps hinweg ohne große Probleme geht, wird das genaue Verhalten hierfür über die Hofdatei definiert. Nuntius erwartet deshalb in der Hofdatei ein spezielles "Options"-Ziel. Im Prinzip ein normales zusätzlches Ziel, welches als solches nicht benötigt wird und nur verwendet wird, in Nuntius bestimmte "pro Map"-Einstellungen vorzunehmen. Es ist nicht zwangsläufig erforderlich. Das System funktioniert auch weiterhin ohne so ein Ziel und ist somit vollständig mit jeder Standard-Hofdatei kompatibel, kann aber eben einige bestimmte Funktionen nicht anbieten.
+
+Damit das alles so funktioniert, muss dieses Ziel den Code 1234 tragen. Außerdem muss der erste String (regulär der IBIS1-String) "NUNTIUS_OPTIONS" lauten. Damit bestätigen wir, dass es sich hierbei tatsächlich um das Optionsziel handelt und nicht um ein normales, welches zufällig den Code 1234 hat.
+Die darauffolgenden Strings repräsentieren dabei dabei jeweils bestimmte Einstellungen:
+|String|Funktion|
+|---|---|
+|0. (IBIS1)|Identifikationsstring, muss exakt "NUNTIUS_OPTIONS" lauten.|
+|1. (ANNAX 1)|(als String formatierte Zahl) Code des Zieles, welches als "Fahrtende"-Ziel verwendet werden soll|
+|2. (ANNAX 2)|(als String formatierte Zahl) Code des Zieles, welches als "Pause"-Ziel verwendet werden soll|
+
+Weitere Optionen sollen folgen.
+
+---
+
 ## Bedienung/Handhabung des Druckers
 comming soon...
