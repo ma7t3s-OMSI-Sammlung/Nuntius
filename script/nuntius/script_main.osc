@@ -1510,9 +1510,9 @@ s0
 		5 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop5)
 		6 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop6)
 		7 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop7)
-
-		(M.L.nuntius_printer_refreshBusstopTimeList)
 	{endif}
+
+	(M.L.nuntius_printer_refreshBusstopTimeList)
 {end}
 
 
