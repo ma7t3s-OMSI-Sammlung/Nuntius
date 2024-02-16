@@ -355,8 +355,6 @@
 	(M.L.nuntius_printer_refreshDelay)
 	(M.L.nuntius_printer_bootHandler)
 	(M.L.nuntius_printer_updateCurrentBusstopIndex)
-	(M.L.nuntius_printer_refreshBusstopList)
-	(M.L.nuntius_printer_refreshBusstopTimeList)
 	(M.L.nuntius_printer_autoOpenBusstopPage)
 	(M.L.nuntius_printer_autoOpenDeparturePage)
 	(M.L.nuntius_printer_autoOpenConfirmNextTripPage)
@@ -1155,8 +1153,8 @@ s0
 		
 'Save Mode
 		1 (S.L.nuntius_printer_RouteMode)
-
 		(M.L.nuntius_printer_refreshLineUI)
+		(M.L.nuntius_printer_refreshBusstopList)
 
 'Go back to Main Page
 		2 (M.L.nuntius_printer_goToPage)
@@ -1201,8 +1199,8 @@ s0
 		
 'Save Mode
 		2 (S.L.nuntius_printer_RouteMode)
-
 		(M.L.nuntius_printer_refreshLineUI)
+		(M.L.nuntius_printer_refreshBusstopList)
 		
 'Go back to Main Page
 		2 (M.L.nuntius_printer_goToPage)
@@ -1235,6 +1233,7 @@ s0
 
 	"0/00@00/000" (S.$.nuntius_printer_ui_line)
 	"@" (S.$.nuntius_printer_ui_terminus)
+	(M.L.nuntius_printer_refreshBusstopList)
 
 'Go back to Main Page
 	2 (M.L.nuntius_printer_goToPage)
@@ -1511,6 +1510,8 @@ s0
 		5 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop5)
 		6 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop6)
 		7 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop7)
+
+		(M.L.nuntius_printer_refreshBusstopTimeList)
 	{endif}
 {end}
 
