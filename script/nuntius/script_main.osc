@@ -795,6 +795,15 @@ s0
 				1 $cutEnd 
 			{endif}
 
+'write "0" if field would be empty
+			$length 0 =
+			{if}
+				"0"
+			{endif}
+
+'Convert to number and back to string (to remove leading zeros)
+			$StrToFloat $IntToStr
+
 'save it to the current input field
 			l1 0 =
 			{if}
