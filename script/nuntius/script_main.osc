@@ -589,8 +589,6 @@
 		(M.V.GetTTTerminusIndex) (L.L.nuntius_printer_TerminusIndex) = !
 		(M.V.GetTTBusstopIndex) (L.L.nuntius_printer_currentBusstopIndex) 1 - < ||
 		{if}
-			0 (S.L.nuntius_printer_RouteMode)
-
 			(M.V.GetTTLineString)
 			"@" $+
 			(M.V.GetTTTerminusIndex) 5 (M.V.GetTerminusString) $+
