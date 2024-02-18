@@ -1732,14 +1732,14 @@ s0
 
 'loads all tickets
 {macro:nuntius_printer_loadTickets}
-	0 (M.V.GetTicketName) "@" $+ 0 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket0)
-	1 (M.V.GetTicketName) "@" $+ 1 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket1)
-	2 (M.V.GetTicketName) "@" $+ 2 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket2)
-	3 (M.V.GetTicketName) "@" $+ 3 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket3)
-	4 (M.V.GetTicketName) "@" $+ 4 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket4)
-	5 (M.V.GetTicketName) "@" $+ 5 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket5)
-	6 (M.V.GetTicketName) "@" $+ 6 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket6)
-	7 (M.V.GetTicketName) "@" $+ 7 (M.L.nuntius_printer_getTicketPrice) $+ (S.$.nuntius_printer_ui_ticket7)
+	0 (M.V.GetTicketValue) 0 = ! {if} 0 (M.V.GetTicketName) "@" $+ 0 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket0)
+	1 (M.V.GetTicketValue) 0 = ! {if} 1 (M.V.GetTicketName) "@" $+ 1 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket1)
+	2 (M.V.GetTicketValue) 0 = ! {if} 2 (M.V.GetTicketName) "@" $+ 2 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket2)
+	3 (M.V.GetTicketValue) 0 = ! {if} 3 (M.V.GetTicketName) "@" $+ 3 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket3)
+	4 (M.V.GetTicketValue) 0 = ! {if} 4 (M.V.GetTicketName) "@" $+ 4 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket4)
+	5 (M.V.GetTicketValue) 0 = ! {if} 5 (M.V.GetTicketName) "@" $+ 5 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket5)
+	6 (M.V.GetTicketValue) 0 = ! {if} 6 (M.V.GetTicketName) "@" $+ 6 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket6)
+	7 (M.V.GetTicketValue) 0 = ! {if} 7 (M.V.GetTicketName) "@" $+ 7 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket7)
 {end}
 
 'selects one ticket from menu
@@ -1752,7 +1752,7 @@ s0
 	{if}
 		l0 (M.V.GetTicketName) (S.$.nuntius_printer_ui_currentTicketName)
 		l0 (S.L.nuntius_printer_selectedTicket)
-		l0 (M.L.nuntius_printer_getTicketPrice)
+		l0 (M.L.nuntius_printer_getTicketPrice) " €" $+
 		(S.$.nuntius_printer_ui_currentTicketPrice)
 
 'show detail view
@@ -2236,7 +2236,7 @@ s0
 
 			(L.L.nuntius_printer_totalRevenue) $IntToStr "," $+
 
-			(L.L.nuntius_printer_totalRevenue) 100 * $IntToStr 2 $SetLengthR $+
+			(L.L.nuntius_printer_totalRevenue) 100 * $IntToStr 2 $SetLengthR $+ " €" $+
 			(S.$.nuntius_printer_ui_input2)
 		{endif}
 
@@ -2275,7 +2275,7 @@ s0
 
 			(L.L.nuntius_printer_totalRevenue) $IntToStr "," $+
 
-			(L.L.nuntius_printer_totalRevenue) 100 * $IntToStr 2 $SetLengthR $+ " ï¿½" $+
+			(L.L.nuntius_printer_totalRevenue) 100 * $IntToStr 2 $SetLengthR $+ " €" $+
 			(S.$.nuntius_printer_ui_input2)
 		{endif}
 
