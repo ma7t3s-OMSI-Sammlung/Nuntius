@@ -693,7 +693,7 @@
 	l4 "02" $IntToStrEnh $+ ":" $+
 	l5 "02" $IntToStrEnh $+
 	(S.$.nuntius_printer_ui_time)
-
+	
 'Print FIS String
 	l3 "02" $IntToStrEnh ":" $+ l4 "02" $IntToStrEnh $+
 	(S.$.nuntius_api_timeStr)
@@ -1513,7 +1513,11 @@ s0
 		$+
 
 'if it's the last busstop, add "_#terminus" suffix
-		(L.L.nuntius_printer_RouteIndex) (M.V.GetBusstopCount) 1 - (L.L.nuntius_printer_currentBusstopIndex) <=
+		(L.L.nuntius_printer_RouteMode) 1 =
+		(M.V.GetTTBusstopCount) 1 - (L.L.nuntius_printer_currentBusstopIndex) (L.L.nuntius_printer_busstopOffset) + <= &&
+
+		(L.L.nuntius_printer_RouteMode) 2 =
+		(L.L.nuntius_printer_RouteIndex) (M.V.GetBusstopCount) 1 - (L.L.nuntius_printer_currentBusstopIndex) (L.L.nuntius_printer_busstopOffset) + <= && ||
 		{if}
 			"_#terminus" $+
 		{endif}
