@@ -544,7 +544,9 @@
 'the current printer page is 2 (home)
 'the velocity is nearly zero
 'the autoBusstopPageSwitch is 0 (which means the user hasn't switched the page manually)
-		(L.L.nuntius_printer_page) 2 = (L.L.Velocity) 5 < && (L.L.Velocity) -5 > && (L.L.nuntius_printer_autoBusstopPageSwitch) 0 = &&
+		(L.L.nuntius_printer_page) 2 =
+		(L.L.Velocity) abs 10 < &&
+		(L.L.nuntius_printer_autoBusstopPageSwitch) 0 = &&
 		{if}
 'go to page and set the autoBusstopPageSwitch to 1
 			3 (M.L.nuntius_printer_goToPage)
@@ -555,7 +557,9 @@
 'the current printer page is 3 (busstop menu)
 'the vehicle is moving (velocity more than 5 km/h)
 'the autoBusstopPageSwitch is 1 (which means the user hasn't switched the page manually)
-		(L.L.nuntius_printer_page) 3 = (L.L.Velocity) 5 > (L.L.Velocity) -5 < || && (L.L.nuntius_printer_autoBusstopPageSwitch) 1 = &&
+		(L.L.nuntius_printer_page) 3 = (L.L.nuntius_printer_page) 11 = ||
+		(L.L.Velocity) abs 10 > &&
+		(L.L.nuntius_printer_autoBusstopPageSwitch) 1 = &&
 		{if}
 'go to page and set the autoBusstopPageSwitch to 0
 			2 (M.L.nuntius_printer_goToPage)
@@ -578,10 +582,13 @@
 'if delay turns 0 and showDeparturePage is remembered
 		(M.V.GetTTDelay) 0 >= (L.L.nuntius_printer_showDeparturePage) 1 = &&
 		{if}
+			(L.L.velocity) abs 10 <
+			{if}
 'show page
+				11 (M.L.nuntius_printer_goToPage)
+				(M.L.nuntius_printer_playSoundNormal)
+			{else}
 			0 (S.L.nuntius_printer_showDeparturePage)
-			11 (M.L.nuntius_printer_goToPage)
-			(M.L.nuntius_printer_playSoundNormal)
 		{endif}
 	{else}
 		0 (S.L.nuntius_printer_showDeparturePage)
@@ -915,6 +922,7 @@ s0
 	(L.L.nuntius_printer_page) 11 =
 	{if}
 		2 (M.L.nuntius_printer_goToPage)
+		0 (S.L.nuntius_printer_autoBusstopPageSwitch)
 	{endif}
 
 'confirm next trip page
