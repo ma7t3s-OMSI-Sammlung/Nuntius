@@ -587,7 +587,7 @@
 'show page
 				11 (M.L.nuntius_printer_goToPage)
 				(M.L.nuntius_printer_playSoundNormal)
-			{else}
+			{endif}
 			0 (S.L.nuntius_printer_showDeparturePage)
 		{endif}
 	{else}
