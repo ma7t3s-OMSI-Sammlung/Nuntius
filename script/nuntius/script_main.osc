@@ -643,6 +643,7 @@
 	(L.L.nuntius_printer_page) 7 = !
 	(L.L.nuntius_printer_page) 71 = ! || &&
 	(L.L.nuntius_printer_hasHofFileOptions) &&
+	(M.V.GetTTBusstopCount) 1 > &&
 	(L.L.schedule_active) &&
 	{if}
 		(L.L.nuntius_printer_RouteMode) 1 =
