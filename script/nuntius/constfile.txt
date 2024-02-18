@@ -9,6 +9,7 @@ Legt die Fahrerpin ("Passwort") fest
 nuntius_printer_driverPIN
 1506
 
+
 Legt die Dauer (in Sekunden) fest, die der Bildschirm des Druckers nach dem Abschalten des Stromes noch aktiv bleibt
 [const]
 nuntius_printer_batteryTimeActiveScreen
@@ -18,6 +19,7 @@ Legt die Dauer (in Sekunden) fest, die der Bildschirm des Druckers nach dem Auss
 [const]
 nuntius_printer_batteryTime
 10
+
 
 Legt die Dauer des Boots fest (1 = Standard, 10 = zehnmal so schnelles booten, nützlich zu Testzwecken)
 [const]
