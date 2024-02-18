@@ -1,3 +1,7 @@
+nuntius_daueranimationX
+nuntius_daueranimationY
+nuntius_daueranimationZ
+
 nuntius_driverCard
 nuntius_ticket
 nuntius_ticketAnim

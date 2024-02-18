@@ -328,6 +328,11 @@
 
 {macro:nuntius_printer_init}
 	"nuntius\printer\Black.dds" (S.$.nuntius_printer_ui_texture)
+
+'execute Daueranimation
+	(C.L.nuntius_printerPositionX) (S.L.nuntius_daueranimationX)
+	(C.L.nuntius_printerPositionY) (S.L.nuntius_daueranimationY)
+	(C.L.nuntius_printerPositionZ) (S.L.nuntius_daueranimationZ)
 {end}
 
 {macro:nuntius_printer_frame}
