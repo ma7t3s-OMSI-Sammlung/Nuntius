@@ -1696,8 +1696,8 @@ s0
 		(M.V.GetTTBusstopCount) l1 >
 		{if}
 'get the busstops time
-			l1 (M.V.GetTTBusstopArr) s3
-			l1 (M.V.GetTTBusstopDep) s4
+			l1 (M.V.GetTTBusstopArr) 86400 % s3
+			l1 (M.V.GetTTBusstopDep) 86400 % s4
 			""
 			
 'write tep time
