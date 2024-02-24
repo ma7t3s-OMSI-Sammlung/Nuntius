@@ -1723,7 +1723,7 @@ s0
 {macro:nuntius_printer_getLastBusstopTimeListEntry}
 	(L.L.nuntius_printer_RouteMode) 0 = ! (L.L.schedule_active) &&
 	{if}
-		(M.V.GetTTBusstopCount) 1 - (M.V.GetTTBusstopArr) s0
+		(M.V.GetTTBusstopCount) 1 - (M.V.GetTTBusstopArr) 86400 % s0
 		l0 3600 / trunc "02" $IntToStrEnh ":" $+
 		l0 3600 % 60 / trunc "02" $IntToStrEnh $+
 	{else}
