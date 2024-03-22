@@ -8,6 +8,15 @@ So lässt sich das Nuntius-System besonders einfach in jeden Bus einbauen!
 **<ins>Achtung:</ins> Das ganze ist noch Beta, Fehler etc. können immer Auftreten, diese bitte gerne Issues melden, genau so, wie Verbesserungsvorschläge! :)**
 
 ---
+## Features
+- Hofdatei-basierte & Fahrplanbasierte Fahgastinformation (inkl. manuelles Ziel schildern)
+- Automatische Haltestellenweiterschaltung (deaktivierbar)
+- Ticketverkauf (bis zu 8 Tickets)
+- Ein-/Ausloggen des Fahrers inkl. Fahrerkarte & Verkaufsstatistik
+- Sonderansagen (geplant: Hofdatei-abhängige Sonderansagen)
+- Automatisches Schildern von "Fahrtende" und "Pause"
+
+---
 
 ## Einbau
 Grundsätzlich am besten vorher einen alten, ggf. vorhandenen Drucker vollständig ausbauen, um Konflikte zu vermeiden :)
