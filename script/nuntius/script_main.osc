@@ -361,8 +361,8 @@
 
 	(L.L.nuntius_printer_progressbarAnim) (L.S.Timegap) - (S.L.nuntius_printer_progressbarAnim)
 
-'	"debug:@" (L.L.nuntius_printer_showDeparturePage) $IntToStr $+ (S.$.nuntius_printer_ui_line)
-'	(L.$.nuntius_printer_ui_line) (L.L.nuntius_printer_showDeparturePage) $IntToStr $+ (S.$.nuntius_printer_ui_line)
+'Refresh Strings
+1 (S.L.Refresh_Strings)
 {end}
 
 'makes the printed ticket invisible and resets the animation, after the passenger took it
