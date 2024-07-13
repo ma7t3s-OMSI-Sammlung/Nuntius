@@ -47,4 +47,6 @@ nuntius_printer_ui_currentTicketPrice
 nuntius_printer_ui_progressText
 nuntius_printer_ui_confirmNextTripText
 
+nuntius_printer_currentDisplayTextureFolder
+
 IBIS_Complex_Line

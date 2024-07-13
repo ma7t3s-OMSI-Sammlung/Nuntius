@@ -15,6 +15,7 @@ nuntius_api_lineSuffix
 nuntius_api_terminusIndex
 
 nuntius_printer_page
+nuntius_printer_colorScheme
 nuntius_printer_bootStatus
 nuntius_printer_bootTimer
 nuntius_printer_batteryTimer
