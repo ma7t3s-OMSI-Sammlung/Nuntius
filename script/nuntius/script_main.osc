@@ -147,8 +147,7 @@
 	{if}
 		(L.L.nuntius_printer_hasHofFileOptions)
 		{if}
-			(L.L.nuntius_printer_TerminusIndex) (S.L.nuntius_printer_TerminusIndexBeforeBreak)
-			(L.L.nuntius_printer_option_terminusCodeBreak) (M.L.nuntius_printer_setTerminus)
+			(M.L.nuntius_printer_startBreak)
 		{endif}
 		7 (M.L.nuntius_printer_goToPage)
 		(M.L.nuntius_printer_playSoundNormal)
@@ -182,8 +181,7 @@
 	{if}
 		(L.L.nuntius_printer_hasHofFileOptions)
 		{if}
-			(L.L.nuntius_printer_TerminusIndex) (S.L.nuntius_printer_TerminusIndexBeforeBreak)
-			(L.L.nuntius_printer_option_terminusCodeBreak) (M.L.nuntius_printer_setTerminus)
+			(M.L.nuntius_printer_startBreak)
 		{endif}
 		7 (M.L.nuntius_printer_goToPage)
 		(M.L.nuntius_printer_playSoundNormal)
@@ -1198,12 +1196,17 @@ s0
 	(M.V.GetTTTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
 	(L.L.nuntius_printer_hasHofFileOptions)
 	{if}
-		(L.L.nuntius_printer_TerminusIndex) (S.L.nuntius_printer_TerminusIndexBeforeBreak)
-		(L.L.nuntius_printer_option_terminusCodeBreak) (M.L.nuntius_printer_setTerminus)
+		(M.L.nuntius_printer_startBreak)
 	{endif}
 	(M.L.nuntius_printer_refreshLineUI)
 
 	7 (M.L.nuntius_printer_goToPage)
+{end}
+
+'starts the break
+{macro:nuntius_printer_startBreak}
+	(L.L.nuntius_printer_TerminusIndex) (S.L.nuntius_printer_TerminusIndexBeforeBreak)
+	(L.L.nuntius_printer_option_terminusCodeBreak) (M.L.nuntius_printer_setTerminus)
 {end}
 
 'Loads the Timetables trip
