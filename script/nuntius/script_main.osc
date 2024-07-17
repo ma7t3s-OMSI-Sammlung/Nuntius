@@ -2,12 +2,6 @@
 'Trigger section
 '################################
 
-'triggers the debug reset button
-{trigger:nuntius_printer_reset}
-	0 (S.L.nuntius_printer_bootStatus)
-	(M.L.nuntius_printer_init)
-{end}
-
 ' triggers if the driverCard was put on the device
 {trigger:nuntius_driverCard_get}
 	1 (S.L.nuntius_driverCard)
