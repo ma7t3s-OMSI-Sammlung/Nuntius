@@ -625,7 +625,7 @@
 			l0 (M.V.GetTTBusstopName) $+
 			
 			" (" $+
-			l1 3600 / trunc "02" $IntToStrEnh $+
+			l1 3600 / trunc 24 % "02" $IntToStrEnh $+
 			":" $+
 			l1 3600 % 60 / trunc "02" $IntToStrEnh $+
 			")@" $+
@@ -636,7 +636,7 @@
 			l0 (M.V.GetTTBusstopName) $+
 
 			" (" $+
-			l1 3600 / trunc "02" $IntToStrEnh $+
+			l1 3600 / trunc 24 % "02" $IntToStrEnh $+
 			":" $+
 			l1 3600 % 60 / trunc "02" $IntToStrEnh $+
 			")" $+
