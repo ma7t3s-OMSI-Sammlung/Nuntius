@@ -1,6 +1,7 @@
 nuntius_daueranimationX
 nuntius_daueranimationY
 nuntius_daueranimationZ
+nuntius_daueranimationRotation
 
 nuntius_driverCard
 nuntius_ticket
@@ -50,6 +51,8 @@ nuntius_printer_hasHofFileOptions
 nuntius_printer_option_terminusCodeTripEnd
 nuntius_printer_option_terminusCodeBreak
 
+nuntius_printer_updateScriptTexture
+
 nuntius_printer_visTime
 nuntius_printer_visDelay
 nuntius_printer_visLineInformation
@@ -71,6 +74,12 @@ nuntius_printer_visBusstopFooter
 nuntius_printer_visAnnouncements
 nuntius_printer_visPleaseWait
 nuntius_printer_visConfirmNextTrip
+
+nuntius_printer_font_28pxRegular
+nuntius_printer_font_38pxRegular
+nuntius_printer_font_48pxMedium
+nuntius_printer_font_38pxMedium
+nuntius_printer_font_72pxRegular
 
 IBIS_TerminusIndex
 IBIS_Linie_Complex

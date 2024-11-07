@@ -23,7 +23,9 @@ Grundsätzlich am besten vorher einen alten, ggf. vorhandenen Drucker vollständ
 An sich lässt sich das ganze Relativ einfach einbauen, bereitgestellt werden die notwendigen model(mesh)-Dateien, Texturen, Sounds und Scripts direkt in der passenden Ordnerstruktur, einfach in den Bus der Wahl kopieren.
 Das Mesh muss natürlich ggf. mithilfe einer Daueranimation oder Blender an die richtige Stelle bewegt werden.
 
-als "model (Ausschnit).cfg" liegt ein Model.cfg-Abschnitt bei, den ihr euch in die model.cfg eures Busses einfügen müsst, Texttextur-Einträge müssen natürlich ggf. angepasst werden, ansonsten sollte der bereits so, angezeigt werden.
+als "model (Ausschnit).cfg" liegt ein Model.cfg-Abschnitt bei, den ihr euch in die model.cfg eures Busses einfügen müsst. Da der Drucker mit Script- und nicht mit Texttexturen arbeitet, kann man sich die Arbeit, diverse Texttextur-Indexes anzupassen. Stattdessen müssen natürlich die zwei Scripttextur-Indexes stimmen. - Je nach Bus.
+Zum einen müssen diese im model-Abschnitt jeweils unter [matl_transmap] \S:X angepasst werden (X ist der jeweilige Index). Außerdem gibt es in der Constfile zwei Konstanten "nuntius_printer_scriptTextureIndex1" und "...2", die ebenfalls als Wert die Indexes der jeweiligen Scripttexturen enthalten müssen.
+Die Position des Druckers lässt sich ebenfalls ganz einfach über die Constfile anpassen. Dort gibt es drei Konstanten für die X-, Y- und Z-Koordinate.
 
 Damit er auch das tut, was er soll, brauchen wir noch die Macro-Auswführungen, dazu müsst ihr einmal in die main-Datei des Busses gehen (die sollte einen frame- und init-Abschnitt haben) und dort jeweils folgendes hinzufügen:
 - `(M.L.nuntius_printer_init)` unter `{init}`

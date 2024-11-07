@@ -2,13 +2,24 @@
 Legt die Position des Fahrscheindruckers fest
 [const]
 nuntius_printerPositionX
-0.03
+-0.05
 [const]
 nuntius_printerPositionY
-5.32536
+5.4
 [const]
 nuntius_printerPositionZ
-1.36436
+1.5
+[const]
+nuntius_printerRotation
+-45
+
+[const]
+nuntius_printer_scriptTextureIndex1
+2
+
+[const]
+nuntius_printer_scriptTextureIndex2
+3
 
 Legt die Fahrer-ID ("Benutzername") fest
 [const]

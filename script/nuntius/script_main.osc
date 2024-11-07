@@ -325,6 +325,10 @@
 	(C.L.nuntius_printerPositionX) (S.L.nuntius_daueranimationX)
 	(C.L.nuntius_printerPositionY) (S.L.nuntius_daueranimationY)
 	(C.L.nuntius_printerPositionZ) (S.L.nuntius_daueranimationZ)
+	(C.L.nuntius_printerRotation) (S.L.nuntius_daueranimationRotation)
+
+	(M.L.nuntius_printer_initFonts)
+	1 (S.L.nuntius_printer_updateScriptTexture)
 {end}
 
 {macro:nuntius_printer_frame}
@@ -335,14 +339,13 @@
 'Update dark mode
 	(L.S.SunAlt) 2.5 <
 	{if}
-		"nuntius\printer_dark\" (S.$.nuntius_printer_currentDisplayTextureFolder)
+		"nuntius\ui_default_dark\" (S.$.nuntius_printer_currentDisplayTextureFolder)
 		2 (S.L.nuntius_printer_colorScheme)
 	{else}
-		"nuntius\printer_light\" (S.$.nuntius_printer_currentDisplayTextureFolder)
+		"nuntius\ui_default_light\" (S.$.nuntius_printer_currentDisplayTextureFolder)
 		1 (S.L.nuntius_printer_colorScheme)
 	{endif}
 
-	(M.L.nuntius_printer_refreshTime)
 	(M.L.nuntius_printer_refreshDelay)
 	(M.L.nuntius_printer_bootHandler)
 	(M.L.nuntius_printer_autoOpenBusstopPage)
@@ -354,17 +357,212 @@
 	(M.L.nuntius_ticketPrintHandler)
 
 'refresh home page (necessary, to update autoHFS-Button appearance)
-	(L.L.nuntius_printer_page) 2 =
-	{if}
-		2 (M.L.nuntius_printer_goToPage)
-	{endif}
+' (L.L.nuntius_printer_page) 2 =
+' {if}
+' 	2 (M.L.nuntius_printer_goToPage)
+' {endif}
 	
 	(M.L.nuntius_api_frame) 
 
 	(L.L.nuntius_printer_progressbarAnim) (L.S.Timegap) - (S.L.nuntius_printer_progressbarAnim)
 
 'Refresh Strings
-1 (S.L.Refresh_Strings)
+	1 (S.L.Refresh_Strings)
+
+' Render Script texture
+	(M.L.nuntius_printer_renderScriptTexture1)
+
+	(L.L.nuntius_printer_updateScriptTexture)
+	{if} (M.L.nuntius_printer_renderScriptTexture2) {endif}
+{end}
+
+{macro:nuntius_printer_initFonts}
+	"Ubuntu 28px Regular" (M.V.GetFontIndex) (S.L.nuntius_printer_font_28pxRegular)
+	"Ubuntu 38px Regular" (M.V.GetFontIndex) (S.L.nuntius_printer_font_38pxRegular)
+	"Ubuntu 46px Medium"  (M.V.GetFontIndex) (S.L.nuntius_printer_font_48pxMedium)
+	"Ubuntu 38px Medium"  (M.V.GetFontIndex) (S.L.nuntius_printer_font_38pxMedium)
+	"Ubuntu 72px Regular" (M.V.GetFontIndex) (S.L.nuntius_printer_font_72pxRegular)
+{end}
+
+{macro:nuntius_printer_renderScriptTexture1}
+	(C.L.nuntius_printer_scriptTextureIndex1) (M.V.STNewTex)
+	(C.L.nuntius_printer_scriptTextureIndex1) (M.V.STLock)
+
+	(L.L.nuntius_printer_screenIsOn)
+	{if}
+		(C.L.nuntius_printer_scriptTextureIndex1) 255 255 0 0 (M.V.STSetColor)
+
+'******************************************
+' Date/Time
+'******************************************
+		(L.L.nuntius_printer_visTime)
+		{if}
+' Get String
+			(M.L.nuntius_printer_getDateString) (S.$.nuntius_printer_tmpStr0)
+' Calc length
+			(L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s1
+' Write Command
+			(C.L.nuntius_printer_scriptTextureIndex1)
+			1020 l1 -
+			0
+			(L.L.nuntius_printer_font_38pxRegular)
+			1
+			0
+			(L.$.nuntius_printer_tmpStr0)
+			(M.V.STTextOut)
+
+' Get String
+			(M.L.nuntius_printer_getTimeString) (S.$.nuntius_printer_tmpStr0)
+' Calc length
+			(L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s1
+' Write Command
+			(C.L.nuntius_printer_scriptTextureIndex1)
+			1020 l1 -
+			38
+			(L.L.nuntius_printer_font_38pxRegular)
+			1
+			0
+			(L.$.nuntius_printer_tmpStr0)
+			(M.V.STTextOut)
+		{endif}
+
+'******************************************
+' Delay
+'******************************************
+		(L.L.nuntius_printer_visDelay)
+		{if}
+' Calc Length
+			(L.$.nuntius_printer_ui_delay) (L.L.nuntius_printer_font_48pxMedium) (M.V.TextLength) s1
+' Write                                          XLeft + ((fieldWidth - length) / 2)
+			(C.L.nuntius_printer_scriptTextureIndex1) 770 113 l1 - 2 / + 19 (L.L.nuntius_printer_font_48pxMedium) 1 0 (L.$.nuntius_printer_ui_delay) (M.V.STTextOut)
+		{endif}
+	{endif}
+	(C.L.nuntius_printer_scriptTextureIndex1) (M.V.STUnlock)
+	(C.L.nuntius_printer_scriptTextureIndex1) (M.V.STFilter)
+{end}
+
+{macro:nuntius_printer_renderScriptTexture2}
+	(C.L.nuntius_printer_scriptTextureIndex2) (M.V.STNewTex)
+	(C.L.nuntius_printer_scriptTextureIndex2) (M.V.STLock)
+
+	(L.L.nuntius_printer_screenIsOn)
+	{if}
+		(C.L.nuntius_printer_scriptTextureIndex1) 255 255 0 0 (M.V.STSetColor)
+
+'******************************************
+' Line Information
+'******************************************
+		(L.L.nuntius_printer_visLineInformation) (L.L.nuntius_printer_RouteMode) 0 = ! &&
+		{if}
+' Note:     ST Index                                 X    Y Font                               Full Sperrpx      Text			
+' First line line
+			(C.L.nuntius_printer_scriptTextureIndex2) 4    0 (L.L.nuntius_printer_font_38pxMedium) 1 0 (L.$.nuntius_printer_ui_line1) (M.V.STTextOut)
+' Second line line
+			(C.L.nuntius_printer_scriptTextureIndex2) 4   38 (L.L.nuntius_printer_font_38pxMedium) 1 0 (L.$.nuntius_printer_ui_line2) (M.V.STTextOut)
+' First line terminus
+			(C.L.nuntius_printer_scriptTextureIndex2) 128  0 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_terminus1) (M.V.STTextOut)
+' Second line terminus
+			(C.L.nuntius_printer_scriptTextureIndex2) 128 38 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_terminus2) (M.V.STTextOut)
+		{endif}
+
+'******************************************
+' Input Fields
+'******************************************
+		(L.L.nuntius_printer_visInput0)
+		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 128 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_input0) (M.V.STTextOut) {endif}
+
+		(L.L.nuntius_printer_visInput1)
+		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 261 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_input1) (M.V.STTextOut) {endif}
+
+		(L.L.nuntius_printer_visInput2)
+		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 394 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_input2) (M.V.STTextOut) {endif}
+	{endif}
+
+'******************************************
+' Tickets
+'******************************************
+	(L.L.nuntius_printer_visTicketList)
+	{if}
+		(C.L.nuntius_printer_scriptTextureIndex2) 546  90 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName0)  (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 788  90 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName1)  (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 546 196 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName2)  (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 788 196 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName3)  (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 546 302 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName4)  (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 788 302 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName5)  (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 546 408 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName6)  (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 788 408 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName7)  (M.V.STTextOut)
+
+		(L.$.nuntius_printer_ui_ticketPrice0) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s0
+		(L.$.nuntius_printer_ui_ticketPrice1) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s1
+		(L.$.nuntius_printer_ui_ticketPrice2) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s2
+		(L.$.nuntius_printer_ui_ticketPrice3) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s3
+		(L.$.nuntius_printer_ui_ticketPrice4) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s4
+		(L.$.nuntius_printer_ui_ticketPrice5) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s5
+		(L.$.nuntius_printer_ui_ticketPrice6) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s6
+		(L.$.nuntius_printer_ui_ticketPrice7) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s7
+
+		(C.L.nuntius_printer_scriptTextureIndex2) 748 l0 - 128 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice0) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 990 l1 - 128 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice1) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 748 l2 - 234 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice2) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 990 l3 - 234 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice3) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 748 l4 - 340 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice4) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 990 l5 - 340 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice5) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 748 l6 - 446 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice6) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 990 l7 - 446 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice7) (M.V.STTextOut)
+	{endif}
+
+'******************************************
+' Current Ticket
+'******************************************
+	(L.L.nuntius_printer_visTicketSelection)
+	{if}
+		(C.L.nuntius_printer_scriptTextureIndex2) 539 133 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_currentTicketName)  (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 539 288 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_currentTicketPrice) (M.V.STTextOut)
+	{endif}
+
+'******************************************
+' Busstop list
+'******************************************
+	(L.L.nuntius_printer_visBusstopList)
+	{if}
+		(C.L.nuntius_printer_scriptTextureIndex2)  64 435 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstop0)        (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2)  64 372 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop1)        (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2)  64 316 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop2)        (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2)  64 260 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop3)        (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2)  64 204 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop4)        (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2)  64 117 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstop_end)     (M.V.STTextOut)
+
+		(L.$.nuntius_printer_ui_busstopTime0)    (L.L.nuntius_printer_font_38pxMedium)  (M.V.TextLength) s0
+		(L.$.nuntius_printer_ui_busstopTime1)    (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s1
+		(L.$.nuntius_printer_ui_busstopTime2)    (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s2
+		(L.$.nuntius_printer_ui_busstopTime3)    (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s3
+		(L.$.nuntius_printer_ui_busstopTime4)    (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s4
+		(L.$.nuntius_printer_ui_busstopTime_end) (L.L.nuntius_printer_font_38pxMedium)  (M.V.TextLength) s5
+   
+		(C.L.nuntius_printer_scriptTextureIndex2) 408 l0 - 435 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstopTime0)    (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 408 l1 - 372 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime1)    (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 408 l2 - 316 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime2)    (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 408 l3 - 260 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime3)    (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 408 l4 - 204 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime4)    (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 408 l5 - 117 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstopTime_end) (M.V.STTextOut)
+	{endif}
+
+'******************************************
+' Next Trip
+'******************************************
+	(L.L.nuntius_printer_visConfirmNextTrip)
+	{if}
+		(C.L.nuntius_printer_scriptTextureIndex2) 632 301 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText1) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 632 330 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText2) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 632 359 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText3) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 632 388 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText4) (M.V.STTextOut)
+		(C.L.nuntius_printer_scriptTextureIndex2) 632 417 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText5) (M.V.STTextOut)
+	{endif}
+
+	(C.L.nuntius_printer_scriptTextureIndex2) (M.V.STUnlock)
+	(C.L.nuntius_printer_scriptTextureIndex2) (M.V.STFilter)
+
+	0 (S.L.nuntius_printer_updateScriptTexture)
 {end}
 
 'makes the printed ticket invisible and resets the animation, after the passenger took it
@@ -428,8 +626,6 @@
 		(M.L.nuntius_printer_hideAllUiElements)
 		(L.$.nuntius_printer_currentDisplayTextureFolder) "Boot_1.dds" $+ (S.$.nuntius_printer_ui_texture)
 
-		"0/00@00/000" (S.$.nuntius_printer_ui_line)
-		"@" (S.$.nuntius_printer_ui_terminus)
 		-1 (S.L.nuntius_printer_selectedTicket)
 
 		1 (S.L.nuntius_printer_screenSoundIsActive)
@@ -506,11 +702,6 @@
 	(S.L.nuntius_printer_selectedTicket)
 	(S.L.nuntius_printer_givenTicket)
 	(S.L.nuntius_printer_showDeparturePage)
-
-	"@"
-	(S.$.nuntius_printer_ui_terminus)
-	"0/00@00/000"
-	(S.$.nuntius_printer_ui_line)
 {end}
 
 'turns the printers screen off
@@ -610,38 +801,36 @@
 	{if}
 		(M.V.GetTTBusstopIndex) (L.L.nuntius_printer_currentBusstopIndex) 1 - <
 		{if}
-			(M.V.GetTTLineString)
-			"@" $+
-			(M.V.GetTTTerminusIndex) 5 (M.V.GetTerminusString) $+
-			"@" $+
-			"in " $+
+			(M.V.GetTTLineString) (S.$.nuntius_printer_ui_confirmNextTripText1)
+
+			(M.V.GetTTTerminusIndex) 5 (M.V.GetTerminusString) (S.$.nuntius_printer_ui_confirmNextTripText2)
+
+			"in "
 			0 (M.V.GetTTBusstopDep) (L.S.Time) - 60 / trunc $IntToStr $+
-			" Min.@" $+
+			" Min." $+ (S.$.nuntius_printer_ui_confirmNextTripText3)
 
 
 			0 s0
 			(M.V.GetTTBusstopDep) s1
 
-			l0 (M.V.GetTTBusstopName) $+
+			l0 (M.V.GetTTBusstopName)
 			
 			" (" $+
 			l1 3600 / trunc 24 % "02" $IntToStrEnh $+
 			":" $+
 			l1 3600 % 60 / trunc "02" $IntToStrEnh $+
-			")@" $+
+			")" $+ (S.$.nuntius_printer_ui_confirmNextTripText4)
 
 			(M.V.GetTTBusstopCount) 1 - s0
 			(M.V.GetTTBusstopArr) s1
 
-			l0 (M.V.GetTTBusstopName) $+
+			l0 (M.V.GetTTBusstopName)
 
 			" (" $+
 			l1 3600 / trunc 24 % "02" $IntToStrEnh $+
 			":" $+
 			l1 3600 % 60 / trunc "02" $IntToStrEnh $+
-			")" $+
-
-			(S.$.nuntius_printer_ui_confirmNextTripText)
+			")" $+ (S.$.nuntius_printer_ui_confirmNextTripText5)
 
 'show page
 			12 (M.L.nuntius_printer_goToPage)
@@ -680,38 +869,32 @@
 	{endif}
 {end}
 
-'Refreshs date and time box
-{macro:nuntius_printer_refreshTime}
+
+{macro:nuntius_printer_getDateString}
 'Register Values:
 '0 = year
 '1 = month
-'2 = day
-'3 = hour
-'4 = minute
-'5 = second
-
-	(L.S.Year) s0
+'2 = day (nur die letzten zwei Ziffern)
+	(L.S.Year) 100 % s0
 	(L.S.Day) s2
 	(L.S.Month) s1
-
 	l2 "02" $IntToStrEnh "." $+
 	l1 "02" $IntToStrEnh $+ "." $+
-	l0 "04" $IntToStrEnh $+
+	l0 "02" $IntToStrEnh $+
+{end}
 
-	(L.S.Time) 3600 / trunc s3
-	(L.S.Time) 3600 % 60 / trunc s4
-	(L.S.Time) 60 % s5
+{macro:nuntius_printer_getTimeString}
+'Register Values:
+'1 = hour
+'2 = minute
+'3 = second
+	(L.S.Time) 3600 / trunc s1
+	(L.S.Time) 3600 % 60 / trunc s2
+	(L.S.Time) 60 % s3
 
-'add to string
-	"@" $+
-	l3 "02" $IntToStrEnh $+ ":" $+
-	l4 "02" $IntToStrEnh $+ ":" $+
-	l5 "02" $IntToStrEnh $+
-	(S.$.nuntius_printer_ui_time)
-	
-'Print FIS String
-	l3 "02" $IntToStrEnh ":" $+ l4 "02" $IntToStrEnh $+
-	(S.$.nuntius_api_timeStr)
+	l1 "02" $IntToStrEnh ":" $+
+	l2 "02" $IntToStrEnh $+ ":" $+
+	l3 "02" $IntToStrEnh $+
 {end}
 
 'Refreshs delay box
@@ -796,6 +979,9 @@
 'save the pressed button (0-9 normal, 10 = Backspace/C)
 s0
 
+'Schedule Scripttex for update
+1 (S.L.nuntius_printer_updateScriptTexture)
+
 'if fields are not enabled, do nothing in general!
 
 	(L.L.nuntius_printer_inputFieldsEnabled)
@@ -849,7 +1035,7 @@ s0
 				"0"
 			{endif}
 
-'Convert to number and back to string (to remove leading zeros)
+'Convert to number and back to string (to remove leading zeros) - THIS CAUSES ERRORS ON LARGE NUMBERS!!!! :(((
 			$StrToFloat $IntToStr
 
 'save it to the current input field
@@ -1297,8 +1483,6 @@ s0
 	(S.$.nuntius_api_lineStr)
 	(S.$.nuntius_api_terminusStr)
 
-	"0/00@00/000" (S.$.nuntius_printer_ui_line)
-	"@" (S.$.nuntius_printer_ui_terminus)
 	(M.L.nuntius_printer_refreshBusstopList)
 
 'Go back to Main Page
@@ -1374,10 +1558,8 @@ s0
 		l0 (S.L.nuntius_printer_Terminus)
 		l1 (S.L.nuntius_printer_TerminusIndex) (S.L.IBIS_TerminusIndex) (S.L.target_index_int)
 'set ui's terminus string
-		(L.L.nuntius_printer_TerminusIndex) 1 (M.V.GetTerminusString) $RemoveSpaces
-		"@" $+
-		(L.L.nuntius_printer_TerminusIndex) 2 (M.V.GetTerminusString) $RemoveSpaces $+
-		(S.$.nuntius_printer_ui_terminus) (S.$.nuntius_api_terminusStr)
+		(L.L.nuntius_printer_TerminusIndex) 1 (M.V.GetTerminusString) $RemoveSpaces (S.$.nuntius_printer_ui_terminus1)
+		(L.L.nuntius_printer_TerminusIndex) 2 (M.V.GetTerminusString) $RemoveSpaces (S.$.nuntius_printer_ui_terminus2)
 
 		(L.L.nuntius_printer_TerminusIndex) 5 (M.V.GetTerminusString) (S.$.nuntius_api_terminusStr)
 	{endif}
@@ -1385,16 +1567,17 @@ s0
 
 'refreshs the textbox that shows line, route, terminus code and co
 {macro:nuntius_printer_refreshLineUI}
-	"0/00@00/000"
 	(L.L.nuntius_printer_RouteMode) 1 =
 	{if}
-		(L.$.nuntius_printer_lineStr) "@" $+
-		(L.L.nuntius_printer_Terminus) "03" $IntToStrEnh $+
+		(L.$.nuntius_printer_lineStr) (S.$.nuntius_printer_ui_line1)
+		(L.L.nuntius_printer_Terminus) "03" $IntToStrEnh (S.$.nuntius_printer_ui_line2)
 	{else}
-		(L.L.nuntius_printer_Line) $IntToStr "/" $+ (L.L.nuntius_printer_Suffix) "02" $IntToStrEnh $+ "@" $+
-		(L.L.nuntius_printer_Route) "02" $IntToStrEnh $+ "/" $+ (L.L.nuntius_printer_Terminus) "03" $IntToStrEnh $+
+		(L.L.nuntius_printer_Line) $IntToStr "/" $+ (L.L.nuntius_printer_Suffix) "02" $IntToStrEnh $+ (S.$.nuntius_printer_ui_line1)
+		(L.L.nuntius_printer_Route) "02" $IntToStrEnh "/" $+ (L.L.nuntius_printer_Terminus) "03" $IntToStrEnh $+ (S.$.nuntius_printer_ui_line2)
 	{endif}
-	(S.$.nuntius_printer_ui_line)
+
+'Schedule Scripttex for update
+	1 (S.L.nuntius_printer_updateScriptTexture)
 {end}
 
 'refreshs the terminus selections preview (currently not in use!)
@@ -1583,6 +1766,9 @@ s0
 	{endif}
 
 	(M.L.nuntius_printer_refreshBusstopTimeList)
+
+'Schedule Scripttex for update
+	1 (S.L.nuntius_printer_updateScriptTexture)
 {end}
 
 
@@ -1712,12 +1898,12 @@ s0
 			l4 3600 % 60 / trunc "02" $IntToStrEnh $+
 
 'if arr time is different, write it also
-			l3 l4 = ! l3 -1 = ! &&
-			{if}
-				"@" $+
-				l3 3600 / trunc "02" $IntToStrEnh $+ ":" $+
-				l3 3600 % 60 / trunc "02" $IntToStrEnh $+ 
-			{endif}
+'			l3 l4 = ! l3 -1 = ! &&
+'			{if}
+'				"@" $+
+'				l3 3600 / trunc "02" $IntToStrEnh $+ ":" $+
+'				l3 3600 % 60 / trunc "02" $IntToStrEnh $+ 
+'			{endif}
 		{else}
 'else return nullstring
 			""
@@ -1744,14 +1930,23 @@ s0
 
 'loads all tickets
 {macro:nuntius_printer_loadTickets}
-	0 (M.V.GetTicketValue) 0 = ! {if} 0 (M.V.GetTicketName) "@" $+ 0 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket0)
-	1 (M.V.GetTicketValue) 0 = ! {if} 1 (M.V.GetTicketName) "@" $+ 1 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket1)
-	2 (M.V.GetTicketValue) 0 = ! {if} 2 (M.V.GetTicketName) "@" $+ 2 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket2)
-	3 (M.V.GetTicketValue) 0 = ! {if} 3 (M.V.GetTicketName) "@" $+ 3 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket3)
-	4 (M.V.GetTicketValue) 0 = ! {if} 4 (M.V.GetTicketName) "@" $+ 4 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket4)
-	5 (M.V.GetTicketValue) 0 = ! {if} 5 (M.V.GetTicketName) "@" $+ 5 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket5)
-	6 (M.V.GetTicketValue) 0 = ! {if} 6 (M.V.GetTicketName) "@" $+ 6 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket6)
-	7 (M.V.GetTicketValue) 0 = ! {if} 7 (M.V.GetTicketName) "@" $+ 7 (M.L.nuntius_printer_getTicketPrice) $+ " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticket7)
+	0 (M.V.GetTicketValue) 0 = ! {if} 0 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName0)
+	1 (M.V.GetTicketValue) 0 = ! {if} 1 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName1)
+	2 (M.V.GetTicketValue) 0 = ! {if} 2 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName2)
+	3 (M.V.GetTicketValue) 0 = ! {if} 3 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName3)
+	4 (M.V.GetTicketValue) 0 = ! {if} 4 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName4)
+	5 (M.V.GetTicketValue) 0 = ! {if} 5 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName5)
+	6 (M.V.GetTicketValue) 0 = ! {if} 6 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName6)
+	7 (M.V.GetTicketValue) 0 = ! {if} 7 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName7)
+
+	0 (M.V.GetTicketValue) 0 = ! {if} 0 (M.L.nuntius_printer_getTicketPrice) " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticketPrice0)
+	1 (M.V.GetTicketValue) 0 = ! {if} 1 (M.L.nuntius_printer_getTicketPrice) " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticketPrice1)
+	2 (M.V.GetTicketValue) 0 = ! {if} 2 (M.L.nuntius_printer_getTicketPrice) " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticketPrice2)
+	3 (M.V.GetTicketValue) 0 = ! {if} 3 (M.L.nuntius_printer_getTicketPrice) " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticketPrice3)
+	4 (M.V.GetTicketValue) 0 = ! {if} 4 (M.L.nuntius_printer_getTicketPrice) " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticketPrice4)
+	5 (M.V.GetTicketValue) 0 = ! {if} 5 (M.L.nuntius_printer_getTicketPrice) " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticketPrice5)
+	6 (M.V.GetTicketValue) 0 = ! {if} 6 (M.L.nuntius_printer_getTicketPrice) " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticketPrice6)
+	7 (M.V.GetTicketValue) 0 = ! {if} 7 (M.L.nuntius_printer_getTicketPrice) " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticketPrice7)
 {end}
 
 'selects one ticket from menu
@@ -1773,6 +1968,8 @@ s0
 'disable ticket list
 		0 (M.L.nuntius_printer_showUiElementsTicketList)
 		1 (M.L.nuntius_printer_showUiElementsTicketSelection)
+		(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\SelectTicket.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
+		1 (S.L.nuntius_printer_updateScriptTexture)
 	{endif}
 
 'play sound
@@ -1924,10 +2121,13 @@ s0
 	(L.L.nuntius_printer_bootStatus) 2 = (L.L.nuntius_printer_bootStatus) 3 = ||
 	{if}
 		l0 (S.L.nuntius_printer_page)
+		1 (S.L.nuntius_printer_updateScriptTexture)
+
 '0: Welcome Page
 		l0 0 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Welcome.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			0 (M.L.nuntius_printer_showUiElementsDelay)
 			0 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -1954,6 +2154,7 @@ s0
 		l0 1 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Login_withID_PIN.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			0 (M.L.nuntius_printer_showUiElementsDelay)
@@ -1998,6 +2199,7 @@ s0
 					(L.$.nuntius_printer_currentDisplayTextureFolder) "Home.dds" $+ (S.$.nuntius_printer_ui_texture)
 				{endif}
 			{endif}
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2025,6 +2227,7 @@ s0
 		l0 3 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Busstop.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2052,6 +2255,7 @@ s0
 		l0 4 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "LKR_man_Line.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2087,6 +2291,7 @@ s0
 		l0 5 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Terminus_Terminus.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2126,6 +2331,7 @@ s0
 			{else}
 				(L.$.nuntius_printer_currentDisplayTextureFolder) "Announcements_BusstopAnnouncementsOff.dds" $+ (S.$.nuntius_printer_ui_texture)
 			{endif}
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2159,6 +2365,8 @@ s0
 		l0 7 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Break.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
+
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2185,6 +2393,7 @@ s0
 		l0 71 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Login_withoutID_PIN.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2217,6 +2426,7 @@ s0
 		l0 9 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "DriverSwitch.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2256,6 +2466,7 @@ s0
 		l0 10 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "ShiftEnd.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2295,6 +2506,7 @@ s0
 		l0 11 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Departure.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2326,6 +2538,7 @@ s0
 		l0 12 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "confirmNextTrip.dds" $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\ConfirmNextTrip.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			0 (M.L.nuntius_printer_showUiElementsDelay)
