@@ -18,6 +18,7 @@ nuntius_dummy
 
 nuntius_printer_lineStr
 
+nuntius_printer_currentDisplayTextureFolder
 nuntius_printer_ui_texture
 nuntius_printer_ui_textColorTexture
 nuntius_printer_ui_time
@@ -68,7 +69,5 @@ nuntius_printer_ui_confirmNextTripText2
 nuntius_printer_ui_confirmNextTripText3
 nuntius_printer_ui_confirmNextTripText4
 nuntius_printer_ui_confirmNextTripText5
-
-nuntius_printer_currentDisplayTextureFolder
 
 IBIS_Complex_Line

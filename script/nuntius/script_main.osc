@@ -61,6 +61,13 @@
 
 'triggers if the menu-button was clicked
 {trigger:nuntius_printer_menu}
+	(L.L.nuntius_printer_page) 20 =
+	{if}
+		2 (M.L.nuntius_printer_goToPage)
+	{else}
+		20 (M.L.nuntius_printer_goToPage)
+	{endif}
+	(M.L.nuntius_printer_playSoundNormal)
 {end}
 
 'triggers if the switch-main-busston-menu-button was clicked
@@ -313,6 +320,45 @@
 	3 (M.L.nuntius_printer_playSpecialAnnouncement)
 {end}
 
+{trigger:nuntius_printer_menuItem0}
+{end}
+
+{trigger:nuntius_printer_menuItem1}
+{end}
+
+{trigger:nuntius_printer_menuItem2}
+{end}
+
+{trigger:nuntius_printer_menuItem3}
+{end}
+
+{trigger:nuntius_printer_menuAppearanceThemeAuto}
+	0 (S.L.nuntius_printer_colorSchemeSetting)
+	(M.L.nuntius_printer_updateColorScheme)
+	20 (M.L.nuntius_printer_goToPage)
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
+{trigger:nuntius_printer_menuAppearanceThemeLight}
+	1 (S.L.nuntius_printer_colorSchemeSetting)
+	"nuntius\ui_default_light\" (S.$.nuntius_printer_currentDisplayTextureFolder)
+	20 (M.L.nuntius_printer_goToPage)
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
+{trigger:nuntius_printer_menuAppearanceThemeDark}
+	2 (S.L.nuntius_printer_colorSchemeSetting)
+	"nuntius\ui_default_dark\" (S.$.nuntius_printer_currentDisplayTextureFolder)
+	20 (M.L.nuntius_printer_goToPage)
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
+{trigger:nuntius_printer_menuAppearanceBrightnessIncrease}
+{end}
+
+{trigger:nuntius_printer_menuAppearanceBrightnessDecrease}
+{end}
+
 
 '################################
 'Init and frame
@@ -336,15 +382,8 @@
 	(M.L.nuntius_api_power) (S.L.nuntius_api_power)
 	(M.L.nuntius_api_doorsOpen) (S.L.nuntius_api_doorsOpen)
 
-'Update dark mode
-	(L.S.SunAlt) 2.5 <
-	{if}
-		"nuntius\ui_default_dark\" (S.$.nuntius_printer_currentDisplayTextureFolder)
-		2 (S.L.nuntius_printer_colorScheme)
-	{else}
-		"nuntius\ui_default_light\" (S.$.nuntius_printer_currentDisplayTextureFolder)
-		1 (S.L.nuntius_printer_colorScheme)
-	{endif}
+'Update colorscheme
+	(M.L.nuntius_printer_updateColorScheme)
 
 	(M.L.nuntius_printer_refreshDelay)
 	(M.L.nuntius_printer_bootHandler)
@@ -576,6 +615,29 @@
 	{if}
 		0 (S.L.nuntius_ticket) (S.L.nuntius_ticketAnim) (S.L.nuntius_ticketPrinting) (S.L.nuntius_ticketPrintingTimer)
 		-1 (S.L.nuntius_printer_givenTicket)
+	{endif}
+{end}
+
+{macro:nuntius_printer_updateColorScheme}
+	(L.L.nuntius_printer_colorScheme) s0
+
+	(L.L.nuntius_printer_colorSchemeSetting) 0 =
+	{if}
+		(L.S.SunAlt) 2.5 < 1 + 
+	{else}
+		(L.L.nuntius_printer_colorSchemeSetting)
+	{endif}
+	(S.L.nuntius_printer_colorScheme)
+
+	1 -
+	{if}   "nuntius\ui_default_dark\"
+	{else} "nuntius\ui_default_light\"
+	{endif}
+	(S.$.nuntius_printer_currentDisplayTextureFolder)
+
+	l0 (L.L.nuntius_printer_colorScheme) = !
+	{if}
+		(L.L.nuntius_printer_page) (M.L.nuntius_printer_goToPage)
 	{endif}
 {end}
 
@@ -1219,6 +1281,12 @@ s0
 
 'Departure page
 	(L.L.nuntius_printer_page) 11 =
+	{if}
+		2 (M.L.nuntius_printer_goToPage)
+	{endif}
+
+'Menu page
+	(L.L.nuntius_printer_page) 20 =
 	{if}
 		2 (M.L.nuntius_printer_goToPage)
 	{endif}
@@ -2148,6 +2216,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 		{endif}
 		
 '1: Login Page
@@ -2176,6 +2245,7 @@ s0
 			1 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 			
 			2 (S.L.nuntius_printer_InputFieldCount)
 			1 (S.L.nuntius_printer_currentInputField)
@@ -2221,6 +2291,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 		{endif}
 
 '3: Busstop Page
@@ -2249,6 +2320,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 		{endif}
 		
 '4: LKR Page
@@ -2277,6 +2349,7 @@ s0
 			1 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 			
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2313,6 +2386,7 @@ s0
 			1 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 			
 			1 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2353,6 +2427,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			1 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 			
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2387,6 +2462,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 		{endif}
 
 '8: Login from break page Page
@@ -2415,6 +2491,7 @@ s0
 			1 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 			
 			1 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2448,6 +2525,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 			
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2488,6 +2566,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 			
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2528,6 +2607,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
 			
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2560,6 +2640,42 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsNumpad)
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			1 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			0 (M.L.nuntius_printer_showUiMenuNav)
+			
+			0 (S.L.nuntius_printer_InputFieldCount)
+			0 (S.L.nuntius_printer_currentInputField)
+			0 (S.L.nuntius_printer_inputFieldsEnabled)
+		{endif}
+
+'12: Menu
+		l0 20 =
+		{if}
+			(L.$.nuntius_printer_currentDisplayTextureFolder)
+			(L.L.nuntius_printer_colorSchemeSetting) 0 = {if} "Menu_Apperance_ThemeAuto.dds" {else} "Menu_Apperance_ThemeManual.dds" {endif} $+ (S.$.nuntius_printer_ui_texture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
+			
+			1 (M.L.nuntius_printer_showUiElementsTime)
+			1 (M.L.nuntius_printer_showUiElementsDelay)
+			1 (M.L.nuntius_printer_showUiElementsLineInformation)
+			0 (M.L.nuntius_printer_showUiElementsBusstopList)
+			0 (M.L.nuntius_printer_showUiElementsHomeButtons)
+			1 (M.L.nuntius_printer_showUiElementsButtonBack)
+			0 (M.L.nuntius_printer_showUiElementsButtonApply)
+			0 (M.L.nuntius_printer_showUiElementsButtonReset)
+			0 (M.L.nuntius_printer_showUiElementsButtonAuto)
+			1 (M.L.nuntius_printer_showUiElementsButtonMenu)
+			0 (M.L.nuntius_printer_showUiElementsButtonBusstopMenu)
+			0 (M.L.nuntius_printer_showUiElementsTicketList)
+			0 (M.L.nuntius_printer_showUiElementsTicketSelection)
+			0 (M.L.nuntius_printer_showUiElementsBusstopFooter)
+			0 (M.L.nuntius_printer_showUiElementsInput0)
+			0 (M.L.nuntius_printer_showUiElementsInput1)
+			0 (M.L.nuntius_printer_showUiElementsInput2)
+			0 (M.L.nuntius_printer_showUiElementsNumpad)
+			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
+			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
+			1 (M.L.nuntius_printer_showUiMenuNav)
+			1 (M.L.nuntius_printer_showUiMenuAppearance)
 			
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2684,6 +2800,18 @@ s0
 
 {macro:nuntius_printer_showUiConfirmNextTrip}
 	(S.L.nuntius_printer_visConfirmNextTrip)
+{end}
+
+{macro:nuntius_printer_showUiMenuNav}
+	(S.L.nuntius_printer_visMenuNav)
+	0 =
+	{if}
+		0 (M.L.nuntius_printer_showUiMenuAppearance)
+	{endif}
+{end}
+
+{macro:nuntius_printer_showUiMenuAppearance}
+	(S.L.nuntius_printer_visMenuAppearance)
 {end}
 
 {macro:nuntius_printer_playSoundNormal}

@@ -17,6 +17,8 @@ nuntius_api_terminusIndex
 
 nuntius_printer_page
 nuntius_printer_colorScheme
+nuntius_printer_colorSchemeSetting
+nuntius_printer_brightness
 nuntius_printer_bootStatus
 nuntius_printer_bootTimer
 nuntius_printer_batteryTimer
@@ -74,6 +76,8 @@ nuntius_printer_visBusstopFooter
 nuntius_printer_visAnnouncements
 nuntius_printer_visPleaseWait
 nuntius_printer_visConfirmNextTrip
+nuntius_printer_visMenuNav
+nuntius_printer_visMenuAppearance
 
 nuntius_printer_font_28pxRegular
 nuntius_printer_font_38pxRegular
