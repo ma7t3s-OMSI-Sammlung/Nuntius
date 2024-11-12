@@ -460,9 +460,9 @@
 ' Second line line
 			(C.L.nuntius_printer_scriptTextureIndex2) 4   38 (L.L.nuntius_printer_font_38pxMedium) 1 0 (L.$.nuntius_printer_ui_line2) (M.V.STTextOut)
 ' First line terminus
-			(C.L.nuntius_printer_scriptTextureIndex2) 128  0 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_terminus1) (M.V.STTextOut)
+			(C.L.nuntius_printer_scriptTextureIndex2) 142  0 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_terminus1) (M.V.STTextOut)
 ' Second line terminus
-			(C.L.nuntius_printer_scriptTextureIndex2) 128 38 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_terminus2) (M.V.STTextOut)
+			(C.L.nuntius_printer_scriptTextureIndex2) 142 38 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_terminus2) (M.V.STTextOut)
 		{endif}
 
 '******************************************
