@@ -507,14 +507,20 @@
 '******************************************
 ' Input Fields
 '******************************************
+		(L.$.nuntius_printer_ui_input0)
+		(L.L.nuntius_printer_visInput0) (L.L.nuntius_printer_inputsCensored) 2 % 1 = && {if} $length "*" $* {endif}
 		(L.L.nuntius_printer_visInput0)
-		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 128 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_input0) (M.V.STTextOut) {endif}
+		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 128 (L.L.nuntius_printer_font_72pxRegular) 1 0 (M.V.STTextOut) {endif}
 
+		(L.$.nuntius_printer_ui_input1)
+		(L.L.nuntius_printer_visInput1) (L.L.nuntius_printer_inputsCensored) 4 % 2 >= && {if} $length "*" $* {endif}
 		(L.L.nuntius_printer_visInput1)
-		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 261 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_input1) (M.V.STTextOut) {endif}
+		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 261 (L.L.nuntius_printer_font_72pxRegular) 1 0 (M.V.STTextOut) {endif}
 
+		(L.$.nuntius_printer_ui_input2)
+		(L.L.nuntius_printer_visInput2) (L.L.nuntius_printer_inputsCensored) 4 >= && {if} $length "*" $* {endif}
 		(L.L.nuntius_printer_visInput2)
-		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 394 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_input2) (M.V.STTextOut) {endif}
+		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 394 (L.L.nuntius_printer_font_72pxRegular) 1 0 (M.V.STTextOut) {endif}
 	{endif}
 
 '******************************************
@@ -2250,6 +2256,7 @@ s0
 			2 (S.L.nuntius_printer_InputFieldCount)
 			1 (S.L.nuntius_printer_currentInputField)
 			1 (S.L.nuntius_printer_inputFieldsEnabled)
+			2 (S.L.nuntius_printer_inputsCensored)
 
 			(M.L.nuntius_printer_resetInputFields)
 			(C.L.nuntius_printer_driverID) $IntToStr (S.$.nuntius_printer_ui_input0)
@@ -2354,6 +2361,7 @@ s0
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			1 (S.L.nuntius_printer_inputFieldsEnabled)
+			0 (S.L.nuntius_printer_inputsCensored)
 			
 			(L.L.nuntius_printer_Line) $IntToStr (S.$.nuntius_printer_ui_input0)
 			(L.L.nuntius_printer_Route) $IntToStr (S.$.nuntius_printer_ui_input1)
@@ -2391,6 +2399,7 @@ s0
 			1 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			1 (S.L.nuntius_printer_inputFieldsEnabled)
+			0 (S.L.nuntius_printer_inputsCensored)
 
 			(M.L.nuntius_printer_resetInputFields)
 		{endif}
@@ -2496,6 +2505,7 @@ s0
 			1 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			1 (S.L.nuntius_printer_inputFieldsEnabled)
+			1 (S.L.nuntius_printer_inputsCensored)
 			(M.L.nuntius_printer_resetInputFields)
 		{endif}
 
@@ -2530,6 +2540,7 @@ s0
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
+			0 (S.L.nuntius_printer_inputsCensored)
 			
 			(L.L.nuntius_printer_soldTicketsCount) $IntToStr (S.$.nuntius_printer_ui_input0)
 			(L.L.nuntius_printer_cancellationCount) $IntToStr (S.$.nuntius_printer_ui_input1)
@@ -2571,6 +2582,7 @@ s0
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
+			0 (S.L.nuntius_printer_inputsCensored)
 			
 			(L.L.nuntius_printer_soldTicketsCount) $IntToStr (S.$.nuntius_printer_ui_input0)
 			(L.L.nuntius_printer_cancellationCount) $IntToStr (S.$.nuntius_printer_ui_input1)

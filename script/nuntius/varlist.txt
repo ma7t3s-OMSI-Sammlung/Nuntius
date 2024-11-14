@@ -30,6 +30,7 @@ nuntius_printer_autoBusstopPageSwitch
 nuntius_printer_InputFieldCount
 nuntius_printer_currentInputField
 nuntius_printer_inputFieldsEnabled
+nuntius_printer_inputsCensored
 nuntius_printer_RouteMode
 nuntius_printer_Line
 nuntius_printer_Route
