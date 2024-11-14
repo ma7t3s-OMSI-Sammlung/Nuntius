@@ -1742,25 +1742,30 @@ s0
 '0 = announcement index
 {macro:nuntius_printer_playSpecialAnnouncement}
 	s0
+
+	"..\..\Announcements\" 0 (M.V.GetDepotStringGlobal) $+ "\nuntius\" $+
+
 	l0 0 =
 	{if}
-		"nuntius\Ansage_Tueren_freihalten.wav"
+		"Ansage_Tueren_freihalten.wav"
 	{endif}
 
 	l0 1 =
 	{if}
-		"nuntius\Ansage_Nach_hinten_durchgehen.wav"
+		"Ansage_Nach_hinten_durchgehen.wav"
 	{endif}
 
 	l0 2 =
 	{if}
-		"nuntius\Ansage_Umleitung.wav"
+		"Ansage_Umleitung.wav"
 	{endif}
 
 	l0 3 =
 	{if}
-		"nuntius\Ansage_Fahrtende.wav"
+		"Ansage_Fahrtende.wav"
 	{endif}
+
+	$+
 
 	(T.F.nuntius_busstop_announcement)
 	(M.L.nuntius_printer_playSoundNormal)
