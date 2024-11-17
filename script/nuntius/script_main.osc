@@ -1848,6 +1848,7 @@ s0
 '0 = Field index (0-4, 0 = current, 4 = "most future")
 '1 = target busstop route index
 '2 = The Routes index
+'3 = The busstop index in the hof file
 
 	s0
 
@@ -1882,9 +1883,12 @@ s0
 'if the busstop count is bigger than the target index (which means the busstop will exist)
 		(M.V.GetTTBusstopCount) l1 >
 		{if}
-'get the busstops name
+'get the busstops name (if there is a busstop inside the hof file named the same, use it's IBIS-2 string instead of the busstop cube name)
 			l1
-			(M.V.GetTTBusstopName)
+			(M.V.GetTTBusstopName) (M.V.GetBusstopIndex) s3 -1 = !
+			{if}
+				l3 3 (M.V.GetBusstopString)
+			{endif}
 		{else}
 'else return nullstring
 			""
@@ -1893,14 +1897,22 @@ s0
 {end}
 
 {macro:nuntius_printer_getLastBusstopListEntry}
+'Register:
+'0 = <unused>
+'1 = target busstop route index
+'3 = The busstop index in the hof file
+
 	(L.L.nuntius_printer_RouteMode) 0 = !
 	{if}
 		(L.L.nuntius_printer_RouteMode) 1 =
 		{if}
-			(M.V.GetTTBusstopCount) 1 - (M.V.GetTTBusstopName)
+			(M.V.GetTTBusstopCount) 1 - s1 (M.V.GetTTBusstopName) (M.V.GetBusstopIndex) s3 -1 = !
+			{if}
+				l3 3 (M.V.GetBusstopString)
+			{endif}
 		{else}
-				(L.L.nuntius_printer_RouteIndex) s0 (M.V.GetBusstopCount) 1 - s1 l0 l1 (M.V.GetRouteBusstopIdent) (M.V.GetBusstopIndex)
-				3 (M.V.GetBusstopString)
+			(L.L.nuntius_printer_RouteIndex) s0 (M.V.GetBusstopCount) 1 - s1 l0 l1 (M.V.GetRouteBusstopIdent) (M.V.GetBusstopIndex)
+			3 (M.V.GetBusstopString)
 		{endif}
 	{else}
 		""
