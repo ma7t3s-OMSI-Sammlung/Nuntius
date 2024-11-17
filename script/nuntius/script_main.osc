@@ -1189,7 +1189,7 @@ s0
 'confirm next trip page
 	(L.L.nuntius_printer_page) 12 =
 	{if}
-		(M.L.nuntius_printer_acceptNextTrip)
+		(M.L.nuntius_printer_loadTTTrip)
 	{endif}
 {end}
 
@@ -1434,32 +1434,18 @@ s0
 'route and trip functions
 '################################
 
-{macro:nuntius_printer_acceptNextTrip}
-'refresh
-	1 (S.L.nuntius_printer_RouteMode)
-
-	(M.V.GetTTTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
-	(M.L.nuntius_printer_refreshLineUI)
-
-	2 (M.L.nuntius_printer_goToPage)
-{end}
-
 {macro:nuntius_printer_denyNextTrip}
 	(M.L.nuntius_printer_removeTrip)
 	2 (M.L.nuntius_printer_goToPage)
 {end}
 
 {macro:nuntius_printer_acceptNextTripWithBreak}
-'refresh
-	1 (S.L.nuntius_printer_RouteMode)
+	(M.L.nuntius_printer_loadTTTrip)
 
-	(M.V.GetTTTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
 	(L.L.nuntius_printer_hasHofFileOptions)
 	{if}
 		(M.L.nuntius_printer_startBreak)
 	{endif}
-	(M.L.nuntius_printer_refreshLineUI)
-
 	7 (M.L.nuntius_printer_goToPage)
 {end}
 
