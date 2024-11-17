@@ -1888,6 +1888,8 @@ s0
 			(M.V.GetTTBusstopName) (M.V.GetBusstopIndex) s3 -1 = !
 			{if}
 				l3 3 (M.V.GetBusstopString)
+			{else}
+				l1 (M.V.GetTTBusstopName)
 			{endif}
 		{else}
 'else return nullstring
@@ -1909,6 +1911,8 @@ s0
 			(M.V.GetTTBusstopCount) 1 - s1 (M.V.GetTTBusstopName) (M.V.GetBusstopIndex) s3 -1 = !
 			{if}
 				l3 3 (M.V.GetBusstopString)
+			{else}
+				l1 (M.V.GetTTBusstopName)
 			{endif}
 		{else}
 			(L.L.nuntius_printer_RouteIndex) s0 (M.V.GetBusstopCount) 1 - s1 l0 l1 (M.V.GetRouteBusstopIdent) (M.V.GetBusstopIndex)
