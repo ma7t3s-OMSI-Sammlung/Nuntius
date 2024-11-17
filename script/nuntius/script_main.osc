@@ -849,6 +849,8 @@
 		(M.V.GetTTDelay) 0 >= (L.L.nuntius_printer_showDeparturePage) 1 = &&
 		{if}
 			(L.L.velocity) abs 10 <
+			(L.L.nuntius_printer_page) 2 =
+			(L.L.nuntius_printer_page) 3 = || &&
 			{if}
 'show page
 				11 (M.L.nuntius_printer_goToPage)
