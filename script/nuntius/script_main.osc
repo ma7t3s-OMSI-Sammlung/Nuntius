@@ -1821,15 +1821,15 @@ s0
 
 	(L.L.nuntius_printer_RouteMode) 1 = (L.L.nuntius_printer_RouteMode) 2 = ||
 	{if}
-		0 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_printer_ui_busstop0) (S.$.nuntius_api_busstop0)
-		1 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_printer_ui_busstop1) (S.$.nuntius_api_busstop1)
-		2 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_printer_ui_busstop2) (S.$.nuntius_api_busstop2)
-		3 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_printer_ui_busstop3) (S.$.nuntius_api_busstop3)
-		4 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_printer_ui_busstop4) (S.$.nuntius_api_busstop4)
-		(M.L.nuntius_printer_getLastBusstopListEntry) (S.$.nuntius_printer_ui_busstop_end)
-		5 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop5)
-		6 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop6)
-		7 (M.L.nuntius_printer_getBusstopListEntry) (S.$.nuntius_api_busstop7)
+		0 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxMedium)  352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop0) (S.$.nuntius_api_busstop0)
+		1 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop1) (S.$.nuntius_api_busstop1)
+		2 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop2) (S.$.nuntius_api_busstop2)
+		3 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop3) (S.$.nuntius_api_busstop3)
+		4 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop4) (S.$.nuntius_api_busstop4)
+		(M.L.nuntius_printer_getLastBusstopListEntry) (L.L.nuntius_printer_font_38pxMedium)  352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop_end)
+		5 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop5)
+		6 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop6)
+		7 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop7)
 	{endif}
 
 	(M.L.nuntius_printer_refreshBusstopTimeList)
@@ -2013,14 +2013,14 @@ s0
 
 'loads all tickets
 {macro:nuntius_printer_loadTickets}
-	0 (M.V.GetTicketValue) 0 = ! {if} 0 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName0)
-	1 (M.V.GetTicketValue) 0 = ! {if} 1 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName1)
-	2 (M.V.GetTicketValue) 0 = ! {if} 2 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName2)
-	3 (M.V.GetTicketValue) 0 = ! {if} 3 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName3)
-	4 (M.V.GetTicketValue) 0 = ! {if} 4 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName4)
-	5 (M.V.GetTicketValue) 0 = ! {if} 5 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName5)
-	6 (M.V.GetTicketValue) 0 = ! {if} 6 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName6)
-	7 (M.V.GetTicketValue) 0 = ! {if} 7 (M.V.GetTicketName) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName7)
+	0 (M.V.GetTicketValue) 0 = ! {if} 0 (M.V.GetTicketName) (L.L.nuntius_printer_font_38pxRegular) 214 (M.L.nuntius_printer_shortenString) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName0)
+	1 (M.V.GetTicketValue) 0 = ! {if} 1 (M.V.GetTicketName) (L.L.nuntius_printer_font_38pxRegular) 214 (M.L.nuntius_printer_shortenString) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName1)
+	2 (M.V.GetTicketValue) 0 = ! {if} 2 (M.V.GetTicketName) (L.L.nuntius_printer_font_38pxRegular) 214 (M.L.nuntius_printer_shortenString) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName2)
+	3 (M.V.GetTicketValue) 0 = ! {if} 3 (M.V.GetTicketName) (L.L.nuntius_printer_font_38pxRegular) 214 (M.L.nuntius_printer_shortenString) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName3)
+	4 (M.V.GetTicketValue) 0 = ! {if} 4 (M.V.GetTicketName) (L.L.nuntius_printer_font_38pxRegular) 214 (M.L.nuntius_printer_shortenString) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName4)
+	5 (M.V.GetTicketValue) 0 = ! {if} 5 (M.V.GetTicketName) (L.L.nuntius_printer_font_38pxRegular) 214 (M.L.nuntius_printer_shortenString) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName5)
+	6 (M.V.GetTicketValue) 0 = ! {if} 6 (M.V.GetTicketName) (L.L.nuntius_printer_font_38pxRegular) 214 (M.L.nuntius_printer_shortenString) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName6)
+	7 (M.V.GetTicketValue) 0 = ! {if} 7 (M.V.GetTicketName) (L.L.nuntius_printer_font_38pxRegular) 214 (M.L.nuntius_printer_shortenString) {else} "" {endif} (S.$.nuntius_printer_ui_ticketName7)
 
 	0 (M.V.GetTicketValue) 0 = ! {if} 0 (M.L.nuntius_printer_getTicketPrice) " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticketPrice0)
 	1 (M.V.GetTicketValue) 0 = ! {if} 1 (M.L.nuntius_printer_getTicketPrice) " €" $+ {else} "" {endif} (S.$.nuntius_printer_ui_ticketPrice1)
@@ -2847,4 +2847,124 @@ s0
 	{if}
 		(T.L.nuntius_printer_error)
 	{endif}
+{end}
+
+'################################
+'General Tools
+'################################
+
+'Shortens a string to a maximum length of pixels
+'Arguments:
+'1 = font index
+'0 = maximum length (= field width)
+'string0 = the string to modify
+{macro:nuntius_printer_shortenString}
+'Register use:
+'0 = maximum length
+'1 = font index
+'2 = width of one full stop (".")
+
+	s0
+
+'get back the font index by adding the two top stack values and than subtracting the first one
+	+ l0 - s1
+	(S.$.nuntius_printer_tmpStr1)
+	l1 (M.V.TextLength) l0 <= !
+	{if}
+'subtract width of full stop ("."), because it will be added again after all
+		"." (M.V.TextLength) s2
+		l0 l2 - s0
+
+		(M.L.nuntius_printer_shortenString_checkPresets)
+
+		(L.$.nuntius_printer_tmpStr1) l1 (M.V.TextLength) l0 <= ! {if} (M.L.nuntius_printer_shortenString_loop) {endif}
+		(L.$.nuntius_printer_tmpStr1) l1 (M.V.TextLength) l0 <= ! {if} (M.L.nuntius_printer_shortenString_loop) {endif}
+		(L.$.nuntius_printer_tmpStr1) l1 (M.V.TextLength) l0 <= ! {if} (M.L.nuntius_printer_shortenString_loop) {endif}
+		(L.$.nuntius_printer_tmpStr1) l1 (M.V.TextLength) l0 <= ! {if} (M.L.nuntius_printer_shortenString_loop) {endif}
+		(L.$.nuntius_printer_tmpStr1) l1 (M.V.TextLength) l0 <= ! {if} (M.L.nuntius_printer_shortenString_loop) {endif}
+		(L.$.nuntius_printer_tmpStr1) l1 (M.V.TextLength) l0 <= ! {if} (M.L.nuntius_printer_shortenString_loop) {endif}
+		(L.$.nuntius_printer_tmpStr1) l1 (M.V.TextLength) l0 <= ! {if} (M.L.nuntius_printer_shortenString_loop) {endif}
+		(L.$.nuntius_printer_tmpStr1) l1 (M.V.TextLength) l0 <= ! {if} (M.L.nuntius_printer_shortenString_loop) {endif}
+		(L.$.nuntius_printer_tmpStr1) l1 (M.V.TextLength) l0 <= ! {if} (M.L.nuntius_printer_shortenString_loop) {endif}
+		(L.$.nuntius_printer_tmpStr1) l1 (M.V.TextLength) l0 <= ! {if} (M.L.nuntius_printer_shortenString_loop) {endif}
+
+' add "." and finished, but only if it does not end with ")"
+		(L.$.nuntius_printer_tmpStr1) 1 $SetLengthR ")" $= !
+		{if}
+			(L.$.nuntius_printer_tmpStr1) "." $+ (S.$.nuntius_printer_tmpStr1)
+		{else}
+			(L.$.nuntius_printer_tmpStr1)
+		{endif}
+	{else}
+		(L.$.nuntius_printer_tmpStr1)
+	{endif}
+{end}
+
+{macro:nuntius_printer_shortenString_checkPresets}
+	(L.$.nuntius_printer_tmpStr1) 6 $SetLengthR "Straße" $= {if}        (L.$.nuntius_printer_tmpStr1) 3 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 6 $SetLengthR "straße" $= {if}        (L.$.nuntius_printer_tmpStr1) 3 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 6 $SetLengthR "STRAßE" $= {if}        (L.$.nuntius_printer_tmpStr1) 3 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "Strasse" $= {if}       (L.$.nuntius_printer_tmpStr1) 4 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "strasse" $= {if}       (L.$.nuntius_printer_tmpStr1) 4 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "STRASSE" $= {if}       (L.$.nuntius_printer_tmpStr1) 4 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 3 $SetLengthR "Weg" $= {if}           (L.$.nuntius_printer_tmpStr1) 2 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 3 $SetLengthR "weg" $= {if}           (L.$.nuntius_printer_tmpStr1) 2 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 3 $SetLengthR "WEG" $= {if}           (L.$.nuntius_printer_tmpStr1) 2 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 5 $SetLengthR "Platz" $= {if}         (L.$.nuntius_printer_tmpStr1) 3 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 5 $SetLengthR "platz" $= {if}         (L.$.nuntius_printer_tmpStr1) 3 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 5 $SetLengthR "PLATZ" $= {if}         (L.$.nuntius_printer_tmpStr1) 3 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 5 $SetLengthR "Markt" $= {if}         (L.$.nuntius_printer_tmpStr1) 4 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 5 $SetLengthR "markt" $= {if}         (L.$.nuntius_printer_tmpStr1) 4 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 5 $SetLengthR "MARKT" $= {if}         (L.$.nuntius_printer_tmpStr1) 4 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 5 $SetLengthR "Allee" $= {if}         (L.$.nuntius_printer_tmpStr1) 3 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 5 $SetLengthR "allee" $= {if}         (L.$.nuntius_printer_tmpStr1) 3 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 5 $SetLengthR "ALLEE" $= {if}         (L.$.nuntius_printer_tmpStr1) 3 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "Bahnhof" $= {if}       (L.$.nuntius_printer_tmpStr1) 7 $cutEnd "Bhf" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "bahnhof" $= {if}       (L.$.nuntius_printer_tmpStr1) 7 $cutEnd "bhf" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "BAHNHOF" $= {if}       (L.$.nuntius_printer_tmpStr1) 7 $cutEnd "BHF" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 12 $SetLengthR "Hauptbahnhof" $= {if} (L.$.nuntius_printer_tmpStr1) 12 $cutEnd "Hbf" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 12 $SetLengthR "hauptbahnhof" $= {if} (L.$.nuntius_printer_tmpStr1) 12 $cutEnd "hbf" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 12 $SetLengthR "HAUPTBAHNHOF" $= {if} (L.$.nuntius_printer_tmpStr1) 12 $cutEnd "HBF" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "Ankunft" $= {if}       (L.$.nuntius_printer_tmpStr1) 5 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "ankunft" $= {if}       (L.$.nuntius_printer_tmpStr1) 5 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "ANKUNFT" $= {if}       (L.$.nuntius_printer_tmpStr1) 5 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 9 $SetLengthR "(Ankunft)" $= {if}     (L.$.nuntius_printer_tmpStr1) 9 $cutEnd "(An)" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 9 $SetLengthR "(ankunft)" $= {if}     (L.$.nuntius_printer_tmpStr1) 9 $cutEnd "(an)" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 9 $SetLengthR "(ANKUNFT)" $= {if}     (L.$.nuntius_printer_tmpStr1) 9 $cutEnd "(AN)" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "Abfahrt" $= {if}       (L.$.nuntius_printer_tmpStr1) 5 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "abfahrt" $= {if}       (L.$.nuntius_printer_tmpStr1) 5 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 7 $SetLengthR "ABFAHRT" $= {if}       (L.$.nuntius_printer_tmpStr1) 5 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
+
+	(L.$.nuntius_printer_tmpStr1) 9 $SetLengthR "(Abfahrt)" $= {if}     (L.$.nuntius_printer_tmpStr1) 9 $cutEnd "(Ab)" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 9 $SetLengthR "(abfahrt)" $= {if}     (L.$.nuntius_printer_tmpStr1) 9 $cutEnd "(ab)" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+	(L.$.nuntius_printer_tmpStr1) 9 $SetLengthR "(ABFAHRT)" $= {if}     (L.$.nuntius_printer_tmpStr1) 9 $cutEnd "(AB)" $+ (S.$.nuntius_printer_tmpStr1) {endif}
+{end}
+
+{macro:nuntius_printer_shortenString_loop}
+	(M.L.nuntius_printer_shortenString_removeOneChar)
+	(M.L.nuntius_printer_shortenString_removeOneChar)
+	(M.L.nuntius_printer_shortenString_removeOneChar)
+	(M.L.nuntius_printer_shortenString_removeOneChar)
+	(M.L.nuntius_printer_shortenString_removeOneChar)
+	(M.L.nuntius_printer_shortenString_removeOneChar)
+	(M.L.nuntius_printer_shortenString_removeOneChar)
+	(M.L.nuntius_printer_shortenString_removeOneChar)
+	(M.L.nuntius_printer_shortenString_removeOneChar)
+	(M.L.nuntius_printer_shortenString_removeOneChar)
+{end}
+
+{macro:nuntius_printer_shortenString_removeOneChar}
+	(L.$.nuntius_printer_tmpStr1)
+	l1 (M.V.TextLength) l0 <= !
+	{if} (L.$.nuntius_printer_tmpStr1) 1 $cutEnd (S.$.nuntius_printer_tmpStr1) {endif}
 {end}
