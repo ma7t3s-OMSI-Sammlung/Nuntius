@@ -21,6 +21,11 @@ nuntius_printer_scriptTextureIndex1
 nuntius_printer_scriptTextureIndex2
 3
 
+Aktiviert bzw. deaktiviert den Debug-Modus (hilft bei einigen Dingen zum Testen, z.B. beim Einbau im Bus)
+[const]
+nuntius_debugMode
+0
+
 Legt die Fahrer-ID ("Benutzername") fest
 [const]
 nuntius_printer_driverID

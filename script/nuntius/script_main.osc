@@ -374,16 +374,17 @@
 	(L.$.nuntius_printer_currentDisplayTextureFolder) "Black.dds" $+ (S.$.nuntius_printer_ui_texture)
 
 'execute Daueranimation
-	(C.L.nuntius_printerPositionX) (S.L.nuntius_daueranimationX)
-	(C.L.nuntius_printerPositionY) (S.L.nuntius_daueranimationY)
-	(C.L.nuntius_printerPositionZ) (S.L.nuntius_daueranimationZ)
-	(C.L.nuntius_printerRotation) (S.L.nuntius_daueranimationRotation)
+	(M.L.nuntius_printer_executeDaueranimation)
 
 	(M.L.nuntius_printer_initFonts)
 	1 (S.L.nuntius_printer_updateScriptTexture)
 {end}
 
 {macro:nuntius_printer_frame}
+'debug
+	(C.L.nuntius_debugMode)
+	{if} (M.L.nuntius_printer_executeDaueranimation) {endif}
+
 'API calls
 	(M.L.nuntius_api_power) (S.L.nuntius_api_power)
 	(M.L.nuntius_api_doorsOpen) (S.L.nuntius_api_doorsOpen)
@@ -419,6 +420,13 @@
 
 	(L.L.nuntius_printer_updateScriptTexture)
 	{if} (M.L.nuntius_printer_renderScriptTexture2) {endif}
+{end}
+
+{macro:nuntius_printer_executeDaueranimation}
+	(C.L.nuntius_printerPositionX) (S.L.nuntius_daueranimationX)
+	(C.L.nuntius_printerPositionY) (S.L.nuntius_daueranimationY)
+	(C.L.nuntius_printerPositionZ) (S.L.nuntius_daueranimationZ)
+	(C.L.nuntius_printerRotation)  (S.L.nuntius_daueranimationRotation)
 {end}
 
 {macro:nuntius_printer_initFonts}
