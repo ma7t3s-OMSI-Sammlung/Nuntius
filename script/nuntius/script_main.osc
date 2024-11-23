@@ -320,6 +320,12 @@
 	3 (M.L.nuntius_printer_playSpecialAnnouncement)
 {end}
 
+{trigger:nuntius_printer_announcementsOnOff}
+	(L.L.nuntius_printer_AnnouncementsAreActive) ! (S.L.nuntius_printer_AnnouncementsAreActive)
+	6 (M.L.nuntius_printer_goToPage)
+	(M.L.nuntius_printer_playSoundNormal)
+{end}
+
 {trigger:nuntius_printer_menuItem0}
 {end}
 
@@ -770,6 +776,7 @@
 	(S.L.nuntius_printer_selectedTicket)
 	(S.L.nuntius_printer_givenTicket)
 	(S.L.nuntius_printer_showDeparturePage)
+	(S.L.nuntius_printer_AnnouncementsAreActive)
 {end}
 
 'turns the printers screen off
@@ -2417,7 +2424,6 @@ s0
 		l0 6 =
 		{if}
 			(L.L.nuntius_printer_AnnouncementsAreActive)
-
 			{if}
 				(L.$.nuntius_printer_currentDisplayTextureFolder) "Announcements_BusstopAnnouncementsOn.dds" $+ (S.$.nuntius_printer_ui_texture)
 			{else}
