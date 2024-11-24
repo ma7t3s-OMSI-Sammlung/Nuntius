@@ -58,6 +58,7 @@ nuntius_printer_updateScriptTexture
 nuntius_printer_scriptTextureCurrentIndex
 nuntius_printer_scriptTextureState
 
+nuntius_printer_visCompanyLogo
 nuntius_printer_visTime
 nuntius_printer_visDelay
 nuntius_printer_visLineInformation

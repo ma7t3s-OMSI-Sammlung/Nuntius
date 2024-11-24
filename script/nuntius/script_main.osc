@@ -2241,6 +2241,8 @@ s0
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Welcome.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
+
+			1 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			0 (M.L.nuntius_printer_showUiElementsDelay)
 			0 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2270,6 +2272,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Login_withID_PIN.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			0 (M.L.nuntius_printer_showUiElementsDelay)
 			0 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2317,6 +2320,7 @@ s0
 			{endif}
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2346,6 +2350,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Busstop.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2375,6 +2380,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "LKR_man_Line.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2413,6 +2419,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Terminus_Terminus.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2454,6 +2461,7 @@ s0
 			{endif}
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2489,6 +2497,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Break.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 
+			1 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2518,6 +2527,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Login_withoutID_PIN.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2553,6 +2563,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "DriverSwitch.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2595,6 +2606,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "ShiftEnd.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2637,6 +2649,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Departure.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2670,6 +2683,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "confirmNextTrip.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\ConfirmNextTrip.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			0 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2704,6 +2718,7 @@ s0
 			(L.L.nuntius_printer_colorSchemeSetting) 0 = {if} "Menu_Apperance_ThemeAuto.dds" {else} "Menu_Apperance_ThemeManual.dds" {endif} $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
+			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
 			1 (M.L.nuntius_printer_showUiElementsLineInformation)
@@ -2766,6 +2781,10 @@ s0
 	(S.L.nuntius_printer_visBusstopFooter)
 	(S.L.nuntius_printer_visAnnouncements)
 	(S.L.nuntius_printer_visPleaseWait)
+{end}
+
+{macro:nuntius_printer_showUiElementsCompanyLogo}
+	(S.L.nuntius_printer_visCompanyLogo)
 {end}
 
 {macro:nuntius_printer_showUiElementsTime}
