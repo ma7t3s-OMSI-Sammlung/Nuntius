@@ -377,7 +377,7 @@
 	(M.L.nuntius_printer_executeDaueranimation)
 
 	(M.L.nuntius_printer_initFonts)
-	1 (S.L.nuntius_printer_updateScriptTexture)
+	(M.L.nuntius_printer_scheduleScriptTextForUpdate)
 {end}
 
 {macro:nuntius_printer_frame}
@@ -401,12 +401,6 @@
 	(M.L.nuntius_printer_updateCurrentBusstopIndex)
 	(M.L.nuntius_updateTicket)
 	(M.L.nuntius_ticketPrintHandler)
-
-'refresh home page (necessary, to update autoHFS-Button appearance)
-' (L.L.nuntius_printer_page) 2 =
-' {if}
-' 	2 (M.L.nuntius_printer_goToPage)
-' {endif}
 	
 	(M.L.nuntius_api_frame) 
 
@@ -415,11 +409,23 @@
 'Refresh Strings
 	1 (S.L.Refresh_Strings)
 
-' Render Script texture
-	(M.L.nuntius_printer_renderScriptTexture1)
+'Render Script texture
+	(L.L.nuntius_printer_screenIsOn)
+	{if}
+		(L.L.nuntius_printer_scriptTextureState) 1 - ! 1 + (S.L.nuntius_printer_scriptTextureState)
 
-	(L.L.nuntius_printer_updateScriptTexture)
-	{if} (M.L.nuntius_printer_renderScriptTexture2) {endif}
+		1 =
+		{if} (C.L.nuntius_printer_scriptTextureIndex1) {else} (C.L.nuntius_printer_scriptTextureIndex2) {endif}
+		(S.L.nuntius_printer_scriptTextureCurrentIndex)
+
+		(L.L.nuntius_printer_updateScriptTexture)
+		{if}
+			1 - (S.L.nuntius_printer_updateScriptTexture)
+			(M.L.nuntius_printer_renderScriptTexture)
+		{else}
+			(M.L.nuntius_printer_updateScriptTextureFrame)
+		{endif}
+	{endif}
 {end}
 
 {macro:nuntius_printer_executeDaueranimation}
@@ -437,119 +443,78 @@
 	"Ubuntu 72px Regular" (M.V.GetFontIndex) (S.L.nuntius_printer_font_72pxRegular)
 {end}
 
-{macro:nuntius_printer_renderScriptTexture1}
-	(C.L.nuntius_printer_scriptTextureIndex1) (M.V.STNewTex)
-	(C.L.nuntius_printer_scriptTextureIndex1) (M.V.STLock)
+{macro:nuntius_printer_updateScriptTextureFrame}
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STLock)
 
-	(L.L.nuntius_printer_screenIsOn)
-	{if}
-		(C.L.nuntius_printer_scriptTextureIndex1) 255 255 0 0 (M.V.STSetColor)
+'Erase
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) 0 0 0 0 (M.V.STSetColor)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) 770 0 1024 76 (M.V.STDrawRect)
 
-'******************************************
-' Date/Time
-'******************************************
-		(L.L.nuntius_printer_visTime)
-		{if}
-' Get String
-			(M.L.nuntius_printer_getDateString) (S.$.nuntius_printer_tmpStr0)
-' Calc length
-			(L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s1
-' Write Command
-			(C.L.nuntius_printer_scriptTextureIndex1)
-			1020 l1 -
-			0
-			(L.L.nuntius_printer_font_38pxRegular)
-			1
-			0
-			(L.$.nuntius_printer_tmpStr0)
-			(M.V.STTextOut)
-
-' Get String
-			(M.L.nuntius_printer_getTimeString) (S.$.nuntius_printer_tmpStr0)
-' Calc length
-			(L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s1
-' Write Command
-			(C.L.nuntius_printer_scriptTextureIndex1)
-			1020 l1 -
-			38
-			(L.L.nuntius_printer_font_38pxRegular)
-			1
-			0
-			(L.$.nuntius_printer_tmpStr0)
-			(M.V.STTextOut)
-		{endif}
-
-'******************************************
-' Delay
-'******************************************
-		(L.L.nuntius_printer_visDelay)
-		{if}
-' Calc Length
-			(L.$.nuntius_printer_ui_delay) (L.L.nuntius_printer_font_48pxMedium) (M.V.TextLength) s1
-' Write                                          XLeft + ((fieldWidth - length) / 2)
-			(C.L.nuntius_printer_scriptTextureIndex1) 770 113 l1 - 2 / + 19 (L.L.nuntius_printer_font_48pxMedium) 1 0 (L.$.nuntius_printer_ui_delay) (M.V.STTextOut)
-		{endif}
-	{endif}
-	(C.L.nuntius_printer_scriptTextureIndex1) (M.V.STUnlock)
-	(C.L.nuntius_printer_scriptTextureIndex1) (M.V.STFilter)
+'Rewrite
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) 255 255 0 0 (M.V.STSetColor)
+	(M.L.nuntius_printer_renderScriptTextureFrame)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STUnlock)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STFilter)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STLock)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STUnlock)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STFilter)
 {end}
 
-{macro:nuntius_printer_renderScriptTexture2}
-	(C.L.nuntius_printer_scriptTextureIndex2) (M.V.STNewTex)
-	(C.L.nuntius_printer_scriptTextureIndex2) (M.V.STLock)
+{macro:nuntius_printer_renderScriptTexture}
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STNewTex)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STLock)
 
-	(L.L.nuntius_printer_screenIsOn)
-	{if}
-		(C.L.nuntius_printer_scriptTextureIndex1) 255 255 0 0 (M.V.STSetColor)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) 255 255 0 0 (M.V.STSetColor)
+
+	(M.L.nuntius_printer_renderScriptTextureFrame)
 
 '******************************************
 ' Line Information
 '******************************************
-		(L.L.nuntius_printer_visLineInformation) (L.L.nuntius_printer_RouteMode) 0 = ! &&
-		{if}
-' Note:     ST Index                                 X    Y Font                               Full Sperrpx      Text			
+	(L.L.nuntius_printer_visLineInformation) (L.L.nuntius_printer_RouteMode) 0 = ! &&
+	{if}
+' Note:     ST Index                                    X    Y Font                               Full Sperrpx      Text			
 ' First line line
-			(C.L.nuntius_printer_scriptTextureIndex2) 4    0 (L.L.nuntius_printer_font_38pxMedium) 1 0 (L.$.nuntius_printer_ui_line1) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 4    0 (L.L.nuntius_printer_font_38pxMedium) 1 0 (L.$.nuntius_printer_ui_line1) (M.V.STTextOut)
 ' Second line line
-			(C.L.nuntius_printer_scriptTextureIndex2) 4   38 (L.L.nuntius_printer_font_38pxMedium) 1 0 (L.$.nuntius_printer_ui_line2) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 4   38 (L.L.nuntius_printer_font_38pxMedium) 1 0 (L.$.nuntius_printer_ui_line2) (M.V.STTextOut)
 ' First line terminus
-			(C.L.nuntius_printer_scriptTextureIndex2) 142  0 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_terminus1) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 142  0 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_terminus1) (M.V.STTextOut)
 ' Second line terminus
-			(C.L.nuntius_printer_scriptTextureIndex2) 142 38 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_terminus2) (M.V.STTextOut)
-		{endif}
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 142 38 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_terminus2) (M.V.STTextOut)
+	{endif}
 
 '******************************************
 ' Input Fields
 '******************************************
-		(L.$.nuntius_printer_ui_input0)
-		(L.L.nuntius_printer_visInput0) (L.L.nuntius_printer_inputsCensored) 2 % 1 = && {if} $length "*" $* {endif}
-		(L.L.nuntius_printer_visInput0)
-		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 128 (L.L.nuntius_printer_font_72pxRegular) 1 0 (M.V.STTextOut) {endif}
+	(L.$.nuntius_printer_ui_input0)
+	(L.L.nuntius_printer_visInput0) (L.L.nuntius_printer_inputsCensored) 2 % 1 = && {if} $length "*" $* {endif}
+	(L.L.nuntius_printer_visInput0)
+	{if} (L.L.nuntius_printer_scriptTextureCurrentIndex) 24 128 (L.L.nuntius_printer_font_72pxRegular) 1 0 (M.V.STTextOut) {endif}
 
-		(L.$.nuntius_printer_ui_input1)
-		(L.L.nuntius_printer_visInput1) (L.L.nuntius_printer_inputsCensored) 4 % 2 >= && {if} $length "*" $* {endif}
-		(L.L.nuntius_printer_visInput1)
-		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 261 (L.L.nuntius_printer_font_72pxRegular) 1 0 (M.V.STTextOut) {endif}
+	(L.$.nuntius_printer_ui_input1)
+	(L.L.nuntius_printer_visInput1) (L.L.nuntius_printer_inputsCensored) 4 % 2 >= && {if} $length "*" $* {endif}
+	(L.L.nuntius_printer_visInput1)
+	{if} (L.L.nuntius_printer_scriptTextureCurrentIndex) 24 261 (L.L.nuntius_printer_font_72pxRegular) 1 0 (M.V.STTextOut) {endif}
 
-		(L.$.nuntius_printer_ui_input2)
-		(L.L.nuntius_printer_visInput2) (L.L.nuntius_printer_inputsCensored) 4 >= && {if} $length "*" $* {endif}
-		(L.L.nuntius_printer_visInput2)
-		{if} (C.L.nuntius_printer_scriptTextureIndex2) 24 394 (L.L.nuntius_printer_font_72pxRegular) 1 0 (M.V.STTextOut) {endif}
-	{endif}
+	(L.$.nuntius_printer_ui_input2)
+	(L.L.nuntius_printer_visInput2) (L.L.nuntius_printer_inputsCensored) 4 >= && {if} $length "*" $* {endif}
+	(L.L.nuntius_printer_visInput2)
+	{if} (L.L.nuntius_printer_scriptTextureCurrentIndex) 24 394 (L.L.nuntius_printer_font_72pxRegular) 1 0 (M.V.STTextOut) {endif}
 
 '******************************************
 ' Tickets
 '******************************************
 	(L.L.nuntius_printer_visTicketList)
 	{if}
-		(C.L.nuntius_printer_scriptTextureIndex2) 546  90 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName0)  (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 788  90 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName1)  (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 546 196 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName2)  (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 788 196 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName3)  (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 546 302 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName4)  (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 788 302 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName5)  (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 546 408 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName6)  (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 788 408 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName7)  (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 546  90 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName0)  (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 788  90 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName1)  (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 546 196 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName2)  (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 788 196 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName3)  (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 546 302 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName4)  (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 788 302 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName5)  (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 546 408 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName6)  (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 788 408 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketName7)  (M.V.STTextOut)
 
 		(L.$.nuntius_printer_ui_ticketPrice0) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s0
 		(L.$.nuntius_printer_ui_ticketPrice1) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s1
@@ -560,14 +525,14 @@
 		(L.$.nuntius_printer_ui_ticketPrice6) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s6
 		(L.$.nuntius_printer_ui_ticketPrice7) (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s7
 
-		(C.L.nuntius_printer_scriptTextureIndex2) 748 l0 - 128 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice0) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 990 l1 - 128 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice1) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 748 l2 - 234 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice2) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 990 l3 - 234 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice3) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 748 l4 - 340 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice4) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 990 l5 - 340 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice5) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 748 l6 - 446 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice6) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 990 l7 - 446 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice7) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 748 l0 - 128 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice0) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 990 l1 - 128 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice1) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 748 l2 - 234 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice2) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 990 l3 - 234 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice3) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 748 l4 - 340 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice4) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 990 l5 - 340 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice5) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 748 l6 - 446 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice6) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 990 l7 - 446 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_ticketPrice7) (M.V.STTextOut)
 	{endif}
 
 '******************************************
@@ -575,8 +540,8 @@
 '******************************************
 	(L.L.nuntius_printer_visTicketSelection)
 	{if}
-		(C.L.nuntius_printer_scriptTextureIndex2) 539 133 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_currentTicketName)  (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 539 288 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_currentTicketPrice) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 539 133 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_currentTicketName)  (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 539 288 (L.L.nuntius_printer_font_72pxRegular) 1 0 (L.$.nuntius_printer_ui_currentTicketPrice) (M.V.STTextOut)
 	{endif}
 
 '******************************************
@@ -584,12 +549,12 @@
 '******************************************
 	(L.L.nuntius_printer_visBusstopList)
 	{if}
-		(C.L.nuntius_printer_scriptTextureIndex2)  64 435 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstop0)        (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2)  64 372 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop1)        (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2)  64 316 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop2)        (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2)  64 260 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop3)        (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2)  64 204 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop4)        (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2)  64 117 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstop_end)     (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex)  64 435 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstop0)        (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex)  64 372 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop1)        (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex)  64 316 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop2)        (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex)  64 260 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop3)        (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex)  64 204 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstop4)        (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex)  64 117 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstop_end)     (M.V.STTextOut)
 
 		(L.$.nuntius_printer_ui_busstopTime0)    (L.L.nuntius_printer_font_38pxMedium)  (M.V.TextLength) s0
 		(L.$.nuntius_printer_ui_busstopTime1)    (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s1
@@ -598,12 +563,12 @@
 		(L.$.nuntius_printer_ui_busstopTime4)    (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s4
 		(L.$.nuntius_printer_ui_busstopTime_end) (L.L.nuntius_printer_font_38pxMedium)  (M.V.TextLength) s5
    
-		(C.L.nuntius_printer_scriptTextureIndex2) 408 l0 - 435 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstopTime0)    (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 408 l1 - 372 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime1)    (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 408 l2 - 316 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime2)    (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 408 l3 - 260 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime3)    (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 408 l4 - 204 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime4)    (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 408 l5 - 117 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstopTime_end) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l0 - 435 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstopTime0)    (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l1 - 372 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime1)    (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l2 - 316 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime2)    (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l3 - 260 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime3)    (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l4 - 204 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime4)    (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l5 - 117 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstopTime_end) (M.V.STTextOut)
 	{endif}
 
 '******************************************
@@ -611,17 +576,67 @@
 '******************************************
 	(L.L.nuntius_printer_visConfirmNextTrip)
 	{if}
-		(C.L.nuntius_printer_scriptTextureIndex2) 632 301 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText1) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 632 330 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText2) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 632 359 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText3) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 632 388 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText4) (M.V.STTextOut)
-		(C.L.nuntius_printer_scriptTextureIndex2) 632 417 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText5) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 632 301 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText1) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 632 330 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText2) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 632 359 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText3) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 632 388 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText4) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 632 417 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText5) (M.V.STTextOut)
 	{endif}
 
-	(C.L.nuntius_printer_scriptTextureIndex2) (M.V.STUnlock)
-	(C.L.nuntius_printer_scriptTextureIndex2) (M.V.STFilter)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STUnlock)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STFilter)
 
-	0 (S.L.nuntius_printer_updateScriptTexture)
+' Lock, unlock and filter again (works better sometimes for some reason...)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STLock)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STUnlock)
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STFilter)
+{end}
+
+{macro:nuntius_printer_renderScriptTextureFrame}
+'******************************************
+' Date/Time
+'******************************************
+	(L.L.nuntius_printer_visTime)
+	{if}
+' Get String
+		(M.L.nuntius_printer_getDateString) (S.$.nuntius_printer_tmpStr0)
+' Calc length
+		(L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s1
+' Write Command
+		(L.L.nuntius_printer_scriptTextureCurrentIndex)
+		1020 l1 -
+		0
+		(L.L.nuntius_printer_font_38pxRegular)
+		1
+		0
+		(L.$.nuntius_printer_tmpStr0)
+		(M.V.STTextOut)
+
+' Get String
+		(M.L.nuntius_printer_getTimeString) (S.$.nuntius_printer_tmpStr0)
+' Calc length
+		(L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s1
+' Write Command
+		(L.L.nuntius_printer_scriptTextureCurrentIndex)
+		1020 l1 -
+		38
+		(L.L.nuntius_printer_font_38pxRegular)
+		1
+		0
+		(L.$.nuntius_printer_tmpStr0)
+		(M.V.STTextOut)
+	{endif}
+
+'******************************************
+' Delay
+'******************************************
+	(L.L.nuntius_printer_visDelay)
+	{if}
+' Calc Length
+		(L.$.nuntius_printer_ui_delay) (L.L.nuntius_printer_font_48pxMedium) (M.V.TextLength) s1
+' Write                                           XLeft + ((fieldWidth - length) / 2) -> but not below 770 :)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 770 113 l1 - 2 / + 19 770 max (L.L.nuntius_printer_font_48pxMedium) 1 0 (L.$.nuntius_printer_ui_delay) (M.V.STTextOut)
+	{endif}
 {end}
 
 'makes the printed ticket invisible and resets the animation, after the passenger took it
@@ -1065,7 +1080,7 @@
 s0
 
 'Schedule Scripttex for update
-1 (S.L.nuntius_printer_updateScriptTexture)
+(M.L.nuntius_printer_scheduleScriptTextForUpdate)
 
 'if fields are not enabled, do nothing in general!
 
@@ -1654,7 +1669,7 @@ s0
 	{endif}
 
 'Schedule Scripttex for update
-	1 (S.L.nuntius_printer_updateScriptTexture)
+	(M.L.nuntius_printer_scheduleScriptTextForUpdate)
 {end}
 
 'refreshs the terminus selections preview (currently not in use!)
@@ -1850,7 +1865,7 @@ s0
 	(M.L.nuntius_printer_refreshBusstopTimeList)
 
 'Schedule Scripttex for update
-	1 (S.L.nuntius_printer_updateScriptTexture)
+	(M.L.nuntius_printer_scheduleScriptTextForUpdate)
 {end}
 
 
@@ -2067,7 +2082,7 @@ s0
 		0 (M.L.nuntius_printer_showUiElementsTicketList)
 		1 (M.L.nuntius_printer_showUiElementsTicketSelection)
 		(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\SelectTicket.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-		1 (S.L.nuntius_printer_updateScriptTexture)
+		(M.L.nuntius_printer_scheduleScriptTextForUpdate)
 	{endif}
 
 'play sound
@@ -2219,7 +2234,7 @@ s0
 	(L.L.nuntius_printer_bootStatus) 2 = (L.L.nuntius_printer_bootStatus) 3 = ||
 	{if}
 		l0 (S.L.nuntius_printer_page)
-		1 (S.L.nuntius_printer_updateScriptTexture)
+		(M.L.nuntius_printer_scheduleScriptTextForUpdate)
 
 '0: Welcome Page
 		l0 0 =
@@ -2861,6 +2876,10 @@ s0
 	{if}
 		(T.L.nuntius_printer_error)
 	{endif}
+{end}
+
+{macro:nuntius_printer_scheduleScriptTextForUpdate}
+	2 (S.L.nuntius_printer_updateScriptTexture)
 {end}
 
 '################################

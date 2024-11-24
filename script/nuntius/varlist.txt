@@ -55,6 +55,8 @@ nuntius_printer_option_terminusCodeTripEnd
 nuntius_printer_option_terminusCodeBreak
 
 nuntius_printer_updateScriptTexture
+nuntius_printer_scriptTextureCurrentIndex
+nuntius_printer_scriptTextureState
 
 nuntius_printer_visTime
 nuntius_printer_visDelay
