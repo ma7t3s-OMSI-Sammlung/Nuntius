@@ -360,9 +360,19 @@
 {end}
 
 {trigger:nuntius_printer_menuAppearanceBrightnessIncrease}
+	(L.L.nuntius_printer_displayBrightnessPercent) 20 + 100 min (S.L.nuntius_printer_displayBrightnessPercent)
+	1 (L.L.nuntius_printer_displayBrightnessPercent) 100 / - (S.L.nuntius_printer_displayBrightnessFloat)
+
+	(M.L.nuntius_printer_scheduleScriptTextForUpdate)
+	(M.L.nuntius_printer_playSoundNormal)
 {end}
 
 {trigger:nuntius_printer_menuAppearanceBrightnessDecrease}
+	(L.L.nuntius_printer_displayBrightnessPercent) 20 - 0 max (S.L.nuntius_printer_displayBrightnessPercent)
+	1 (L.L.nuntius_printer_displayBrightnessPercent) 100 / - (S.L.nuntius_printer_displayBrightnessFloat)
+
+	(M.L.nuntius_printer_scheduleScriptTextForUpdate)
+	(M.L.nuntius_printer_playSoundNormal)
 {end}
 
 
@@ -587,6 +597,16 @@
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 632 417 (L.L.nuntius_printer_font_28pxRegular) 1 0 (L.$.nuntius_printer_ui_confirmNextTripText5) (M.V.STTextOut)
 	{endif}
 
+'******************************************
+' Screen Brightness
+'******************************************
+
+(L.L.nuntius_printer_visMenuAppearance)
+	{if}
+		(L.L.nuntius_printer_displayBrightnessPercent) $IntToStr "%" $+ (S.$.nuntius_printer_tmpStr0)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 596 304 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_tmpStr0) (M.V.STTextOut)
+	{endif}
+
 	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STUnlock)
 	(L.L.nuntius_printer_scriptTextureCurrentIndex) (M.V.STFilter)
 
@@ -804,6 +824,9 @@
 	(S.L.nuntius_printer_givenTicket)
 	(S.L.nuntius_printer_showDeparturePage)
 	(S.L.nuntius_printer_AnnouncementsAreActive)
+
+	100 (S.L.nuntius_printer_displayBrightnessPercent)
+	0 (S.L.nuntius_printer_displayBrightnessFloat)
 {end}
 
 'turns the printers screen off
@@ -2720,7 +2743,7 @@ s0
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder)
 			(L.L.nuntius_printer_colorSchemeSetting) 0 = {if} "Menu_Apperance_ThemeAuto.dds" {else} "Menu_Apperance_ThemeManual.dds" {endif} $+ (S.$.nuntius_printer_ui_texture)
-			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
+			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\ConfirmNextTrip.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
 			
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
