@@ -383,11 +383,15 @@
 {macro:nuntius_printer_init}
 	(L.$.nuntius_printer_currentDisplayTextureFolder) "Black.dds" $+ (S.$.nuntius_printer_ui_texture)
 
+
 'execute Daueranimation
 	(M.L.nuntius_printer_executeDaueranimation)
 
 	(M.L.nuntius_printer_initFonts)
 	(M.L.nuntius_printer_scheduleScriptTextForUpdate)
+
+'init brightness
+	100 (S.L.nuntius_printer_displayBrightnessPercent)
 {end}
 
 {macro:nuntius_printer_frame}
