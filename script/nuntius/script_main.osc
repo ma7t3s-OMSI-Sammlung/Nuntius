@@ -377,7 +377,7 @@
 
 
 '################################
-'Init and frame
+'General
 '################################
 
 {macro:nuntius_printer_init}
@@ -444,6 +444,25 @@
 	(C.L.nuntius_printerPositionZ) (S.L.nuntius_daueranimationZ)
 	(C.L.nuntius_printerRotation)  (S.L.nuntius_daueranimationRotation)
 {end}
+
+'makes the printed ticket invisible and resets the animation, after the passenger took it
+{macro:nuntius_updateTicket}
+'if the given ticket is -1 (passanger, took the ticket),
+'but the nuntius given ticket is still != -1 (there is still a ticket set)
+'and we are not printing currently
+	(L.L.GivenTicket) -1 =
+	(L.L.nuntius_printer_givenTicket) -1 = ! &&
+	(L.L.nuntius_ticketPrinting) ! &&
+	{if}
+		0 (S.L.nuntius_ticket) (S.L.nuntius_ticketAnim) (S.L.nuntius_ticketPrinting) (S.L.nuntius_ticketPrintingTimer)
+		-1 (S.L.nuntius_printer_givenTicket)
+	{endif}
+{end}
+
+
+'################################
+'Scripttextures
+'################################
 
 {macro:nuntius_printer_initFonts}
 	"Ubuntu 28px Regular" (M.V.GetFontIndex) (S.L.nuntius_printer_font_28pxRegular)
@@ -663,43 +682,6 @@
 	{endif}
 {end}
 
-'makes the printed ticket invisible and resets the animation, after the passenger took it
-{macro:nuntius_updateTicket}
-'if the given ticket is -1 (passanger, took the ticket),
-'but the nuntius given ticket is still != -1 (there is still a ticket set)
-'and we are not printing currently
-	(L.L.GivenTicket) -1 =
-	(L.L.nuntius_printer_givenTicket) -1 = ! &&
-	(L.L.nuntius_ticketPrinting) ! &&
-	{if}
-		0 (S.L.nuntius_ticket) (S.L.nuntius_ticketAnim) (S.L.nuntius_ticketPrinting) (S.L.nuntius_ticketPrintingTimer)
-		-1 (S.L.nuntius_printer_givenTicket)
-	{endif}
-{end}
-
-{macro:nuntius_printer_updateColorScheme}
-	(L.L.nuntius_printer_colorScheme) s0
-
-	(L.L.nuntius_printer_colorSchemeSetting) 0 =
-	{if}
-		(L.S.SunAlt) 2.5 < 1 + 
-	{else}
-		(L.L.nuntius_printer_colorSchemeSetting)
-	{endif}
-	(S.L.nuntius_printer_colorScheme)
-
-	1 -
-	{if}   "nuntius\ui_default_dark\"
-	{else} "nuntius\ui_default_light\"
-	{endif}
-	(S.$.nuntius_printer_currentDisplayTextureFolder)
-
-	l0 (L.L.nuntius_printer_colorScheme) = !
-	{if}
-		(L.L.nuntius_printer_page) (M.L.nuntius_printer_goToPage)
-	{endif}
-{end}
-
 '################################
 'general functions and power
 '################################
@@ -844,20 +826,48 @@
 	(L.L.nuntius_printer_page) (M.L.nuntius_printer_goToPage)
 {end}
 
+
+'################################
+'Handler
+'################################
+
 'Loads the options from the hof file
 {macro:nuntius_printer_loadOptions}
 'Register:
 '0 = the option terminus' index
 	
-		1234 (M.V.GetTerminusIndex) s0
-	
-		l0 0 (M.V.GetTerminusString) $RemoveSpaces "NUNTIUS_OPTIONS" $=
-		(S.L.nuntius_printer_hasHofFileOptions)
-		{if}
-			l0 1 (M.V.GetTerminusString) $StrToFloat (S.L.nuntius_printer_option_terminusCodeTripEnd)
-			l0 2 (M.V.GetTerminusString) $StrToFloat (S.L.nuntius_printer_option_terminusCodeBreak)
-		{endif}
-	{end}
+	1234 (M.V.GetTerminusIndex) s0
+
+	l0 0 (M.V.GetTerminusString) $RemoveSpaces "NUNTIUS_OPTIONS" $=
+	(S.L.nuntius_printer_hasHofFileOptions)
+	{if}
+		l0 1 (M.V.GetTerminusString) $StrToFloat (S.L.nuntius_printer_option_terminusCodeTripEnd)
+		l0 2 (M.V.GetTerminusString) $StrToFloat (S.L.nuntius_printer_option_terminusCodeBreak)
+	{endif}
+{end}
+
+{macro:nuntius_printer_updateColorScheme}
+	(L.L.nuntius_printer_colorScheme) s0
+
+	(L.L.nuntius_printer_colorSchemeSetting) 0 =
+	{if}
+		(L.S.SunAlt) 2.5 < 1 + 
+	{else}
+		(L.L.nuntius_printer_colorSchemeSetting)
+	{endif}
+	(S.L.nuntius_printer_colorScheme)
+
+	1 -
+	{if}   "nuntius\ui_default_dark\"
+	{else} "nuntius\ui_default_light\"
+	{endif}
+	(S.$.nuntius_printer_currentDisplayTextureFolder)
+
+	l0 (L.L.nuntius_printer_colorScheme) = !
+	{if}
+		(L.L.nuntius_printer_page) (M.L.nuntius_printer_goToPage)
+	{endif}
+{end}
 
 {macro:nuntius_printer_autoOpenBusstopPage}
 'if any of all the entrys or exits is open...
@@ -997,6 +1007,10 @@
 {end}
 
 
+'################################
+'General OS
+'################################
+
 {macro:nuntius_printer_getDateString}
 'Register Values:
 '0 = year
@@ -1088,11 +1102,6 @@
 		"nuntius\blue.dds" (S.$.nuntius_printer_ui_delayColor)
 	{endif}
 {end}
-
-
-'################################
-'input functions (numpad, apply, ...)
-'################################
 
 'executes a specified numpad button
 'Arguments:
@@ -1413,11 +1422,6 @@ s0
 	{endif}
 {end}
 
-
-'################################
-'checks and validations
-'################################
-
 'checks if the login is valid
 {macro:nuntius_printer_checkLogin}
 'compare values
@@ -1460,11 +1464,6 @@ s0
 	{endif}
 {end}
 
-
-'################################
-'shift functions
-'################################
-
 'Ends the shift
 {macro:nuntius_printer_shiftEnd}
 'Remove route data
@@ -1487,11 +1486,6 @@ s0
 	1 (S.L.nuntius_ticketPrinting)
 	0 (M.L.nuntius_printer_goToPage)
 {end}
-
-
-'################################
-'route and trip functions
-'################################
 
 {macro:nuntius_printer_denyNextTrip}
 	(M.L.nuntius_printer_removeTrip)
@@ -2738,7 +2732,7 @@ s0
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
 		{endif}
 
-'12: Menu
+'20: Menu
 		l0 20 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder)
@@ -2785,6 +2779,11 @@ s0
 	(S.$.nuntius_printer_ui_currentTicketName)
 	(S.$.nuntius_printer_ui_currentTicketPrice)
 {end}
+
+
+'################################
+'User Interface
+'################################
 
 {macro:nuntius_printer_hideAllUiElements}
 	0
@@ -2910,6 +2909,11 @@ s0
 	(S.L.nuntius_printer_visMenuAppearance)
 {end}
 
+
+'################################
+'Sounds
+'################################
+
 {macro:nuntius_printer_playSoundNormal}
 	(L.L.nuntius_printer_screenSoundIsActive)
 	{if}
@@ -2929,7 +2933,7 @@ s0
 {end}
 
 '################################
-'General Tools
+'General Tools/Utilities
 '################################
 
 'Shortens a string to a maximum length of pixels

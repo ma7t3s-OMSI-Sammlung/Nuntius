@@ -18,7 +18,6 @@ nuntius_api_terminusIndex
 nuntius_printer_page
 nuntius_printer_colorScheme
 nuntius_printer_colorSchemeSetting
-nuntius_printer_brightness
 nuntius_printer_bootStatus
 nuntius_printer_bootTimer
 nuntius_printer_batteryTimer
