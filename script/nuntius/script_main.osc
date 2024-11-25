@@ -1878,15 +1878,17 @@ s0
 
 	(L.L.nuntius_printer_RouteMode) 1 = (L.L.nuntius_printer_RouteMode) 2 = ||
 	{if}
-		0 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxMedium)  352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop0) (S.$.nuntius_api_busstop0)
-		1 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop1) (S.$.nuntius_api_busstop1)
-		2 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop2) (S.$.nuntius_api_busstop2)
-		3 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop3) (S.$.nuntius_api_busstop3)
-		4 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop4) (S.$.nuntius_api_busstop4)
-		(M.L.nuntius_printer_getLastBusstopListEntry) (L.L.nuntius_printer_font_38pxMedium)  352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop_end)
-		5 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop5)
-		6 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop6)
-		7 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) 352 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop7)
+		(L.L.schedule_active) {if} 258 {else} 352 {endif} s7
+
+		0 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxMedium)  l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop0) (S.$.nuntius_api_busstop0)
+		1 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop1) (S.$.nuntius_api_busstop1)
+		2 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop2) (S.$.nuntius_api_busstop2)
+		3 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop3) (S.$.nuntius_api_busstop3)
+		4 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop4) (S.$.nuntius_api_busstop4)
+		(M.L.nuntius_printer_getLastBusstopListEntry) (L.L.nuntius_printer_font_38pxMedium)  l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop_end)
+		5 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop5)
+		6 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop6)
+		7 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop7)
 	{endif}
 
 	(M.L.nuntius_printer_refreshBusstopTimeList)
