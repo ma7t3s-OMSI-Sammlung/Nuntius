@@ -682,7 +682,7 @@
 ' Calc Length
 		(L.$.nuntius_printer_ui_delay) (L.L.nuntius_printer_font_48pxMedium) (M.V.TextLength) s1
 ' Write                                           XLeft + ((fieldWidth - length) / 2) -> but not below 770 :)
-		(L.L.nuntius_printer_scriptTextureCurrentIndex) 770 113 l1 - 2 / + 19 770 max (L.L.nuntius_printer_font_48pxMedium) 1 0 (L.$.nuntius_printer_ui_delay) (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 770 113 l1 - 2 / + 770 max 19 (L.L.nuntius_printer_font_48pxMedium) 1 0 (L.$.nuntius_printer_ui_delay) (M.V.STTextOut)
 	{endif}
 {end}
 
