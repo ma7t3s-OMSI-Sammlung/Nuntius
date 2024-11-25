@@ -1600,6 +1600,8 @@ s0
 	(S.$.nuntius_api_lineStr)
 	(S.$.nuntius_api_terminusStr)
 
+	(M.L.nuntius_printer_resetTerminus)
+
 	(M.L.nuntius_printer_refreshBusstopList)
 
 'Go back to Main Page
