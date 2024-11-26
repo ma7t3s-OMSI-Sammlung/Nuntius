@@ -40,18 +40,18 @@ nuntius_printer_driverPIN
 Legt die Dauer (in Sekunden) fest, die der Bildschirm des Druckers nach dem Abschalten des Stromes noch aktiv bleibt
 [const]
 nuntius_printer_batteryTimeActiveScreen
-5
+120
 
-Legt die Dauer (in Sekunden) fest, die der Bildschirm des Druckers nach dem Ausschalten des Bildschirmes noch sämtliche Daten speichert, danach "stürzt er ab".
+Legt die Dauer (in Sekunden) fest, die der Bildschirm des Druckers nach dem Abschalten des Stromes noch sämtliche Daten speichert, danach "stürzt er ab".
 [const]
 nuntius_printer_batteryTime
-10
+300
 
 
 Legt die Dauer des Boots fest (1 = Standard, 10 = zehnmal so schnelles booten, nützlich zu Testzwecken)
 [const]
 nuntius_printer_bootSpeed
-10
+1
 
 Definiert den Bootverlauf:
 x => Zeitlicher Verlauf in Sekunden
