@@ -1,13 +1,17 @@
-'Dies Macro wird in jedem Frame ausgeführt, es teilt dem System mit, ob es gerade mit Strom versorgt ist, oder nicht, im Prinzip also einfach der "Stromanschluss".
-'Dazu muss am Ende des Macros im Stack eine 1 für "aktiv" oder eine 0 für "nicht aktiv" stehen.
-{macro:nuntius_api_power}
-    (L.L.elec_busbar_main)
-{end}
+'This is a template api script for nuntius
 
-'Dies Macro wird in jedem Frame ausgeführt, es teilt dem System mit, ob gerade mindestens eine Tür geöffnet ist.
-'Dazu muss am Ende des Macros im Stack eine 1 für "mindestens eine Tür auf" oder eine 0 für "alle Türen zu" stehen.
-'Hinweis: Der Standardcode über die PAX-Variablen sollte eigentlich bei jedem Bus funktionieren.
-{macro:nuntius_api_doorsOpen}
+'##################
+' INPUTS
+'##################
+
+'It's the same principle for all input macros. They are used to bring some data (usually one float or string value) into the nuntius.
+'The value you want to "return" should be on top of the stack at the end of the macro.
+
+'power supply (1 = nuntius has power, 0 = no power)
+{macro:nuntius_input_power} {end}
+
+'at least one door is open (this is a general implementation that should work for all buses)
+{macro:nuntius_input_doorsOpen}
     (L.L.PAX_Entry0_Open)
 	(L.L.PAX_Entry1_Open) ||
 	(L.L.PAX_Entry2_Open) ||
@@ -26,7 +30,27 @@
 	(L.L.PAX_Exit7_Open) ||
 {end}
 
-'Dies ist ein allgemeines Macro, welches in jedem Frame ausgeführt wird und z.B. genutzt werden kann, um Variablen auszulesen und an andere Script weiterzugeben
-{macro:nuntius_api_frame}
-    
-{end}
+'##################
+' EVENTS
+'##################
+
+'Events are special things that can happen at some point and may be important for other components.
+'Every time an event occurs, it's macro is being executed by nuntius.
+'You can use it here to call other macros of other scripts (or just leave it empty to ignore it, but don't delete it!!!)
+
+'The current busstop has changed.
+{macro:nuntius_event_currentBusstopChanged} {end}
+
+'The route mode changed. The new mode will be on top of the stack when the macro starts:
+'0 = none, 1 = hof file based, 2 = schedule based
+{macro:nuntius_event_routeModeChanged} {end}
+
+'The current terminus changed
+'The new index will be on top of the stack when the macro starts.
+{macro:nuntius_event_terminusChanged} {end}
+
+'The current line changed
+{macro:nuntius_event_lineChanged} {end}
+
+'"Pause" was enabled or disabled
+{macro:nuntius_event_pauseChanged} {end}

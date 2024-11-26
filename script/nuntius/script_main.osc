@@ -400,8 +400,11 @@
 	{if} (M.L.nuntius_printer_executeDaueranimation) {endif}
 
 'API calls
-	(M.L.nuntius_api_power) (S.L.nuntius_api_power)
-	(M.L.nuntius_api_doorsOpen) (S.L.nuntius_api_doorsOpen)
+	(M.L.nuntius_input_power) (S.L.nuntius_input_power)
+	(M.L.nuntius_input_doorsOpen) (S.L.nuntius_input_doorsOpen)
+
+'Event loop
+	(M.L.nuntius_printer_eventLoop)
 
 'Update colorscheme
 	(M.L.nuntius_printer_updateColorScheme)
@@ -415,8 +418,6 @@
 	(M.L.nuntius_printer_updateCurrentBusstopIndex)
 	(M.L.nuntius_updateTicket)
 	(M.L.nuntius_ticketPrintHandler)
-	
-	(M.L.nuntius_api_frame) 
 
 	(L.L.nuntius_printer_progressbarAnim) (L.S.Timegap) - (S.L.nuntius_printer_progressbarAnim)
 
@@ -440,6 +441,144 @@
 			(M.L.nuntius_printer_updateScriptTextureFrame)
 		{endif}
 	{endif}
+{end}
+
+'Event loop to process events and update the api data
+{macro:nuntius_printer_eventLoop}
+'Pause
+	(L.L.nuntius_printer_page) 7 = 
+	(L.L.nuntius_printer_page) 71 = ||
+	(L.L.nuntius_output_pauseActive) ! &&
+	{if} (S.L.nuntius_event_queue_pauseChanged) {endif}
+
+	(L.L.nuntius_printer_page) 7 = ! 
+	(L.L.nuntius_printer_page) 71 = ! &&
+	(L.L.nuntius_output_pauseActive) &&
+	{if} (S.L.nuntius_event_queue_pauseChanged) {endif}
+
+'Route Mode
+	(L.L.nuntius_printer_RouteMode) (L.L.nuntius_output_routeMode) = !
+	{if} 
+		(L.L.nuntius_printer_RouteMode) (S.L.nuntius_output_routeMode)
+		1 (S.L.nuntius_event_queue_routeModeChanged)
+	{endif}
+
+'Line
+	(L.L.nuntius_printer_Line) (L.L.nuntius_output_lineNumber) = !
+	(L.L.nuntius_printer_Suffix) (L.L.nuntius_output_lineSuffix) = ! ||
+	{if}
+		(L.L.nuntius_printer_RouteMode) 1 =
+		{if}
+			(L.L.nuntius_printer_Line) (S.L.nuntius_output_lineNumber)
+			(L.L.nuntius_printer_Suffix) (S.L.nuntius_output_lineSuffix)
+		{else}
+			0 (S.L.nuntius_output_lineNumber) (S.L.nuntius_output_lineSuffix)
+		{endif}
+		1 (S.L.nuntius_event_queue_lineChanged)
+	{endif}
+
+	(L.$.nuntius_printer_lineStr) (L.$.nuntius_output_lineString) $= !
+	{if}
+		(L.$.nuntius_printer_lineStr) (S.$.nuntius_output_lineString)
+		1 (S.L.nuntius_event_queue_lineChanged)
+	{endif}
+
+'Terminus
+	(L.L.nuntius_printer_TerminusIndex) (L.L.nuntius_output_terminusIndex) = !
+	{if}
+		(L.L.nuntius_printer_TerminusIndex) (S.L.nuntius_output_terminusIndex)
+		5 (M.V.GetTerminusString) (S.$.nuntius_output_terminusString)
+		1 (S.L.nuntius_event_queue_terminusChanged)
+	{endif}
+	
+'Busstops
+	(L.L.nuntius_printer_RouteMode) 0 = !
+	{if}
+		0 (M.L.nuntius_printer_getBusstopListEntry) (L.L.nuntius_output_busstopIndex0) (L.$.nuntius_output_busstopString0) = ! $= ! ||
+		{if} 1 (S.L.nuntius_event_queue_currentBusstopChanged) {endif}
+
+		0 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex0) s3
+		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString0first) " "
+		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString0second)
+		(L.$.nuntius_output_busstopString0first) (L.$.nuntius_output_busstopString0second) $= !
+		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString0)
+
+		1 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex1) s3
+		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString1first) " "
+		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString1second)
+		(L.$.nuntius_output_busstopString1first) (L.$.nuntius_output_busstopString1second) $= !
+		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString1)
+
+		2 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex2) s3
+		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString2first) " "
+		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString2second)
+		(L.$.nuntius_output_busstopString2first) (L.$.nuntius_output_busstopString2second) $= !
+		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString2)
+
+		3 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex3) s3
+		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString3first) " "
+		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString3second)
+		(L.$.nuntius_output_busstopString3first) (L.$.nuntius_output_busstopString3second) $= !
+		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString3)
+
+		4 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex4) s3
+		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString4first) " "
+		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString4second)
+		(L.$.nuntius_output_busstopString4first) (L.$.nuntius_output_busstopString4second) $= !
+		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString4)
+
+		5 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex5) s3
+		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString5first) " "
+		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString5second)
+		(L.$.nuntius_output_busstopString5first) (L.$.nuntius_output_busstopString5second) $= !
+		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString5)
+
+		6 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex6) s3
+		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString6first) " "
+		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString6second)
+		(L.$.nuntius_output_busstopString6first) (L.$.nuntius_output_busstopString6second) $= !
+		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString6)
+
+		7 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex7) s3
+		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString7first) " "
+		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString7second)
+		(L.$.nuntius_output_busstopString7first) (L.$.nuntius_output_busstopString7second) $= !
+		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString7)
+
+	{else}
+		-1
+		(S.L.nuntius_output_busstopIndex0)
+		(S.L.nuntius_output_busstopIndex1)
+		(S.L.nuntius_output_busstopIndex2)
+		(S.L.nuntius_output_busstopIndex3)
+		(S.L.nuntius_output_busstopIndex4)
+		(S.L.nuntius_output_busstopIndex5)
+		(S.L.nuntius_output_busstopIndex6)
+		(S.L.nuntius_output_busstopIndex7)
+
+		""
+		(S.$.nuntius_output_lineString)
+		(S.$.nuntius_output_terminusString)
+
+		(S.$.nuntius_output_busstopString0) (S.$.nuntius_output_busstopString1) (S.$.nuntius_output_busstopString2) (S.$.nuntius_output_busstopString3) (S.$.nuntius_output_busstopString4) (S.$.nuntius_output_busstopString5) (S.$.nuntius_output_busstopString6) (S.$.nuntius_output_busstopString7)
+		(S.$.nuntius_output_busstopString0first) (S.$.nuntius_output_busstopString1first) (S.$.nuntius_output_busstopString2first) (S.$.nuntius_output_busstopString3first) (S.$.nuntius_output_busstopString4first) (S.$.nuntius_output_busstopString5first) (S.$.nuntius_output_busstopString6first) (S.$.nuntius_output_busstopString7first)
+		(S.$.nuntius_output_busstopString0second) (S.$.nuntius_output_busstopString1second) (S.$.nuntius_output_busstopString2second) (S.$.nuntius_output_busstopString3second) (S.$.nuntius_output_busstopString4second) (S.$.nuntius_output_busstopString5second) (S.$.nuntius_output_busstopString6second) (S.$.nuntius_output_busstopString7second)
+	{endif}
+
+'Fire event slots
+	(L.L.nuntius_event_queue_currentBusstopChanged) {if} (M.L.nuntius_event_currentBusstopChanged)                              {endif}
+	(L.L.nuntius_event_queue_routeModeChanged)      {if} (L.L.nuntius_output_routeMode) (M.L.nuntius_event_routeModeChanged)    {endif}
+	(L.L.nuntius_event_queue_terminusChanged)       {if} (L.L.nuntius_output_terminusIndex) (M.L.nuntius_event_terminusChanged) {endif}
+	(L.L.nuntius_event_queue_lineChanged)           {if} (M.L.nuntius_event_lineChanged)                                        {endif}
+	(L.L.nuntius_event_queue_pauseChanged)          {if} (L.L.nuntius_output_pauseActive) (M.L.nuntius_event_pauseChanged)      {endif}
+
+'Reset queues
+	0
+	(S.L.nuntius_event_queue_currentBusstopChanged)
+	(S.L.nuntius_event_queue_routeModeChanged)
+	(S.L.nuntius_event_queue_terminusChanged)
+	(S.L.nuntius_event_queue_lineChanged)
+	(S.L.nuntius_event_queue_pauseChanged)
 {end}
 
 {macro:nuntius_printer_executeDaueranimation}
@@ -700,7 +839,7 @@
 '4 = sleep mode
 
 'if bus electric is on, boot device/hold it on, else shut it down
-	(L.L.nuntius_api_power)
+	(L.L.nuntius_input_power)
 	{if}
 'if it's booting currently, continue
 		(L.L.nuntius_printer_bootStatus) 1 <=
@@ -811,6 +950,46 @@
 	(S.L.nuntius_printer_showDeparturePage)
 	(S.L.nuntius_printer_AnnouncementsAreActive)
 
+	(S.L.nuntius_output_pauseActive)
+	(S.L.nuntius_output_lineNumber)
+	(S.L.nuntius_output_lineSuffix)
+	(S.L.nuntius_output_busstopIndex0)
+	(S.L.nuntius_output_busstopIndex1)
+	(S.L.nuntius_output_busstopIndex2)
+	(S.L.nuntius_output_busstopIndex3)
+	(S.L.nuntius_output_busstopIndex4)
+	(S.L.nuntius_output_busstopIndex5)
+	(S.L.nuntius_output_busstopIndex6)
+	(S.L.nuntius_output_busstopIndex7)
+
+	""
+	(S.$.nuntius_output_lineString)
+	(S.$.nuntius_output_terminusString)
+	(S.$.nuntius_output_busstopString0)
+	(S.$.nuntius_output_busstopString1)
+	(S.$.nuntius_output_busstopString2)
+	(S.$.nuntius_output_busstopString3)
+	(S.$.nuntius_output_busstopString4)
+	(S.$.nuntius_output_busstopString5)
+	(S.$.nuntius_output_busstopString6)
+	(S.$.nuntius_output_busstopString7)
+	(S.$.nuntius_output_busstopString0first)
+	(S.$.nuntius_output_busstopString1first)
+	(S.$.nuntius_output_busstopString2first)
+	(S.$.nuntius_output_busstopString3first)
+	(S.$.nuntius_output_busstopString4first)
+	(S.$.nuntius_output_busstopString5first)
+	(S.$.nuntius_output_busstopString6first)
+	(S.$.nuntius_output_busstopString7first)
+	(S.$.nuntius_output_busstopString0second)
+	(S.$.nuntius_output_busstopString1second)
+	(S.$.nuntius_output_busstopString2second)
+	(S.$.nuntius_output_busstopString3second)
+	(S.$.nuntius_output_busstopString4second)
+	(S.$.nuntius_output_busstopString5second)
+	(S.$.nuntius_output_busstopString6second)
+	(S.$.nuntius_output_busstopString7second)
+
 	100 (S.L.nuntius_printer_displayBrightnessPercent)
 	0 (S.L.nuntius_printer_displayBrightnessFloat)
 {end}
@@ -875,7 +1054,7 @@
 
 {macro:nuntius_printer_autoOpenBusstopPage}
 'if any of all the entrys or exits is open...
-	(L.L.nuntius_api_doorsOpen)
+	(L.L.nuntius_input_doorsOpen)
 	{if}
 'and:
 'the current printer page is 2 (home)
@@ -1517,8 +1696,8 @@ s0
 	(L.L.schedule_active)
 	{if}
 'Get Terminus and line and save it to all needed sources
-		(M.V.GetTTLineString) (S.$.IBIS_Complex_Line) (S.$.Matrix_Nr) (S.$.nuntius_printer_lineStr) (S.$.nuntius_api_lineStr)
-		(M.V.GetTTTerminusIndex) (S.L.nuntius_api_terminusIndex) (M.L.nuntius_printer_setTerminusIndex)
+		(M.V.GetTTLineString) (S.$.IBIS_Complex_Line) (S.$.Matrix_Nr) (S.$.nuntius_printer_lineStr)
+		(M.V.GetTTTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
 		
 'Save Mode
 		1 (S.L.nuntius_printer_RouteMode)
@@ -1558,13 +1737,13 @@ s0
 	l2 (S.L.IBIS_Linie_Suffix)
 
 'Save all data
-		l0 (S.L.nuntius_printer_Line) $IntToStr (S.$.nuntius_api_lineStr)
+		l0 (S.L.nuntius_printer_Line) $IntToStr (S.$.nuntius_printer_lineStr)
 		l1 (S.L.nuntius_printer_Route)
-		l2 (S.L.nuntius_printer_Suffix) (S.L.nuntius_api_lineSuffix)
+		l2 (S.L.nuntius_printer_Suffix)
 		l3 (S.L.nuntius_printer_RouteIndex)
 
 'Get Terminus
-		(M.V.GetRouteTerminusIndex) (S.L.nuntius_api_terminusIndex) (M.L.nuntius_printer_setTerminusIndex)
+		(M.V.GetRouteTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
 		
 'Save Mode
 		2 (S.L.nuntius_printer_RouteMode)
@@ -1597,8 +1776,7 @@ s0
 	(S.L.IBIS_Linie_Complex)
 	(S.L.IBIS_Linie_Suffix)
 	(S.L.target_index_int)
-	(S.$.nuntius_api_lineStr)
-	(S.$.nuntius_api_terminusStr)
+	(S.$.nuntius_printer_lineStr)
 
 	(M.L.nuntius_printer_resetTerminus)
 
@@ -1680,7 +1858,7 @@ s0
 		(L.L.nuntius_printer_TerminusIndex) 1 (M.V.GetTerminusString) $RemoveSpaces (S.$.nuntius_printer_ui_terminus1)
 		(L.L.nuntius_printer_TerminusIndex) 2 (M.V.GetTerminusString) $RemoveSpaces (S.$.nuntius_printer_ui_terminus2)
 
-		(L.L.nuntius_printer_TerminusIndex) 5 (M.V.GetTerminusString) (S.$.nuntius_api_terminusStr)
+		(L.L.nuntius_printer_TerminusIndex) 5 (M.V.GetTerminusString)
 	{endif}
 {end}
 
@@ -1722,6 +1900,7 @@ s0
 			(S.L.nuntius_printer_currentBusstopIndex)
 			(M.L.nuntius_printer_playBusstopAnnouncement)
 			(M.L.nuntius_printer_refreshBusstopList)
+			1 (S.L.nuntius_event_queue_currentBusstopChanged)
 		{endif}
 	{endif}
 {end}
@@ -1869,26 +2048,19 @@ s0
 		(S.$.nuntius_printer_ui_busstop3)
 		(S.$.nuntius_printer_ui_busstop4)
 		(S.$.nuntius_printer_ui_busstop_end)
-		(S.$.nuntius_api_busstop0)
-		(S.$.nuntius_api_busstop1)
-		(S.$.nuntius_api_busstop2)
-		(S.$.nuntius_api_busstop3)
-		(S.$.nuntius_api_busstop4)
 	{endif}
 
 	(L.L.nuntius_printer_RouteMode) 1 = (L.L.nuntius_printer_RouteMode) 2 = ||
 	{if}
 		(L.L.schedule_active) {if} 258 {else} 352 {endif} s7
 
-		0 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxMedium)  l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop0) (S.$.nuntius_api_busstop0)
-		1 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop1) (S.$.nuntius_api_busstop1)
-		2 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop2) (S.$.nuntius_api_busstop2)
-		3 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop3) (S.$.nuntius_api_busstop3)
-		4 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop4) (S.$.nuntius_api_busstop4)
-		(M.L.nuntius_printer_getLastBusstopListEntry) (L.L.nuntius_printer_font_38pxMedium)  l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop_end)
-		5 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop5)
-		6 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop6)
-		7 (M.L.nuntius_printer_getBusstopListEntry)   (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_api_busstop7)
+'				Index/Fallback Name								Get IBIS String/Fallback Name					Font					 width			shorten									save
+		0 (M.L.nuntius_printer_getBusstopListEntry)   3 (M.L.nuntius_printer_getBusstopIndexString) (L.L.nuntius_printer_font_38pxMedium)  l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop0)
+		1 (M.L.nuntius_printer_getBusstopListEntry)   3 (M.L.nuntius_printer_getBusstopIndexString) (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop1)
+		2 (M.L.nuntius_printer_getBusstopListEntry)   3 (M.L.nuntius_printer_getBusstopIndexString) (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop2)
+		3 (M.L.nuntius_printer_getBusstopListEntry)   3 (M.L.nuntius_printer_getBusstopIndexString) (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop3)
+		4 (M.L.nuntius_printer_getBusstopListEntry)   3 (M.L.nuntius_printer_getBusstopIndexString) (L.L.nuntius_printer_font_38pxRegular) l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop4)
+		(M.L.nuntius_printer_getLastBusstopListEntry) 3 (M.L.nuntius_printer_getBusstopIndexString) (L.L.nuntius_printer_font_38pxMedium)  l7 (M.L.nuntius_printer_shortenString) (S.$.nuntius_printer_ui_busstop_end)
 	{endif}
 
 	(M.L.nuntius_printer_refreshBusstopTimeList)
@@ -1901,7 +2073,9 @@ s0
 'returns the name of a busstop from the printers busstop list
 'Arguments:
 '0 = Field index (0-4, 0 = current, 4 = "most future")
-'Returns String: The busstops name
+'Returns:
+'If the busstop was found in hof file: the busstops hof file index
+'Else: the fallback name and "-1" as index
 {macro:nuntius_printer_getBusstopListEntry}
 'Register:
 '0 = Field index (0-4, 0 = current, 4 = "most future")
@@ -1921,42 +2095,51 @@ s0
 'if the busstop count is bigger than the target index (which means the busstop will exist)
 		(M.V.GetBusstopCount) l1 >
 		{if}
-'get the busstops IBIS 2 string
+'get the busstops index
 			l2
 			l1
 			(M.V.GetRouteBusstopIdent)
 			(M.V.GetBusstopIndex)
-			3
-			(M.V.GetBusstopString)
+			""
 		{else}
 'else return nullstring
 			""
+			-1
 		{endif}
-	{endif}
-
-	(L.L.nuntius_printer_RouteMode) 1 =
-	{if}
-'load all values for register
-		(L.L.nuntius_printer_currentBusstopIndex) l0 + (L.L.nuntius_printer_busstopOffset) + s1
-		
-'if the busstop count is bigger than the target index (which means the busstop will exist)
-		(M.V.GetTTBusstopCount) l1 >
+	{else}
+		(L.L.nuntius_printer_RouteMode) 1 =
 		{if}
-'get the busstops name (if there is a busstop inside the hof file named the same, use it's IBIS-2 string instead of the busstop cube name)
-			l1
-			(M.V.GetTTBusstopName) (M.V.GetBusstopIndex) s3 -1 = !
+'load all values for register
+			(L.L.nuntius_printer_currentBusstopIndex) l0 + (L.L.nuntius_printer_busstopOffset) + s1
+			
+'if the busstop count is bigger than the target index (which means the busstop will exist)
+			(M.V.GetTTBusstopCount) l1 >
 			{if}
-				l3 3 (M.V.GetBusstopString)
+'get the busstops index (or give fallback name if it was not found)
+				l1
+				(M.V.GetTTBusstopName) (M.V.GetBusstopIndex) s3 -1 = !
+				{if}
+					l3
+					""
+				{else}
+					l1 (M.V.GetTTBusstopName)
+					-1
+				{endif}
 			{else}
-				l1 (M.V.GetTTBusstopName)
+'else return nullstring
+				""
+				-1
 			{endif}
 		{else}
-'else return nullstring
 			""
+			-1
 		{endif}
 	{endif}
 {end}
 
+'Returns:
+'If the busstop was found in hof file: the busstops hof file index
+'Else: the fallback name and "-1" as index
 {macro:nuntius_printer_getLastBusstopListEntry}
 'Register:
 '0 = <unused>
@@ -1969,17 +2152,34 @@ s0
 		{if}
 			(M.V.GetTTBusstopCount) 1 - s1 (M.V.GetTTBusstopName) (M.V.GetBusstopIndex) s3 -1 = !
 			{if}
-				l3 3 (M.V.GetBusstopString)
+				l3
+				""
 			{else}
 				l1 (M.V.GetTTBusstopName)
+				-1
 			{endif}
 		{else}
 			(L.L.nuntius_printer_RouteIndex) s0 (M.V.GetBusstopCount) 1 - s1 l0 l1 (M.V.GetRouteBusstopIdent) (M.V.GetBusstopIndex)
-			3 (M.V.GetBusstopString)
+			""
 		{endif}
 	{else}
 		""
+		-1
 	{endif}
+{end}
+
+'If not "-1" searches for the busstop and returns the string, otherwise does no change to the string stack
+'(which is useful so if you call this after getBusstopListEntry, the fallback string will stay after calling)
+'Arguments:
+'1 = hof file index of the busstop
+'0 = string index
+{macro:nuntius_printer_getBusstopIndexString}
+	s0
+	+ l0 - s1
+
+	0 >=
+	{if} l1 l0 (M.V.GetBusstopString) {endif}
+	$RemoveSpaces
 {end}
 
 
