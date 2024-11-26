@@ -400,8 +400,9 @@
 	{if} (M.L.nuntius_printer_executeDaueranimation) {endif}
 
 'API calls
-	(M.L.nuntius_input_power) (S.L.nuntius_input_power)
-	(M.L.nuntius_input_doorsOpen) (S.L.nuntius_input_doorsOpen)
+'Zeros are fallback. If the macro is empty or not defined, we will always take zero and avoid undefined behavior.
+	0 (M.L.nuntius_input_power) (S.L.nuntius_input_power)
+	0 (M.L.nuntius_input_doorsOpen) (S.L.nuntius_input_doorsOpen)
 
 'Event loop
 	(M.L.nuntius_printer_eventLoop)
