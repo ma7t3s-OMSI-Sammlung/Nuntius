@@ -397,7 +397,10 @@
 {macro:nuntius_printer_frame}
 'debug
 	(C.L.nuntius_debugMode)
-	{if} (M.L.nuntius_printer_executeDaueranimation) {endif}
+	{if}
+		(M.L.nuntius_printer_executeDaueranimation)
+		(M.L.nuntius_printer_initFonts)
+	{endif}
 
 'API calls
 'Zeros are fallback. If the macro is empty or not defined, we will always take zero and avoid undefined behavior.
