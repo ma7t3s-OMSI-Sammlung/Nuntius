@@ -420,6 +420,7 @@
 	(M.L.nuntius_printer_autoOpenConfirmNextTripPage)
 	(M.L.nuntius_printer_autoSetTripEndTerminus)
 	(M.L.nuntius_printer_updateCurrentBusstopIndex)
+	(M.L.nuntius_printer_recalculateDistance)
 	(M.L.nuntius_updateTicket)
 	(M.L.nuntius_ticketPrintHandler)
 
@@ -624,7 +625,10 @@
 
 'Erase
 	(L.L.nuntius_printer_scriptTextureCurrentIndex) 0 0 0 0 (M.V.STSetColor)
+'Date/Time
 	(L.L.nuntius_printer_scriptTextureCurrentIndex) 770 0 1024 76 (M.V.STDrawRect)
+'Distance
+	(L.L.nuntius_printer_scriptTextureCurrentIndex) 142 499 436 574 (M.V.STDrawRect)
 
 'Rewrite
 	(L.L.nuntius_printer_scriptTextureCurrentIndex) 255 255 0 0 (M.V.STSetColor)
@@ -749,7 +753,7 @@
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l3 - 260 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime3)    (M.V.STTextOut)
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l4 - 204 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime4)    (M.V.STTextOut)
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l5 - 117 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstopTime_end) (M.V.STTextOut)
-	{endif}
+	{endif} 
 
 '******************************************
 ' Next Trip
@@ -826,6 +830,18 @@
 		(L.$.nuntius_printer_ui_delay) (L.L.nuntius_printer_font_48pxMedium) (M.V.TextLength) s1
 ' Write                                           XLeft + ((fieldWidth - length) / 2) -> but not below 770 :)
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 770 113 l1 - 2 / + 770 max 19 (L.L.nuntius_printer_font_48pxMedium) 1 0 (L.$.nuntius_printer_ui_delay) (M.V.STTextOut)
+	{endif}
+
+'******************************************
+' Entfernung zur nächsten Haltestelle
+'******************************************
+	(L.L.nuntius_printer_visBusstopDistance)
+	(L.L.nuntius_printer_distance_nextBusstopDistance) -1 = ! &&
+	{if}
+		(L.L.nuntius_printer_distance_nextBusstopDistance) trunc $IntToStr 
+		" m" $+ (S.$.nuntius_printer_tmpStr0)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 146 498 (L.L.nuntius_printer_font_38pxRegular)  1 0 "Haltestelle in:" (M.V.STTextOut)
+		(L.L.nuntius_printer_scriptTextureCurrentIndex) 146 532 (L.L.nuntius_printer_font_38pxRegular)  1 0 (L.$.nuntius_printer_tmpStr0) (M.V.STTextOut)
 	{endif}
 {end}
 
@@ -1896,16 +1912,22 @@ s0
 
 'Updates the current Busstop index (if schedule is active and the current busstop changes)
 {macro:nuntius_printer_updateCurrentBusstopIndex}
-	(L.L.schedule_active) (L.L.nuntius_printer_AutoHFSDisabled) ! &&
+	(L.L.schedule_active)
 	{if}
 		(M.V.GetTTBusstopIndex) s0 (L.L.nuntius_printer_currentBusstopIndex) = !
 		{if}
-			l0
-			(S.L.nuntius_printer_currentBusstopIndex)
-			(M.L.nuntius_printer_playBusstopAnnouncement)
-			(M.L.nuntius_printer_refreshBusstopList)
-			1 (S.L.nuntius_event_queue_currentBusstopChanged)
+			(L.L.nuntius_printer_AutoHFSDisabled) !
+			{if}
+				l0
+				(S.L.nuntius_printer_currentBusstopIndex)
+				(M.L.nuntius_printer_playBusstopAnnouncement)
+				(M.L.nuntius_printer_refreshBusstopList)
+				1 (S.L.nuntius_event_queue_currentBusstopChanged)
+			{endif}
+			(M.L.nuntius_printer_restartDistanceCalc)
 		{endif}
+	{else}
+		-1 (S.L.nuntius_printer_distance_nextBusstopDistance)
 	{endif}
 {end}
 
@@ -2271,6 +2293,76 @@ s0
 {end}
 
 '################################
+'distance calculation
+'################################
+
+{macro:nuntius_printer_restartDistanceCalc}
+	(L.L.kmcounter_km) (S.L.nuntius_printer_distance_lastKmCounter_km)
+	(L.L.kmcounter_m) (S.L.nuntius_printer_distance_lastKmCounter_m)
+	5 (S.L.nuntius_printer_distance_timer)
+	(M.L.nuntius_printer_recalculateDistance)
+{end}
+
+{macro:nuntius_printer_recalculateDistance}
+	(L.L.nuntius_printer_distance_timer) (L.S.Timegap) + s0 1 % (S.L.nuntius_printer_distance_timer)
+	
+	l0 1 >=
+	{if}
+		(M.V.GetTTBusstopIndex) s0 0 =
+		{if}
+			-1 (S.L.nuntius_printer_distance_nextBusstopDistance)
+		{else}
+'Register use:
+'0 = current busstop index
+'1 = current delay (in seconds)
+'2 = actual dep time at last busstop (actually not actual but how it would've been according to the current delay)
+'3 = actual (predicted) arr time at next busstop
+'4 = time difference between last and next busstop (in seconds)
+'5 = elapsed time since the last busstop was left (according to the current delay)
+'6 = percent (0...1) where we are at the timeline between last and next busstop
+
+'fetch delay
+			(M.V.GetTTDelay) s1
+			
+'calculate actual dep at last busstop and arr at current one (schedule time + delay)
+			l0 1 - (M.V.GetTTBusstopDep) l1 + s2
+			l0 (M.V.GetTTBusstopArr) l1 + s3
+
+'calc differences
+			l3 l2 - s4
+			(L.S.Time) l2 - s5
+
+'get relative value where we are on our "timeline"
+			l5 l4 / s6
+
+'only calc if the "stichprobe" is big enough
+			0.5 >=
+			{if}
+'Register use (changes from here):
+'0 = difference full kilometers (converted to meters, will alway be something like "0", "1000", "2000", "3000" etc.)
+'1 = difference only meters
+'2 = difference actual meters (including the kilometer difference)
+'7 = calculated total distance between last and next busstop
+
+'calc distance diferences
+				(L.L.kmcounter_km) (L.L.nuntius_printer_distance_lastKmCounter_km) - 1000 * s0
+				(L.L.kmcounter_m) (L.L.nuntius_printer_distance_lastKmCounter_m) - s1
+'...and join them into one value
+				s0 s1 + s2
+
+'calc total busstop distance
+				l2 l6 / s7
+
+'...and subtract the value we already reached from it
+				l7 l2 - (S.L.nuntius_printer_distance_nextBusstopDistance)
+			{else}
+				-1 (S.L.nuntius_printer_distance_nextBusstopDistance)
+			{endif}
+		{endif}
+	{endif}
+{end}
+
+'################################
 'ticketprinter functions
 '################################
 
@@ -2497,6 +2589,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			0 (M.L.nuntius_printer_showUiBusstopDistance)
 		{endif}
 		
 '1: Login Page
@@ -2527,6 +2620,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			0 (M.L.nuntius_printer_showUiBusstopDistance)
 			
 			2 (S.L.nuntius_printer_InputFieldCount)
 			1 (S.L.nuntius_printer_currentInputField)
@@ -2575,6 +2669,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			1 (M.L.nuntius_printer_showUiBusstopDistance)
 		{endif}
 
 '3: Busstop Page
@@ -2605,6 +2700,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			1 (M.L.nuntius_printer_showUiBusstopDistance)
 		{endif}
 		
 '4: LKR Page
@@ -2635,6 +2731,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			0 (M.L.nuntius_printer_showUiBusstopDistance)
 			
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2674,6 +2771,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			0 (M.L.nuntius_printer_showUiBusstopDistance)
 			
 			1 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2716,6 +2814,7 @@ s0
 			1 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			1 (M.L.nuntius_printer_showUiBusstopDistance)
 			
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2752,6 +2851,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			0 (M.L.nuntius_printer_showUiBusstopDistance)
 		{endif}
 
 '8: Login from break page Page
@@ -2782,6 +2882,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			0 (M.L.nuntius_printer_showUiBusstopDistance)
 			
 			1 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2818,6 +2919,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			0 (M.L.nuntius_printer_showUiBusstopDistance)
 			
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2861,6 +2963,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			0 (M.L.nuntius_printer_showUiBusstopDistance)
 			
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2904,6 +3007,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			1 (M.L.nuntius_printer_showUiBusstopDistance)
 			
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2938,6 +3042,7 @@ s0
 			0 (M.L.nuntius_printer_showUiElementsAnnouncements)
 			1 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
+			0 (M.L.nuntius_printer_showUiBusstopDistance)
 			
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -2974,6 +3079,7 @@ s0
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			1 (M.L.nuntius_printer_showUiMenuNav)
 			1 (M.L.nuntius_printer_showUiMenuAppearance)
+			1 (M.L.nuntius_printer_showUiBusstopDistance)
 			
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
@@ -3120,6 +3226,11 @@ s0
 {macro:nuntius_printer_showUiMenuAppearance}
 	(S.L.nuntius_printer_visMenuAppearance)
 {end}
+
+{macro:nuntius_printer_showUiBusstopDistance}
+	(S.L.nuntius_printer_visBusstopDistance)
+{end}
+
 
 
 '################################
