@@ -2339,16 +2339,14 @@ s0
 			0.5 >=
 			{if}
 'Register use (changes from here):
-'0 = difference full kilometers (converted to meters, will alway be something like "0", "1000", "2000", "3000" etc.)
-'1 = difference only meters
 '2 = difference actual meters (including the kilometer difference)
 '7 = calculated total distance between last and next busstop
 
 'calc distance diferences
-				(L.L.kmcounter_km) (L.L.nuntius_printer_distance_lastKmCounter_km) - 1000 * s0
-				(L.L.kmcounter_m) (L.L.nuntius_printer_distance_lastKmCounter_m) - s1
+				(L.L.kmcounter_km) (L.L.nuntius_printer_distance_lastKmCounter_km) - 1000 *
+				(L.L.kmcounter_m) (L.L.nuntius_printer_distance_lastKmCounter_m) -
 '...and join them into one value
-				s0 s1 + s2
+				+ s2
 
 'calc total busstop distance
 				l2 l6 / s7
