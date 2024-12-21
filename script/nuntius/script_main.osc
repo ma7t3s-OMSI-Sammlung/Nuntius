@@ -835,11 +835,31 @@
 '******************************************
 ' Entfernung zur nächsten Haltestelle
 '******************************************
+	(L.L.nuntius_printer_distance_nextBusstopDistance) s1
+
 	(L.L.nuntius_printer_visBusstopDistance)
-	(L.L.nuntius_printer_distance_nextBusstopDistance) -1 = ! &&
+	(L.L.schedule_active) &&
+	(L.L.nuntius_printer_RouteMode) 0 = ! &&
 	{if}
-		(L.L.nuntius_printer_distance_nextBusstopDistance) trunc $IntToStr 
-		" m" $+ (S.$.nuntius_printer_tmpStr0)
+
+' Don't show anything if there is no valid value or the last was smaller than now (means it's too inaccurate at the time or the GPS is "confused")
+		l1 trunc 0 <=
+		l1 1 - (L.L.nuntius_printer_distance_nextBusstopDistanceLast) >= ||
+		{if}
+			"-- m"
+		{else}
+			l1 1000 >=
+			{if}
+' Convert to km with one num after the point for large distances
+				l1 1000 / trunc $IntToStr "," $+ l1 100 / trunc 10 % $IntToStr $+
+				" km" $+ 
+			{else}
+				l1 trunc $IntToStr
+				" m" $+ 
+			{endif}
+		{endif}
+		(S.$.nuntius_printer_tmpStr0)
+		
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 146 498 (L.L.nuntius_printer_font_38pxRegular)  1 0 "Haltestelle in:" (M.V.STTextOut)
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 146 532 (L.L.nuntius_printer_font_38pxRegular)  1 0 (L.$.nuntius_printer_tmpStr0) (M.V.STTextOut)
 	{endif}
@@ -2308,6 +2328,8 @@ s0
 	
 	l0 1 >=
 	{if}
+		(L.L.nuntius_printer_distance_nextBusstopDistance) (S.L.nuntius_printer_distance_nextBusstopDistanceLast)
+
 		(M.V.GetTTBusstopIndex) s0 0 =
 		{if}
 			-1 (S.L.nuntius_printer_distance_nextBusstopDistance)
@@ -2335,27 +2357,21 @@ s0
 'get relative value where we are on our "timeline"
 			l5 l4 / s6
 
-'only calc if the "stichprobe" is big enough
-			0.5 >=
-			{if}
 'Register use (changes from here):
 '2 = difference actual meters (including the kilometer difference)
 '7 = calculated total distance between last and next busstop
 
 'calc distance diferences
-				(L.L.kmcounter_km) (L.L.nuntius_printer_distance_lastKmCounter_km) - 1000 *
-				(L.L.kmcounter_m) (L.L.nuntius_printer_distance_lastKmCounter_m) -
+			(L.L.kmcounter_km) (L.L.nuntius_printer_distance_lastKmCounter_km) - 1000 *
+			(L.L.kmcounter_m) (L.L.nuntius_printer_distance_lastKmCounter_m) -
 '...and join them into one value
-				+ s2
+			+ s2
 
 'calc total busstop distance
-				l2 l6 / s7
+			l2 l6 / s7
 
 '...and subtract the value we already reached from it
-				l7 l2 - (S.L.nuntius_printer_distance_nextBusstopDistance)
-			{else}
-				-1 (S.L.nuntius_printer_distance_nextBusstopDistance)
-			{endif}
+			l7 l2 - (S.L.nuntius_printer_distance_nextBusstopDistance)
 		{endif}
 	{endif}
 {end}
