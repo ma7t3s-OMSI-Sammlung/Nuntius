@@ -502,6 +502,9 @@
 		5 (M.V.GetTerminusString) (S.$.nuntius_output_terminusString)
 		1 (S.L.nuntius_event_queue_terminusChanged)
 	{endif}
+
+'Combined Line and Terminus
+	(L.$.nuntius_output_lineString) " " $+ (L.$.nuntius_output_terminusString) $+ (S.$.nuntius_output_lineTerminusString)
 	
 'Busstops
 	(L.L.nuntius_printer_RouteMode) 0 = !

@@ -1,6 +1,7 @@
 nuntius_output_timeString
 nuntius_output_lineString
 nuntius_output_terminusString
+nuntius_output_lineTerminusString
 nuntius_output_busstopString0
 nuntius_output_busstopString1
 nuntius_output_busstopString2
