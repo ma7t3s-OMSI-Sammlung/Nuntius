@@ -455,7 +455,7 @@
 	(L.S.Time) 3600 % 60 / trunc s2
 
 	l1 "02" $IntToStrEnh ":" $+ l2 "02" $IntToStrEnh $+
-	(S.L.nuntius_output_timeString)
+	(S.$.nuntius_output_timeString)
 
 'Pause
 	(L.L.nuntius_printer_page) 7 = 
