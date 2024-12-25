@@ -1285,7 +1285,12 @@
 'get full minutes (absolute value of delay seconds divided by 60)
 		(M.V.GetTTDelay) s0 60 / abs s1
 'get the sign
-		l0 sgn s3
+		(C.L.nuntius_printer_invertDelaySign)
+		{if} l0 /-/
+		{else} l0
+		{endif}
+		sgn s3
+
 'get rest seconds (rounded to 10th):
 'get rest seconds (all seconds "%" by 60, divide 10, trunc and multiply with 10 again and get absolute (positive) value)
 		l0 60 % 10 / trunc 10 * abs s2

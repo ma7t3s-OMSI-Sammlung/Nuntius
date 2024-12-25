@@ -36,6 +36,13 @@ Legt die Fahrerpin ("Passwort") fest
 nuntius_printer_driverPIN
 1506
 
+Invertiert das Vorzeichen bei der Verspätung:
+0: + = Verspätung; - = Verfrühung (standard)
+1: + = Verfrühung; - = Verspätung
+[const]
+nuntius_printer_invertDelaySign
+0
+
 
 Legt die Dauer (in Sekunden) fest, die der Bildschirm des Druckers nach dem Abschalten des Stromes noch aktiv bleibt
 [const]
