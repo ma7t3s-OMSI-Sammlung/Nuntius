@@ -2,7 +2,7 @@
 
 [English](README_en.md)
 
-Für eine detailierte Anleitung siehe ReadMe.pdf (in den Releaseversionen enthalten)
+Für eine detaillierte Anleitung siehe "ReadMe.pdf" (in den Releaseversionen enthalten)
 
 ---
 
