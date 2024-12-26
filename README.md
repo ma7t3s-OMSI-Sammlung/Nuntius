@@ -2,6 +2,10 @@
 
 [English](README_en.md)
 
+Für eine detailierte Anleitung siehe ReadMe.pdf (in den Releaseversionen enthalten)
+
+---
+
 Nuntius (lat. „Bote“ oder „Nachricht“) ist ein einfacher Fahrscheindrucker für OMSI, der alle für solche Geräte typische Funktionen, wie Fahrgastinformation, Fahrscheinverkauf etc. unterstützt.
 
 Der Besondere Fokus liegt hier auf der einfachen Einbau- und Integrierbarkeit in andere Busse. Nuntius verfügt über ein spezielles "Schnittstellenscript", mit welchem es einfach möglich ist, den Drucker in den Bus zu integrieren und auch bswp. mit einer Innenanzeige kommunizieren zu lassen.
@@ -20,16 +24,16 @@ Alle weiteren Details, sowie eine Einbauanleitung findet ihr in der ReadMe, die 
 Ansonsten gilt ja bekanntermaßen "Ein Bild sagt mehr als tausend Worte", aus dem Grund lassen wir mal die Bilder sprechen:
 
 ### Home-Ansicht (Haltestellenverlauf und wichtige Funktionen im Schnellzugriff):
-![image](https://reboot.omsi-webdisk.de/net/attachment/258140-omsi2-20241116-212639-jpg)
+![OMSI2_20241116_212639](https://github.com/user-attachments/assets/361cceba-69a5-49b3-b8e6-79e264780c32)
 
 ### Routeneingabe:
-![image](https://reboot.omsi-webdisk.de/net/attachment/258139-omsi2-20241116-212645-jpg)
+![OMSI2_20241116_212645](https://github.com/user-attachments/assets/02ca2243-d5d8-4d98-9725-3ffadd79dd90)
 
 ### Fahrscheinverkauf:
-![image](https://reboot.omsi-webdisk.de/net/attachment/258138-omsi2-20241116-212651-jpg)
+![OMSI2_20241116_212651](https://github.com/user-attachments/assets/03348162-65f1-4d59-b8bd-d6c931ccc8df)
 
 ### Hauptmenü/Einstellungen:
-![image](https://reboot.omsi-webdisk.de/net/attachment/258141-omsi2-20241116-212704-jpg)
+![OMSI2_20241116_212704](https://github.com/user-attachments/assets/5e013075-699a-461c-9b55-1b0b43ba0dce)
 
 ### Dark Mode:
-![image](https://reboot.omsi-webdisk.de/net/attachment/258137-omsi2-20241116-212712-jpg)
+![OMSI2_20241116_212712](https://github.com/user-attachments/assets/3e57ab2a-d728-4091-9839-4a5cccc88b8a)
