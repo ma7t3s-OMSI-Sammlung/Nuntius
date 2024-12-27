@@ -515,50 +515,42 @@
 		0 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex0) s3
 		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString0first) " "
 		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString0second)
-		(L.$.nuntius_output_busstopString0first) (L.$.nuntius_output_busstopString0second) $= !
-		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString0)
+		$+ $+ (S.$.nuntius_output_busstopString0)
 
 		1 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex1) s3
 		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString1first) " "
 		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString1second)
-		(L.$.nuntius_output_busstopString1first) (L.$.nuntius_output_busstopString1second) $= !
-		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString1)
+		$+ $+ (S.$.nuntius_output_busstopString1)
 
 		2 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex2) s3
 		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString2first) " "
 		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString2second)
-		(L.$.nuntius_output_busstopString2first) (L.$.nuntius_output_busstopString2second) $= !
-		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString2)
+		$+ $+ (S.$.nuntius_output_busstopString2)
 
 		3 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex3) s3
 		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString3first) " "
 		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString3second)
-		(L.$.nuntius_output_busstopString3first) (L.$.nuntius_output_busstopString3second) $= !
-		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString3)
+		$+ $+ (S.$.nuntius_output_busstopString3)
 
 		4 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex4) s3
 		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString4first) " "
 		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString4second)
-		(L.$.nuntius_output_busstopString4first) (L.$.nuntius_output_busstopString4second) $= !
-		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString4)
+		$+ $+ (S.$.nuntius_output_busstopString4)
 
 		5 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex5) s3
 		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString5first) " "
 		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString5second)
-		(L.$.nuntius_output_busstopString5first) (L.$.nuntius_output_busstopString5second) $= !
-		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString5)
+		$+ $+ (S.$.nuntius_output_busstopString5)
 
 		6 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex6) s3
 		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString6first) " "
 		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString6second)
-		(L.$.nuntius_output_busstopString6first) (L.$.nuntius_output_busstopString6second) $= !
-		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString6)
+		$+ $+ (S.$.nuntius_output_busstopString6)
 
 		7 (M.L.nuntius_printer_getBusstopListEntry) (S.L.nuntius_output_busstopIndex7) s3
 		l3 1 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString7first) " "
 		l3 2 (M.L.nuntius_printer_getBusstopIndexString) (S.$.nuntius_output_busstopString7second)
-		(L.$.nuntius_output_busstopString7first) (L.$.nuntius_output_busstopString7second) $= !
-		{if} $+ $+ {endif} (S.$.nuntius_output_busstopString7)
+		$+ $+ (S.$.nuntius_output_busstopString7)
 
 	{else}
 		-1
