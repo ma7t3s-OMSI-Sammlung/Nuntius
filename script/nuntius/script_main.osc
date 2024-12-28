@@ -1167,8 +1167,14 @@
 
 			(M.V.GetTTTerminusIndex) 5 (M.V.GetTerminusString) (S.$.nuntius_printer_ui_confirmNextTripText2)
 
-			"in "
-			0 (M.V.GetTTBusstopDep) (L.S.Time) - 60 / trunc $IntToStr $+
+
+			0 (M.V.GetTTBusstopDep) (L.S.Time) - 60 / trunc 1440 % s2
+			0 >= {if}
+				"in "
+			{else}
+				"vor "
+			{endif}
+			l2 abs $IntToStr $+
 			" Min." $+ (S.$.nuntius_printer_ui_confirmNextTripText3)
 
 
