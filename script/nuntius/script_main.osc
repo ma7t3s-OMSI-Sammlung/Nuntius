@@ -9,13 +9,13 @@
 'if we are at the welcome page, go to the login page
 	(L.L.nuntius_printer_page) 0 =
 	{if}
-		1 (M.L.nuntius_printer_goToPage)
+		0 1 (M.L.nuntius_printer_startWaitTime)
 	{endif}
 
 'if we are at the break page, go to login from break
 	(L.L.nuntius_printer_page) 7 =
 	{if}
-		71 (M.L.nuntius_printer_goToPage)
+		10 1 (M.L.nuntius_printer_startWaitTime)
 	{endif}
 {end}
 
@@ -596,8 +596,10 @@
 			-1 (S.L.nuntius_printer_pleaseWaitTimer) (S.L.nuntius_printer_pleaseWaitDuration)
 
 			(L.L.nuntius_printer_pleaseWaitReason) -1 = {if} (L.L.nuntius_printer_targetPage) (M.L.nuntius_printer_goToPage) {endif}
-			(L.L.nuntius_printer_pleaseWaitReason) 1  = {if} (M.L.nuntius_printer_checkLogin) {endif}
-			(L.L.nuntius_printer_pleaseWaitReason) 2  = {if} (M.L.nuntius_printer_checkLoginAfterBreak) {endif}
+			(L.L.nuntius_printer_pleaseWaitReason)  0 = {if} 1 (M.L.nuntius_printer_goToPage) {endif}
+			(L.L.nuntius_printer_pleaseWaitReason)  1 = {if} (M.L.nuntius_printer_checkLogin) {endif}
+			(L.L.nuntius_printer_pleaseWaitReason)  2 = {if} (M.L.nuntius_printer_checkLoginAfterBreak) {endif}
+			(L.L.nuntius_printer_pleaseWaitReason) 10 = {if} 71 (M.L.nuntius_printer_goToPage) {endif}
 
 			(M.L.nuntius_printer_scheduleScriptTextForUpdate)
 		{endif}
@@ -2618,11 +2620,13 @@ s0
 	l1 (S.L.nuntius_printer_pleaseWaitDuration)
 	0 (S.L.nuntius_printer_pleaseWaitTimer)
 
-	l0 -1 =           {if} "Bitte warten..."                {endif}
-	l0  0 =           {if} "Fahrerkarte wird eingelesen..." {endif}
-	l0  1 = l0 2 = || {if} "Login wird überprüft..."        {endif}
-	l0  3 = l0 4 = || {if} "Eingaben werden übermittelt..." {endif}
-	l0  5 =           {if} "Ticket wird gedruckt..."        {endif}
+	l0 -1 =            {if} "Bitte warten..."                {endif}
+	l0  0 = l0 10 = || {if} "Fahrerkarte wird eingelesen..." {endif}
+	l0  1 = l0  2 = || {if} "Login wird überprüft..."        {endif}
+	l0  3 = l0  4 = || {if} "Eingaben werden übermittelt..." {endif}
+	l0  5 =            {if} "Ticket wird gedruckt..."        {endif}
+	l0  6 =            {if} "Gerät wird gesperrt..."         {endif}
+	l0  7 =            {if} "Abmeldung wird durchgeführt..." {endif}
 	(S.$.nuntius_printer_ui_loadingInfo)
 
 	99 (M.L.nuntius_printer_goToPage)
@@ -2648,7 +2652,7 @@ s0
 '11 = departure
 '12 = confirm next trip
 '91/101 = logout pin after shift end or driver switch
-'20 = Menu (X)
+'20 = Menu
 
 	s0
 
@@ -2959,7 +2963,7 @@ s0
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
 		{endif}
 
-'8: Login from break page Page
+'71: Login from break page Page
 		l0 71 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Login_withoutID_PIN.dds" $+ (S.$.nuntius_printer_ui_texture)
