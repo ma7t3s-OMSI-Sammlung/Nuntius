@@ -1,0 +1,72 @@
+{
+	"charset": [
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ",
+		"abcdefghijklmnopqrstuvwxyzäöüß",
+		"1234567890.!?,-/\\()[]=:+|'*"
+	],
+	"fonts": [
+		{
+			"baseHeight": 32,
+			"actualHeight": 42,
+			"hasCond": true,
+			"normalSpace": 8,
+			"condSpace": 7
+		},
+		{
+			"baseHeight": 24,
+			"actualHeight": 32,
+			"hasCond": true,
+			"normalSpace": 6,
+			"condSpace": 5
+		},
+		{
+			"baseHeight": 19,
+			"actualHeight": 24,
+			"hasCond": true,
+			"normalSpace": 4,
+			"condSpace": 3
+		},
+		{
+			"baseHeight": 16,
+			"actualHeight": 21,
+			"hasCond": true,
+			"normalSpace": 4,
+			"condSpace": 3
+		},
+		{
+			"baseHeight": 15,
+			"actualHeight": 19,
+			"hasCond": true,
+			"normalSpace": 4,
+			"condSpace": 3
+		},
+		{
+			"baseHeight": 12,
+			"actualHeight": 16,
+			"hasCond": true,
+			"normalSpace": 3,
+			"condSpace": 2
+		},
+		{
+			"baseHeight": 10,
+			"actualHeight": 13,
+			"hasCond": true,
+			"normalSpace": 3,
+			"condSpace": 2
+		},
+		{
+			"baseHeight": 9,
+			"actualHeight": 9,
+			"hasCond": true,
+			"normalSpace": 3,
+			"condSpace": 2
+		},
+		{
+			"baseHeight": 7,
+			"actualHeight": 7,
+			"hasCond": true,
+			"normalSpace": 2,
+			"condSpace": 1
+		}
+	]
+}

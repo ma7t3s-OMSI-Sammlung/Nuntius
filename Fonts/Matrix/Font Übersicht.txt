@@ -1,0 +1,56 @@
+Auflösungen:
+16x112
+19x112
+19x126
+24x189
+32x240
+
+Vorhandene Fonts (Hinweis: Die Fonthöhen in px beziehen sich immer auf die Basislänge (d.h. ohne Unterlänge), die tatsächliche Höhe kann somit mehr sein, sie steht eingeklammert dahinter):
+7px  (7px)
+9px  (9px)
+10px (13px)
+12px (16px)
+15px (19px)
+16px (21px)
+19px (24px)
+24px (32px)
+32px (42px)
+
+
+Fontgrößen:
+[0] Einzeilig + Linienfont
+[1] Einzeilig mit Unterlänge + Linienfont wenn viele Stellen
+[2] Zweizeilig größer (oder einzeilig wenn lang)
+[3] Zweizeilig normal
+[4] Zweizeilig kleiner
+
+
+Matrixauflösungen (Höhen)
+
+16:
+0: 16px
+1: 12px
+2: /
+3: 7px
+4: /
+
+19:
+0: 19px
+1: 15px
+2: /
+3: 9px
+4: /
+
+24:
+0: 24px
+1: 19px
+2: 16px, wenn Unterlänge 12px
+3: 10px, wenn Unterlänge 9px
+4: 7px
+
+32:
+0: 32px
+1: 24px
+2: 19px, wenn Unterlänge 15px
+3: 15px, wenn Unterlänge 12px
+4: 12px, wenn Unterlänge 10px
