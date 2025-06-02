@@ -2048,6 +2048,7 @@ s0
 			l1 (S.L.nuntius_printer_busstopOffset)
 'play sound
 			(M.L.nuntius_printer_playSoundNormal)
+			1 (S.L.nuntius_event_queue_currentBusstopChanged)
 		{endif}
 	{else}
 'if target busstop is in valid range
@@ -2056,6 +2057,7 @@ s0
 			l1 (S.L.nuntius_printer_currentBusstopIndex)
 'play sound
 			(M.L.nuntius_printer_playSoundNormal)
+			1 (S.L.nuntius_event_queue_currentBusstopChanged)
 		{endif}
 	{endif}
 	(M.L.nuntius_printer_playBusstopAnnouncement)
