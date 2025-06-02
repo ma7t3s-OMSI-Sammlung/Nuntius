@@ -706,6 +706,14 @@
 	(L.L.nuntius_printer_visInput2)
 	{if} (L.L.nuntius_printer_scriptTextureCurrentIndex) 24 394 (L.L.nuntius_printer_font_72pxRegular) 1 0 (M.V.STTextOut) {endif}
 
+'******************************************
+' Terminus preview
+'******************************************
+	(L.L.nuntius_printer_page) 5 =
+	{if}
+		(L.$.nuntius_printer_ui_terminusPreview1) (L.L.nuntius_printer_scriptTextureCurrentIndex) 24 273 (L.L.nuntius_printer_font_38pxRegular) 1 0 (M.V.STTextOut)
+		(L.$.nuntius_printer_ui_terminusPreview2) (L.L.nuntius_printer_scriptTextureCurrentIndex) 24 320 (L.L.nuntius_printer_font_38pxRegular) 1 0 (M.V.STTextOut)
+	{endif}
 
 '******************************************
 ' Loading Info
@@ -1453,6 +1461,8 @@ s0
 			{if}
 				(S.$.nuntius_printer_ui_input2)
 			{endif}
+
+			(M.L.nuntius_printer_refreshTerminusPreview)
 		{endif}
 	{endif}
 {end}
@@ -1980,9 +1990,9 @@ s0
 		(L.$.nuntius_printer_ui_input0) $StrToFloat
 		(M.V.GetTerminusIndex) s0
 
-		l0 1 (M.V.GetTerminusString) "@" $+
-		l0 2 (M.V.GetTerminusString) $+
-		(S.$.nuntius_printer_ui_terminusPreview)
+		l0 1 (M.V.GetTerminusString) (S.$.nuntius_printer_ui_terminusPreview1)
+		l0 2 (M.V.GetTerminusString) (S.$.nuntius_printer_ui_terminusPreview2)
+		(M.L.nuntius_printer_scheduleScriptTextForUpdate)
 	{endif}
 {end}
 
