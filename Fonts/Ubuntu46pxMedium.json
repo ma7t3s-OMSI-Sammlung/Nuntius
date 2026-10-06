@@ -1,0 +1,15 @@
+{
+    "addAsc": 0,
+    "addDesc": 0,
+    "charSpace": 1,
+    "charset": "ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ\nabcdefghijklmnopqrstuvwxyzäöüß<>^ \n1234567890!\"§$%&/\\()[]{}?+*~#'-,;.:|€",
+    "equalNumberWidth": true,
+    "extraSideMargin": 1,
+    "font": {
+        "font": "Ubuntu,30,-1,5,500,0,0,0,0,0,0,0,0,0,0,1,Medium",
+        "fontCharGap": 0,
+        "fontFileName": "Ubuntu46pxMedium",
+        "fontName": "Ubuntu 46px Medium"
+    },
+    "lineSpace": 1
+}
