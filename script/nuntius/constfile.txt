@@ -43,6 +43,12 @@ Invertiert das Vorzeichen bei der Verspätung:
 nuntius_printer_invertDelaySign
 0
 
+Gibt die Dauer (in Sekunden) an, die der Nuntius-Bildschirm noch aufgehellt bleibt, nachdem bereits alle Türen wieder geschlossen wurden.
+Dies ist nur relevant, wenn die adaptive Bildschrimhelligkeit aktiviert wurde
+[const]
+nuntius_printer_displayBrightnessDoorsClosingTimeout
+3
+
 
 Legt die Dauer (in Sekunden) fest, die der Bildschirm des Druckers nach dem Abschalten des Stromes noch aktiv bleibt
 [const]
