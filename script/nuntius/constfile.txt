@@ -55,6 +55,11 @@ nuntius_printer_batteryTime
 300
 
 
+Aktiviert die Haltestellenweiterschaltung durch treten des Kupplungspedals
+[const]
+nuntius_printer_enableNextBusstopWithClutch
+1
+
 Legt die Dauer des Boots fest (1 = Standard, 10 = zehnmal so schnelles booten, nützlich zu Testzwecken)
 [const]
 nuntius_printer_bootSpeed
@@ -84,4 +89,3 @@ boot
 [pnt]
 20
 6
-

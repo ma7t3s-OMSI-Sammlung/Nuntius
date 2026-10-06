@@ -420,6 +420,7 @@
 	(M.L.nuntius_printer_autoOpenConfirmNextTripPage)
 	(M.L.nuntius_printer_autoSetTripEndTerminus)
 	(M.L.nuntius_printer_updateCurrentBusstopIndex)
+	(M.L.nuntius_printer_nextBusstopWithClutchHandler)
 	(M.L.nuntius_printer_recalculateDistance)
 	(M.L.nuntius_updateTicket)
 	(M.L.nuntius_ticketPrintHandler)
@@ -2014,6 +2015,24 @@ s0
 		{endif}
 	{else}
 		-1 (S.L.nuntius_printer_distance_nextBusstopDistance)
+	{endif}
+{end}
+
+'Handles if we should jump to the next busstop because the clutch was used
+{macro:nuntius_printer_nextBusstopWithClutchHandler}
+	(C.L.nuntius_printer_enableNextBusstopWithClutch)
+	{if}
+		(L.L.Clutch) (C.L.nuntius_printer_nextBusstopWithClutchSensitivity) 0.05 max 0.95 min >
+		(L.L.nuntius_printer_nextBusstopWithClutchJumped) 0 = &&
+		{if}
+			1 (M.L.nuntius_printer_busstopJump)
+			1 (S.L.nuntius_printer_nextBusstopWithClutchJumped)
+		{else}
+			(L.L.Clutch) (C.L.nuntius_printer_nextBusstopWithClutchSensitivity) 0.1 - 0.025 max 0.925 min <
+			{if}
+				0 (S.L.nuntius_printer_nextBusstopWithClutchJumped)
+			{endif}
+		{endif}
 	{endif}
 {end}
 
