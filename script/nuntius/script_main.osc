@@ -388,6 +388,14 @@
 	(M.L.nuntius_printer_executeDaueranimation)
 
 	(M.L.nuntius_printer_initFonts)
+
+'For openOMSI
+    (C.L.nuntius_compatibilityOmsiImplementation)
+	{if}
+	    1 (S.L.nuntius_printer_scriptTextureState)
+		(C.L.nuntius_printer_scriptTextureIndex1) (S.L.nuntius_printer_scriptTextureCurrentIndex)
+	{endif}
+
 	(M.L.nuntius_printer_scheduleScriptTextForUpdate)
 
 'init brightness
@@ -400,6 +408,12 @@
 	{if}
 		(M.L.nuntius_printer_executeDaueranimation)
 		(M.L.nuntius_printer_initFonts)
+
+        (C.L.nuntius_compatibilityOmsiImplementation)
+    	{if}
+    	    1 (S.L.nuntius_printer_scriptTextureState)
+    		(C.L.nuntius_printer_scriptTextureIndex1) (S.L.nuntius_printer_scriptTextureCurrentIndex)
+    	{endif}
 	{endif}
 
 'API calls
@@ -431,11 +445,15 @@
 'Render Script texture
 	(L.L.nuntius_printer_screenIsOn)
 	{if}
-		(L.L.nuntius_printer_scriptTextureState) 1 - ! 1 + (S.L.nuntius_printer_scriptTextureState)
+'For Vanilla OMSI
+	    (C.L.nuntius_compatibilityOmsiImplementation) !
+		{if}
+		    (L.L.nuntius_printer_scriptTextureState) 1 - ! 1 + (S.L.nuntius_printer_scriptTextureState)
 
-		1 =
-		{if} (C.L.nuntius_printer_scriptTextureIndex1) {else} (C.L.nuntius_printer_scriptTextureIndex2) {endif}
-		(S.L.nuntius_printer_scriptTextureCurrentIndex)
+    		1 =
+    		{if} (C.L.nuntius_printer_scriptTextureIndex1) {else} (C.L.nuntius_printer_scriptTextureIndex2) {endif}
+    		(S.L.nuntius_printer_scriptTextureCurrentIndex)
+		{endif}
 
 		(L.L.nuntius_printer_updateScriptTexture)
 		{if}
@@ -457,19 +475,19 @@
 	(S.$.nuntius_output_timeString)
 
 'Pause
-	(L.L.nuntius_printer_page) 7 = 
+	(L.L.nuntius_printer_page) 7 =
 	(L.L.nuntius_printer_page) 71 = ||
 	(L.L.nuntius_output_pauseActive) ! &&
 	{if} (S.L.nuntius_event_queue_pauseChanged) {endif}
 
-	(L.L.nuntius_printer_page) 7 = ! 
+	(L.L.nuntius_printer_page) 7 = !
 	(L.L.nuntius_printer_page) 71 = ! &&
 	(L.L.nuntius_output_pauseActive) &&
 	{if} (S.L.nuntius_event_queue_pauseChanged) {endif}
 
 'Route Mode
 	(L.L.nuntius_printer_RouteMode) (L.L.nuntius_output_routeMode) = !
-	{if} 
+	{if}
 		(L.L.nuntius_printer_RouteMode) (S.L.nuntius_output_routeMode)
 		1 (S.L.nuntius_event_queue_routeModeChanged)
 	{endif}
@@ -504,7 +522,7 @@
 
 'Combined Line and Terminus
 	(L.$.nuntius_output_lineString) " " $+ (L.$.nuntius_output_terminusString) $+ (S.$.nuntius_output_lineTerminusString)
-	
+
 'Busstops
 	(L.L.nuntius_printer_RouteMode) 0 = !
 	{if}
@@ -673,7 +691,7 @@
 '******************************************
 	(L.L.nuntius_printer_visLineInformation) (L.L.nuntius_printer_RouteMode) 0 = ! &&
 	{if}
-' Note:     ST Index                                    X    Y Font                               Full Sperrpx      Text			
+' Note:     ST Index                                    X    Y Font                               Full Sperrpx      Text
 ' First line line
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 4    0 (L.L.nuntius_printer_font_38pxMedium) 1 0 (L.$.nuntius_printer_ui_line1) (M.V.STTextOut)
 ' Second line line
@@ -784,14 +802,14 @@
 		(L.$.nuntius_printer_ui_busstopTime3)    (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s3
 		(L.$.nuntius_printer_ui_busstopTime4)    (L.L.nuntius_printer_font_38pxRegular) (M.V.TextLength) s4
 		(L.$.nuntius_printer_ui_busstopTime_end) (L.L.nuntius_printer_font_38pxMedium)  (M.V.TextLength) s5
-   
+
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l0 - 435 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstopTime0)    (M.V.STTextOut)
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l1 - 372 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime1)    (M.V.STTextOut)
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l2 - 316 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime2)    (M.V.STTextOut)
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l3 - 260 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime3)    (M.V.STTextOut)
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l4 - 204 (L.L.nuntius_printer_font_38pxRegular) 1 0 (L.$.nuntius_printer_ui_busstopTime4)    (M.V.STTextOut)
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 408 l5 - 117 (L.L.nuntius_printer_font_38pxMedium)  1 0 (L.$.nuntius_printer_ui_busstopTime_end) (M.V.STTextOut)
-	{endif} 
+	{endif}
 
 '******************************************
 ' Next Trip
@@ -890,14 +908,14 @@
 			{if}
 ' Convert to km with one num after the point for large distances
 				l1 1000 / trunc $IntToStr "," $+ l1 100 / trunc 10 % $IntToStr $+
-				" km" $+ 
+				" km" $+
 			{else}
 				l1 trunc $IntToStr
-				" m" $+ 
+				" m" $+
 			{endif}
 		{endif}
 		(S.$.nuntius_printer_tmpStr0)
-		
+
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 146 498 (L.L.nuntius_printer_font_38pxRegular)  1 0 "Haltestelle in:" (M.V.STTextOut)
 		(L.L.nuntius_printer_scriptTextureCurrentIndex) 146 532 (L.L.nuntius_printer_font_38pxRegular)  1 0 (L.$.nuntius_printer_tmpStr0) (M.V.STTextOut)
 	{endif}
@@ -957,7 +975,7 @@
 		(M.L.nuntius_printer_loadOptions)
 		(M.L.nuntius_printer_loadTickets)
 	{endif}
-					
+
 'increase timer
 	(L.L.nuntius_printer_bootTimer) (L.S.Timegap) + (S.L.nuntius_printer_bootTimer)
 
@@ -977,14 +995,14 @@
 'manages the energy saver mode
 {macro:nuntius_printer_runEnergySaver}
 'if printer is running
-	(L.L.nuntius_printer_bootStatus) 2 = 
+	(L.L.nuntius_printer_bootStatus) 2 =
 	{if}
 'set energy saving mode and setup printer
 		3 (S.L.nuntius_printer_bootStatus)
 		0 (S.L.nuntius_printer_batteryTimer)
 	{else}
 'else if is already off (0) or currently on boot (1), directly turn it of
-		(L.L.nuntius_printer_bootStatus) 1 <= 
+		(L.L.nuntius_printer_bootStatus) 1 <=
 		{if}
 			(M.L.nuntius_printer_shutDown)
 		{else}
@@ -1096,7 +1114,7 @@
 {macro:nuntius_printer_loadOptions}
 'Register:
 '0 = the option terminus' index
-	
+
 	1234 (M.V.GetTerminusIndex) s0
 
 	l0 0 (M.V.GetTerminusString) $RemoveSpaces "NUNTIUS_OPTIONS" $=
@@ -1112,7 +1130,7 @@
 
 	(L.L.nuntius_printer_colorSchemeSetting) 0 =
 	{if}
-		(L.S.SunAlt) 2.5 < 1 + 
+		(L.S.SunAlt) 2.5 < 1 +
 	{else}
 		(L.L.nuntius_printer_colorSchemeSetting)
 	{endif}
@@ -1218,7 +1236,7 @@
 			(M.V.GetTTBusstopDep) s1
 
 			l0 (M.V.GetTTBusstopName)
-			
+
 			" (" $+
 			l1 3600 / trunc 24 % "02" $IntToStrEnh $+
 			":" $+
@@ -1344,25 +1362,25 @@
 		{endif}
 'add minutes to string
 		l1 $IntToStr $+
-		
+
 'only add seconds if the minutes are only one character long
 		l1 10 < l1 -10 > &&
 		{if}
-			":" $+ l2 "02" $IntToStrEnh $+	
+			":" $+ l2 "02" $IntToStrEnh $+
 		{endif}
 		(S.$.nuntius_printer_ui_delay)
-		
+
 'choose the correct background color
 		l0 -60 <=
 		{if}
 			"nuntius\red.dds" (S.$.nuntius_printer_ui_delayColor)
 		{endif}
-		
+
 		l0 -60 > l0 300 < &&
 		{if}
 			"nuntius\green.dds" (S.$.nuntius_printer_ui_delayColor)
 		{endif}
-		
+
 		l0 300 >=
 		{if}
 			"nuntius\orange.dds" (S.$.nuntius_printer_ui_delayColor)
@@ -1430,11 +1448,11 @@ s0
 			{if}
 				l0 $IntToStr $+
 			{endif}
-			
+
 'or delete one...
 			l0 10 =
 			{if}
-				1 $cutEnd 
+				1 $cutEnd
 			{endif}
 
 'write "0" if field would be empty
@@ -1451,12 +1469,12 @@ s0
 			{if}
 				(S.$.nuntius_printer_ui_input0)
 			{endif}
-			
+
 			l1 1 =
 			{if}
 				(S.$.nuntius_printer_ui_input1)
 			{endif}
-			
+
 			l1 2 =
 			{if}
 				(S.$.nuntius_printer_ui_input2)
@@ -1661,36 +1679,36 @@ s0
 	{if}
 
 'login page
-		(L.L.nuntius_printer_page) 1 = 
+		(L.L.nuntius_printer_page) 1 =
 		{if}
 			l0 (S.L.nuntius_printer_currentInputField)
-			
+
 			l0 0 =
 			{if}
 				(L.$.nuntius_printer_currentDisplayTextureFolder) "Login_withID_ID.dds" $+ (S.$.nuntius_printer_ui_texture)
 			{endif}
-			
+
 			l0 1 =
 			{if}
 				(L.$.nuntius_printer_currentDisplayTextureFolder) "Login_withID_PIN.dds" $+ (S.$.nuntius_printer_ui_texture)
 			{endif}
 		{endif}
-		
+
 'LKR page
-		(L.L.nuntius_printer_page) 4 = 
+		(L.L.nuntius_printer_page) 4 =
 		{if}
 			l0 (S.L.nuntius_printer_currentInputField)
-			
+
 			l0 0 =
 			{if}
 				(L.$.nuntius_printer_currentDisplayTextureFolder) "LKR_man_Line.dds" $+ (S.$.nuntius_printer_ui_texture)
 			{endif}
-			
+
 			l0 1 =
 			{if}
 				(L.$.nuntius_printer_currentDisplayTextureFolder) "LKR_man_Route.dds" $+ (S.$.nuntius_printer_ui_texture)
 			{endif}
-			
+
 			l0 2 =
 			{if}
 				(L.$.nuntius_printer_currentDisplayTextureFolder) "LKR_man_Terminus.dds" $+ (S.$.nuntius_printer_ui_texture)
@@ -1737,7 +1755,7 @@ s0
 		(M.L.nuntius_printer_resetInputFields)
 
 		2 (M.L.nuntius_printer_goToPage)
-		
+
 		(L.L.nuntius_printer_hasHofFileOptions)
 		{if}
 			(L.L.nuntius_printer_TerminusIndexBeforeBreak) (M.L.nuntius_printer_setTerminusIndex)
@@ -1759,7 +1777,7 @@ s0
 	(M.L.nuntius_printer_removeTrip)
 	(M.L.nuntius_printer_resetTerminus)
 	1 (S.L.nuntius_ticketPrinting)
-	
+
 'logout driver
 	(M.L.nuntius_printer_driverSwitch)
 {end}
@@ -1804,7 +1822,7 @@ s0
 'Get Terminus and line and save it to all needed sources
 		(M.V.GetTTLineString) (S.$.IBIS_Complex_Line) (S.$.Matrix_Nr) (S.$.nuntius_printer_lineStr)
 		(M.V.GetTTTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
-		
+
 'Save Mode
 		1 (S.L.nuntius_printer_RouteMode)
 		(M.L.nuntius_printer_refreshLineUI)
@@ -1837,7 +1855,7 @@ s0
 
 'if route exists
 	-1 = !
-	{if}	
+	{if}
 'Save IBIS Line (for Matrix needed)
 	l0 100 * l2 + (S.L.IBIS_Linie_Complex)
 	l2 (S.L.IBIS_Linie_Suffix)
@@ -1850,12 +1868,12 @@ s0
 
 'Get Terminus
 		(M.V.GetRouteTerminusIndex) (M.L.nuntius_printer_setTerminusIndex)
-		
+
 'Save Mode
 		2 (S.L.nuntius_printer_RouteMode)
 		(M.L.nuntius_printer_refreshLineUI)
 		(M.L.nuntius_printer_refreshBusstopList)
-		
+
 'Go back to Main Page
 		2 (M.L.nuntius_printer_goToPage)
 'play sound
@@ -2205,7 +2223,7 @@ s0
 'load all values for register
 		(L.L.nuntius_printer_currentBusstopIndex) l0 + (L.L.nuntius_printer_busstopOffset) + s1
 		(L.L.nuntius_printer_RouteIndex) s2
-		
+
 'if the busstop count is bigger than the target index (which means the busstop will exist)
 		(M.V.GetBusstopCount) l1 >
 		{if}
@@ -2225,7 +2243,7 @@ s0
 		{if}
 'load all values for register
 			(L.L.nuntius_printer_currentBusstopIndex) l0 + (L.L.nuntius_printer_busstopOffset) + s1
-			
+
 'if the busstop count is bigger than the target index (which means the busstop will exist)
 			(M.V.GetTTBusstopCount) l1 >
 			{if}
@@ -2299,7 +2317,7 @@ s0
 
 'Refreshs the printers busstop times list
 {macro:nuntius_printer_refreshBusstopTimeList}
-	(L.L.nuntius_printer_RouteMode) 0 = 
+	(L.L.nuntius_printer_RouteMode) 0 =
 	{if}
 		""
 		(S.$.nuntius_printer_ui_busstopTime0)
@@ -2340,7 +2358,7 @@ s0
 	{if}
 'load all values for register
 		(L.L.nuntius_printer_currentBusstopIndex) l0 + (L.L.nuntius_printer_busstopOffset) + s1
-		
+
 'if the busstop count is bigger than the target index (which means the busstop will exist)
 		(M.V.GetTTBusstopCount) l1 >
 		{if}
@@ -2348,7 +2366,7 @@ s0
 			l1 (M.V.GetTTBusstopArr) 86400 % s3
 			l1 (M.V.GetTTBusstopDep) 86400 % s4
 			""
-			
+
 'write tep time
 			l4 3600 / trunc "02" $IntToStrEnh ":" $+
 			l4 3600 % 60 / trunc "02" $IntToStrEnh $+
@@ -2358,7 +2376,7 @@ s0
 '			{if}
 '				"@" $+
 '				l3 3600 / trunc "02" $IntToStrEnh $+ ":" $+
-'				l3 3600 % 60 / trunc "02" $IntToStrEnh $+ 
+'				l3 3600 % 60 / trunc "02" $IntToStrEnh $+
 '			{endif}
 		{else}
 'else return nullstring
@@ -2393,7 +2411,7 @@ s0
 
 {macro:nuntius_printer_recalculateDistance}
 	(L.L.nuntius_printer_distance_timer) (L.S.Timegap) + s0 1 % (S.L.nuntius_printer_distance_timer)
-	
+
 	l0 1 >=
 	{if}
 		(L.L.nuntius_printer_distance_nextBusstopDistance) (S.L.nuntius_printer_distance_nextBusstopDistanceLast)
@@ -2413,7 +2431,7 @@ s0
 
 'fetch delay
 			(M.V.GetTTDelay) s1
-			
+
 'calculate actual dep at last busstop and arr at current one (schedule time + delay)
 			l0 1 - (M.V.GetTTBusstopDep) 86400 % l1 + s2
 			l0 (M.V.GetTTBusstopArr) 86400 % l1 + s3
@@ -2705,13 +2723,13 @@ s0
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
 		{endif}
-		
+
 '1: Login Page
 		l0 1 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Login_withID_PIN.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			0 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2736,7 +2754,7 @@ s0
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			2 (S.L.nuntius_printer_InputFieldCount)
 			1 (S.L.nuntius_printer_currentInputField)
 			1 (S.L.nuntius_printer_inputFieldsEnabled)
@@ -2745,7 +2763,7 @@ s0
 			(M.L.nuntius_printer_resetInputFields)
 			(C.L.nuntius_printer_driverID) $IntToStr (S.$.nuntius_printer_ui_input0)
 		{endif}
-		
+
 '2: Home Page
 		l0 2 =
 		{if}
@@ -2761,7 +2779,7 @@ s0
 				{endif}
 			{endif}
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2793,7 +2811,7 @@ s0
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Busstop.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2819,13 +2837,13 @@ s0
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			1 (M.L.nuntius_printer_showUiBusstopDistance)
 		{endif}
-		
+
 '4: LKR Page
 		l0 4 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "LKR_man_Line.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2850,23 +2868,23 @@ s0
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			1 (S.L.nuntius_printer_inputFieldsEnabled)
 			0 (S.L.nuntius_printer_inputsCensored)
-			
+
 			(L.L.nuntius_printer_Line) $IntToStr (S.$.nuntius_printer_ui_input0)
 			(L.L.nuntius_printer_Route) $IntToStr (S.$.nuntius_printer_ui_input1)
 			(L.L.nuntius_printer_Suffix) $IntToStr (S.$.nuntius_printer_ui_input2)
 		{endif}
-		
+
 '5: Terminus Page
 		l0 5 =
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Terminus_Terminus.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2891,7 +2909,7 @@ s0
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			1 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			1 (S.L.nuntius_printer_inputFieldsEnabled)
@@ -2910,7 +2928,7 @@ s0
 				(L.$.nuntius_printer_currentDisplayTextureFolder) "Announcements_BusstopAnnouncementsOff.dds" $+ (S.$.nuntius_printer_ui_texture)
 			{endif}
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -2935,7 +2953,7 @@ s0
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			1 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
@@ -2980,7 +2998,7 @@ s0
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Login_withoutID_PIN.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -3005,7 +3023,7 @@ s0
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			1 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			1 (S.L.nuntius_printer_inputFieldsEnabled)
@@ -3018,7 +3036,7 @@ s0
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "DriverSwitch.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -3043,12 +3061,12 @@ s0
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
 			0 (S.L.nuntius_printer_inputsCensored)
-			
+
 			(L.L.nuntius_printer_soldTicketsCount) $IntToStr (S.$.nuntius_printer_ui_input0)
 			(L.L.nuntius_printer_cancellationCount) $IntToStr (S.$.nuntius_printer_ui_input1)
 
@@ -3063,7 +3081,7 @@ s0
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "ShiftEnd.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -3088,12 +3106,12 @@ s0
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			3 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
 			0 (S.L.nuntius_printer_inputsCensored)
-			
+
 			(L.L.nuntius_printer_soldTicketsCount) $IntToStr (S.$.nuntius_printer_ui_input0)
 			(L.L.nuntius_printer_cancellationCount) $IntToStr (S.$.nuntius_printer_ui_input1)
 
@@ -3108,7 +3126,7 @@ s0
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Departure.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Default.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -3133,7 +3151,7 @@ s0
 			0 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			1 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
@@ -3144,7 +3162,7 @@ s0
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "confirmNextTrip.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\ConfirmNextTrip.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			0 (M.L.nuntius_printer_showUiElementsDelay)
@@ -3169,7 +3187,7 @@ s0
 			1 (M.L.nuntius_printer_showUiConfirmNextTrip)
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
@@ -3181,7 +3199,7 @@ s0
 			(L.$.nuntius_printer_currentDisplayTextureFolder)
 			(L.L.nuntius_printer_colorSchemeSetting) 0 = {if} "Menu_Apperance_ThemeAuto.dds" {else} "Menu_Apperance_ThemeManual.dds" {endif} $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\ConfirmNextTrip.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -3207,7 +3225,7 @@ s0
 			1 (M.L.nuntius_printer_showUiMenuNav)
 			1 (M.L.nuntius_printer_showUiMenuAppearance)
 			1 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
@@ -3218,7 +3236,7 @@ s0
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Bad_Input.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 '			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -3244,7 +3262,7 @@ s0
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			0 (M.L.nuntius_printer_showUiMenuAppearance)
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
@@ -3255,7 +3273,7 @@ s0
 		{if}
 			(L.$.nuntius_printer_currentDisplayTextureFolder) "Please_wait.dds" $+ (S.$.nuntius_printer_ui_texture)
 			(L.$.nuntius_printer_currentDisplayTextureFolder)  "textColor\Input.dds" $+ (S.$.nuntius_printer_ui_textColorTexture)
-			
+
 			0 (M.L.nuntius_printer_showUiElementsCompanyLogo)
 			1 (M.L.nuntius_printer_showUiElementsTime)
 '			1 (M.L.nuntius_printer_showUiElementsDelay)
@@ -3281,7 +3299,7 @@ s0
 			0 (M.L.nuntius_printer_showUiMenuNav)
 			0 (M.L.nuntius_printer_showUiMenuAppearance)
 			0 (M.L.nuntius_printer_showUiBusstopDistance)
-			
+
 			0 (S.L.nuntius_printer_InputFieldCount)
 			0 (S.L.nuntius_printer_currentInputField)
 			0 (S.L.nuntius_printer_inputFieldsEnabled)
@@ -3458,7 +3476,9 @@ s0
 {end}
 
 {macro:nuntius_printer_scheduleScriptTextForUpdate}
-	2 (S.L.nuntius_printer_updateScriptTexture)
+    (C.L.nuntius_compatibilityOmsiImplementation)
+    {if} 1 {else} 2 {endif}
+	(S.L.nuntius_printer_updateScriptTexture)
 {end}
 
 '################################
